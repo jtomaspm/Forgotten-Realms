@@ -41,32 +41,34 @@ if [ $TABLE_EXISTS -ne 0 ]; then
   echo "'Migrations' table created."
 fi
 
-for folder in $(find /migrations -maxdepth 1 -mindepth 1 -type d | sort); do
-  echo "Running migrations from folder: $folder"
+for database in $(find /migrations -maxdepth 1 -mindepth 1 -type d | sort); do
+  for folder in $(find "$database" -maxdepth 1 -mindepth 1 -type d | sort); do
+    echo "Running migrations from folder: $folder"
 
-  for migration in $(ls $folder/*.sql | sort); do
-    echo "Running migration: $migration"
-    
-    MIGRATION_NAME="$migration"
-    CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
-    INSERT_QUERY="INSERT INTO Migrations (Name, CreatedAt) VALUES ('$MIGRATION_NAME', '$CURRENT_TIME');"
+    for migration in $(ls $folder/*.sql | sort); do
+      echo "Running migration: $migration"
+      
+      MIGRATION_NAME="$migration"
+      CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
+      INSERT_QUERY="INSERT INTO Migrations (Name, Database, CreatedAt) VALUES ('$MIGRATION_NAME', '$database', '$CURRENT_TIME');"
 
-    # Attempt to insert migration entry, skip migration if insert fails (duplicate)
-    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$MYSQL_DATABASE" -e "$INSERT_QUERY" 2>/dev/null
+      # Attempt to insert migration entry, skip migration if insert fails (duplicate)
+      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$database" -e "$INSERT_QUERY" 2>/dev/null
 
-    if [ $? -ne 0 ]; then
-      echo "Migration [$migration] already applied. Skipping."
-      continue
-    fi
+      if [ $? -ne 0 ]; then
+        echo "Migration [$migration] already applied. Skipping."
+        continue
+      fi
 
-    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER"  -P "$MYSQL_PORT" "$MYSQL_DATABASE" < "$migration"
+      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER"  -P "$MYSQL_PORT" "$MYSQL_DATABASE" < "$migration"
 
-    if [ $? -eq 0 ]; then
-      echo "Migration [$migration] applied successfully."
-    else
-      echo "Error applying migration [$migration]. Exiting."
-      exit 1
-    fi
+      if [ $? -eq 0 ]; then
+        echo "Migration [$migration] applied successfully."
+      else
+        echo "Error applying migration [$migration]. Exiting."
+        exit 1
+      fi
+    done
   done
 done
 

@@ -17,6 +17,9 @@ services:
     build: ../csharp/Backend
     env_file:
       - .env
+    ports:
+      - "${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}"
+      - "${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}"
 
 volumes:
   mysql_data:

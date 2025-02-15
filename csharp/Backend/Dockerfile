@@ -1,15 +1,15 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE ${BACKEND_HTTP_PORT}
+EXPOSE ${BACKEND_HTTPS_PORT}
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Backend/Backend.csproj", "Backend/"]
+COPY Backend.csproj Backend/
 RUN dotnet restore "Backend/Backend.csproj"
-COPY . .
+COPY . Backend/
 WORKDIR "/src/Backend"
 RUN dotnet build "./Backend.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
