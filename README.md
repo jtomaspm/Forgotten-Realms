@@ -18,7 +18,7 @@ MYSQL_ROOT_PASSWORD=rootpassword
 MYSQL_DATABASE=mydatabase
 MYSQL_USER=myuser
 MYSQL_PASSWORD=mypassword
-MYSQL_HOST=localhost
+MYSQL_HOST=mysql_database
 MYSQL_PORT=3306
 ```
 

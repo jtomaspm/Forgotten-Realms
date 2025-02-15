@@ -1,8 +1,9 @@
 FROM mysql:8.0
 
+EXPOSE ${MYSQL_PORT}
+
 COPY migrations /migrations/
-RUN cd migrations
+WORKDIR /migrations
 RUN chmod +x migrate.sh
 
-# Run the migrations and then start MySQL
-CMD ["/bin/bash", "-c", "/migrate.sh && exec mysqld"]
+ENTRYPOINT ["bash", "-c", "docker-entrypoint.sh mysqld & ./migrate.sh && wait"]

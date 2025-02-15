@@ -1,5 +1,5 @@
 services:
-  mysql:
+  mysql_database:
     build: ../../database
     container_name: mysql_database
     restart: always
