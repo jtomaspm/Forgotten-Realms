@@ -73,7 +73,8 @@ for database in $(find /migrations -maxdepth 1 -mindepth 1 -type d | sort); do
         continue
       fi
 
-      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER"  -P "$MYSQL_PORT" "$DB_NAME" < "$migration"
+      envsubst < "$migration" | mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$DB_NAME"
+      
 
       if [ $? -eq 0 ]; then
         echo "Migration [$migration] applied successfully."

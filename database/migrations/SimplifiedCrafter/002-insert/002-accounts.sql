@@ -1,2 +1,4 @@
-INSERT INTO `Accounts` (`Name`, `Email`)
-VALUES ('admin', 'admin@admin.com');
+INSERT INTO `Accounts` 
+    (`Name`,    `Email`)
+VALUES 
+    ('admin',   'admin@admin.com');
