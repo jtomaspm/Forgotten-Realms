@@ -1,6 +1,7 @@
 services:
   mysql_database:
-    build: ../../database
+    build: ../database
+    image: mysql_database
     container_name: mysql_database
     restart: always
     env_file:
@@ -9,6 +10,13 @@ services:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  backend:
+    image: backend
+    container_name: backend
+    build: ../csharp/Backend
+    env_file:
+      - .env
 
 volumes:
   mysql_data:
