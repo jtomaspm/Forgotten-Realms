@@ -1,7 +1,8 @@
 #!/bin/bash
 
-MYSQL_USER="${MYSQL_USER}"
-MYSQL_PASSWORD="${MYSQL_PASSWORD}"
+# Setup
+MYSQL_USER="root"
+MYSQL_PASSWORD="${MYSQL_ROOT_PASSWORD}"
 MYSQL_HOST="${MYSQL_HOST:-localhost}"
 MYSQL_PORT="${MYSQL_PORT:-3306}"
 MYSQL_DATABASE="${MYSQL_DATABASE}"
@@ -11,9 +12,12 @@ if [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_PASSWORD" ] || [ -z "$MYSQL_HOST" ] || [
   exit 1
 fi
 
+export MYSQL_PWD="$MYSQL_PASSWORD"
+
+# Wait on SQL Server
 echo "Waiting for MySQL to start..."
-for i in {1..60}; do  # Increase retries to 60
-  if mysqladmin -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -P "$MYSQL_PORT" ping --silent; then
+for i in {1..60}; do
+  if mysqladmin -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" ping --silent; then
     echo "MySQL is up!"
     break
   else
@@ -27,19 +31,43 @@ if [ $i -eq 60 ]; then
   exit 1
 fi
 
-for folder in $(ls /migrations | sort); do
+# Check Migration framework
+echo "Checking if 'Migrations' table exists..."
+TABLE_EXISTS=$(mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$MYSQL_DATABASE" -e "SHOW TABLES LIKE 'Migrations';" | grep 'Migrations' > /dev/null; echo $?)
+
+if [ $TABLE_EXISTS -ne 0 ]; then
+  echo "'Migrations' table not found. Creating it now..."
+  mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$MYSQL_DATABASE" < /migrations/migrate.sql
+  echo "'Migrations' table created."
+fi
+
+for folder in $(find /migrations -maxdepth 1 -mindepth 1 -type d | sort); do
   echo "Running migrations from folder: $folder"
 
-  for migration in $(ls /migrations/$folder/*.sql | sort); do
+  for migration in $(ls $folder/*.sql | sort); do
     echo "Running migration: $migration"
+    
+    MIGRATION_NAME="$migration"
+    CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
+    INSERT_QUERY="INSERT INTO Migrations (Name, CreatedAt) VALUES ('$MIGRATION_NAME', '$CURRENT_TIME');"
 
-    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -P "$MYSQL_PORT" "$MYSQL_DATABASE" < "/migrations/$folder/$(basename $migration)"
+    # Attempt to insert migration entry, skip migration if insert fails (duplicate)
+    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$MYSQL_DATABASE" -e "$INSERT_QUERY" 2>/dev/null
+
+    if [ $? -ne 0 ]; then
+      echo "Migration [$migration] already applied. Skipping."
+      continue
+    fi
+
+    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER"  -P "$MYSQL_PORT" "$MYSQL_DATABASE" < "$migration"
 
     if [ $? -eq 0 ]; then
-      echo "Migration ($folder)[$migration] applied successfully."
+      echo "Migration [$migration] applied successfully."
     else
-      echo "Error applying migration ($folder)[$migration]. Exiting."
+      echo "Error applying migration [$migration]. Exiting."
       exit 1
     fi
   done
 done
+
+echo "Done applying migrations!"
