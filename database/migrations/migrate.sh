@@ -42,25 +42,38 @@ if [ $TABLE_EXISTS -ne 0 ]; then
 fi
 
 for database in $(find /migrations -maxdepth 1 -mindepth 1 -type d | sort); do
-  for folder in $(find "$database" -maxdepth 1 -mindepth 1 -type d | sort); do
-    echo "Running migrations from folder: $folder"
+  DB_NAME=$(basename $database)
 
+  DB_EXISTS=$(mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" -e "SHOW DATABASES LIKE '$DB_NAME';" | grep "$DB_NAME" > /dev/null; echo $?)
+  
+  if [ $DB_EXISTS -ne 0 ]; then
+    echo "Database '$DB_NAME' not found. Creating it now..."
+    mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" -e "CREATE DATABASE \`$DB_NAME\`;"
+
+    DB_EXISTS_AFTER_CREATION=$(mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" -e "SHOW DATABASES LIKE '$DB_NAME';" | grep "$DB_NAME" > /dev/null; echo $?)
+    if [ $DB_EXISTS_AFTER_CREATION -ne 0 ]; then
+      echo "Error: Database '$DB_NAME' was not created successfully. Exiting."
+      exit 1
+    else
+      echo "Created $DB_NAME sucessfully!"
+    fi
+  fi
+
+  for folder in $(find "$database" -maxdepth 1 -mindepth 1 -type d | sort); do
     for migration in $(ls $folder/*.sql | sort); do
       echo "Running migration: $migration"
       
-      MIGRATION_NAME="$migration"
-      CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
-      INSERT_QUERY="INSERT INTO Migrations (Name, Database, CreatedAt) VALUES ('$MIGRATION_NAME', '$database', '$CURRENT_TIME');"
+      INSERT_QUERY="INSERT INTO Migrations (\`Name\`, \`Database\`) VALUES ('$migration', '$DB_NAME');"
 
       # Attempt to insert migration entry, skip migration if insert fails (duplicate)
-      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$database" -e "$INSERT_QUERY" 2>/dev/null
+      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$MYSQL_DATABASE" -e "$INSERT_QUERY" 2>/dev/null
 
       if [ $? -ne 0 ]; then
         echo "Migration [$migration] already applied. Skipping."
         continue
       fi
 
-      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER"  -P "$MYSQL_PORT" "$MYSQL_DATABASE" < "$migration"
+      mysql -h "$MYSQL_HOST" -u "$MYSQL_USER"  -P "$MYSQL_PORT" "$DB_NAME" < "$migration"
 
       if [ $? -eq 0 ]; then
         echo "Migration [$migration] applied successfully."
