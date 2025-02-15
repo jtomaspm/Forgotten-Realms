@@ -1,0 +1,14 @@
+services:
+  mysql:
+    build: ../../database
+    container_name: mysql_database
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
