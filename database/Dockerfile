@@ -1,6 +1,8 @@
-FROM mysql:8.0
+FROM mysql:9.2
 
 EXPOSE ${MYSQL_PORT}
+
+RUN microdnf install -y gettext
 
 COPY migrations /migrations/
 WORKDIR /migrations

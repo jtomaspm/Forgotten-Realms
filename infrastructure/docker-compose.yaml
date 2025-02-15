@@ -20,6 +20,8 @@ services:
     ports:
       - "${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}"
       - "${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}"
+    depends_on:
+      - mysql_database
 
 volumes:
   mysql_data:
