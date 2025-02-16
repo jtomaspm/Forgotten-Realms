@@ -6,14 +6,30 @@ using MySql.Data.MySqlClient;
 
 namespace Backend;
 
-public class Startup(IConfiguration configuration)
+public class Startup
 {
+    private readonly IConfiguration _configuration;
+    public Startup(IConfiguration configuration)
+    {
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        
+        if (_configuration["GITHUB_CLIENT_ID"] is null) throw new ArgumentException("GITHUB_CLIENT_ID environment variable is not defined.");
+        if (_configuration["GITHUB_CLIENT_SECRET"] is null) throw new ArgumentException("GITHUB_CLIENT_SECRET environment variable is not defined.");
+        
+        if (_configuration["MYSQL_DATABASE"] is null) throw new ArgumentException("MYSQL_DATABASE environment variable is not defined.");
+        if (_configuration["MYSQL_PORT"] is null) throw new ArgumentException("MYSQL_PORT environment variable is not defined.");
+        if (_configuration["MYSQL_HOST"] is null) throw new ArgumentException("MYSQL_HOST environment variable is not defined.");
+        if (_configuration["MYSQL_ROOT_PASSWORD"] is null) throw new ArgumentException("MYSQL_ROOT_PASSWORD environment variable is not defined.");
+        
+        _configuration["MYSQL_CONNECTION_STRING"] = $"Server={_configuration["MYSQL_HOST"]};Port={_configuration["MYSQL_PORT"]};Database={_configuration["MYSQL_DATABASE"]};User=root;Password={_configuration["MYSQL_ROOT_PASSWORD"]};";
+    }
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
         
         // Authentication Middleware
-        services.AddAuthentication(options =>
+        services
+            .AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = "GitHub";
@@ -21,9 +37,9 @@ public class Startup(IConfiguration configuration)
             .AddCookie()
             .AddOAuth("GitHub", options =>
             {
-                options.ClientId = configuration["GitHub:ClientId"];
-                options.ClientSecret = configuration["GitHub:ClientSecret"];
-                options.CallbackPath = "/api/auth/github/callback";
+                options.ClientId = _configuration["GITHUB_CLIENT_ID"]!;
+                options.ClientSecret = _configuration["GITHUB_CLIENT_SECRET"]!;
+                options.CallbackPath= "/api/auth/github/callback";
 
                 options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
                 options.TokenEndpoint = "https://github.com/login/oauth/access_token";
@@ -49,7 +65,7 @@ public class Startup(IConfiguration configuration)
                         context.Identity?.AddClaim(new Claim(ClaimTypes.Name, username));
                         context.Identity?.AddClaim(new Claim(ClaimTypes.Email, email ?? ""));
 
-                        var connectionString = configuration.GetConnectionString("DefaultConnection");
+                        var connectionString = _configuration["MYSQL_CONNECTION_STRING"];
                         using var connection = new MySqlConnection(connectionString);
                         await connection.OpenAsync();
 
