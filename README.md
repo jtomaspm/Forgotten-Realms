@@ -9,7 +9,7 @@ Before you begin, make sure you have the following installed:
 
 ## Documentation
 
-* [Environment]()
+* [Environment](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/environment.md)
 
 ### 2. Running the Docker Compose Setup
 
