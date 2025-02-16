@@ -26,7 +26,7 @@ Stop docker-compose, clean volumes and run docker-compose detatched with build.
 
 ## Generate Documentation
 
-Generate standard file documentation.
+Generate standard documentation file.
 
 * [scripts/gen_docs.sh](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/scripts/gen_docs.sh)
 
