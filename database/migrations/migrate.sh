@@ -61,20 +61,22 @@ for database in $(find /migrations -maxdepth 1 -mindepth 1 -type d | sort); do
 
   for folder in $(find "$database" -maxdepth 1 -mindepth 1 -type d | sort); do
     for migration in $(ls $folder/*.sql | sort); do
+      MIGRATION_NAME="$DB_NAME > $(basename $folder) > $(basename $migration)"      
+
       INSERT_QUERY="INSERT INTO Migrations (\`Name\`, \`Database\`) VALUES ('$migration', '$DB_NAME');"
 
       # Attempt to insert migration entry, skip migration if insert fails (duplicate)
       mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$MYSQL_DATABASE" -e "$INSERT_QUERY" 2>/dev/null
 
       if [ $? -ne 0 ]; then
-        echo "Migration [$migration] already applied. Skipping."
+        echo "Migration [$MIGRATION_NAME] already applied. Skipping."
         continue
       fi
 
       envsubst < "$migration" | mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$DB_NAME"
 
       if [ $? -eq 0 ]; then
-        echo "Migration [$migration] applied successfully."
+        echo "Migration [$MIGRATION_NAME] applied successfully."
       else
         ERROR_MESSAGE=$(envsubst < "$migration" | mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -P "$MYSQL_PORT" "$DB_NAME" 2>&1)
         echo "Error applying migration [$migration]: $ERROR_MESSAGE"

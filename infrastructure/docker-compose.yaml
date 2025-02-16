@@ -1,7 +1,7 @@
+name: SimplifiedCrafter
 services:
   mysql_database:
     build: ../database
-    image: mysql_database
     container_name: mysql_database
     restart: always
     env_file:
@@ -12,7 +12,6 @@ services:
       - mysql_data:/var/lib/mysql
 
   backend:
-    image: backend
     container_name: backend
     build: ../csharp/Backend
     env_file:
