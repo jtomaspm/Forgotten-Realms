@@ -24,6 +24,12 @@ Stop docker-compose, clean volumes and run docker-compose detatched with build.
 
 * [scripts/clean_run.sh](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/scripts/clean_run.sh)
 
+## Generate Documentation
+
+Generate standard file documentation.
+
+* [scripts/gen_docs.sh](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/scripts/gen_docs.sh)
+
 ## Full Documentation
 
 * [README](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/README.md)
