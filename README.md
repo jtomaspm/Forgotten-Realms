@@ -1,6 +1,6 @@
 # SimplifiedCrafter
 
-Online Multiplayer Real Time Strategy Game
+Online multiplayer real time strategy game
 
 ## Prerequisites
 
