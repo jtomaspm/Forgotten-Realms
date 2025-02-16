@@ -2,7 +2,7 @@
 
 ## Environment Variables
 
-Create a `.env` file in the root directory of the project (next to `docker-compose.yml`) with the following content:
+Create a `.env` file in the root directory of the project (next to `infrastructure/docker-compose.yml`) with the following content:
 
 ```ini
 MYSQL_ROOT_PASSWORD=...
