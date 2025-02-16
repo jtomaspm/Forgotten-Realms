@@ -18,8 +18,4 @@
       </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="Controllers\WeatherForecastController.cs" />
-    </ItemGroup>
-
 </Project>
