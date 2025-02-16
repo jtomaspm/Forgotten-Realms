@@ -9,7 +9,7 @@ public enum RoleEnum
     GUEST
 }
 
-public struct Role
+public class Role
 {
     public RoleEnum Name;
 }

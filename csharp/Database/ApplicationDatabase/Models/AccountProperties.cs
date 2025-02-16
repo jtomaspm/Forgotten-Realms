@@ -1,6 +1,6 @@
 namespace Database.ApplicationDatabase.Models;
 
-public struct AccountProperties
+public class AccountProperties
 {
     public Guid AccountId;
     public Guid VerificationToken;

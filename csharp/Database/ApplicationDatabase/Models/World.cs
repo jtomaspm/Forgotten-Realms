@@ -1,6 +1,6 @@
 namespace Database.ApplicationDatabase.Models;
 
-public struct World
+public class World
 {
     public Guid Id;
     public string Name;

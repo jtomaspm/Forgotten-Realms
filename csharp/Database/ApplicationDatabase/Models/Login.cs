@@ -1,6 +1,6 @@
 namespace Database.ApplicationDatabase.Models;
 
-public struct Login
+public class Login
 {
     public Guid Id;
     public Guid AccountId;

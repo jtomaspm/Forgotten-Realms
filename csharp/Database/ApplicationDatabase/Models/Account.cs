@@ -1,6 +1,6 @@
 namespace Database.ApplicationDatabase.Models;
 
-public struct Account
+public class Account
 {
     public Guid Id;
     public string ExternalId;
