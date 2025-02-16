@@ -1,3 +1,0 @@
-CREATE TABLE `Roles` (
-    `Name` VARCHAR(50) PRIMARY KEY
-);

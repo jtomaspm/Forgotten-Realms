@@ -4,5 +4,5 @@ CREATE TABLE `Worlds` (
     `Database`      VARCHAR(255)    NOT NULL,
     `Speed`         FLOAT           NOT NULL,
     `GameVersion`   VARCHAR(20)     NOT NULL,
-    `CreatedAt`     DATETIME        DEFAULT CURRENT_TIMESTAMP
+    `CreatedAt`     TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
 );
