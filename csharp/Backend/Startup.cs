@@ -20,8 +20,9 @@ public class Startup
         if (_configuration["MYSQL_PORT"] is null) throw new ArgumentException("MYSQL_PORT environment variable is not defined.");
         if (_configuration["MYSQL_HOST"] is null) throw new ArgumentException("MYSQL_HOST environment variable is not defined.");
         if (_configuration["MYSQL_ROOT_PASSWORD"] is null) throw new ArgumentException("MYSQL_ROOT_PASSWORD environment variable is not defined.");
-        
-        _configuration["MYSQL_CONNECTION_STRING"] = $"Server={_configuration["MYSQL_HOST"]};Port={_configuration["MYSQL_PORT"]};Database={_configuration["MYSQL_DATABASE"]};User=root;Password={_configuration["MYSQL_ROOT_PASSWORD"]};";
+
+        _configuration["MYSQL_USER"] = "root";
+        _configuration["MYSQL_CONNECTION_STRING"] = $"Server={_configuration["MYSQL_HOST"]};Port={_configuration["MYSQL_PORT"]};Database={_configuration["MYSQL_DATABASE"]};User={_configuration["MYSQL_USER"]};Password={_configuration["MYSQL_ROOT_PASSWORD"]};";
     }
     public void ConfigureServices(IServiceCollection services)
     {
