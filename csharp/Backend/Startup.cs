@@ -27,13 +27,8 @@ public class Startup
         services.SetupGithubAuth(_configuration["GITHUB_CLIENT_ID"]!, _configuration["GITHUB_CLIENT_SECRET"]!, "/api/auth/github/callback");
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment _)
     {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();

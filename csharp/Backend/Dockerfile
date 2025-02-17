@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 ENV ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT}
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=Production
 
 
 ENTRYPOINT ["dotnet", "Backend.dll"]
