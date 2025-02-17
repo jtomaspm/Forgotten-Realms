@@ -6,6 +6,8 @@ services:
     restart: always
     env_file:
       - .env
+    expose:
+      - ${MYSQL_PORT}
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
@@ -18,9 +20,10 @@ services:
       dockerfile: ../csharp/Backend/Dockerfile
     env_file:
       - .env
+    expose:
+      - ${BACKEND_HTTP_PORT}
     ports:
       - "${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}"
-      - "${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}"
     depends_on:
       - mysql_database
 

@@ -4,7 +4,6 @@ WORKDIR /src
 
 # Copy the Backend and Database project files and restore dependencies
 COPY Backend/Backend.csproj Backend/
-COPY Database/Database.csproj Database/
 
 # Restore dependencies
 RUN dotnet restore ./Backend/Backend.csproj
@@ -22,8 +21,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 ENV ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT}
-ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_ENVIRONMENT=Development
 
-EXPOSE ${BACKEND_HTTP_PORT}
 
 ENTRYPOINT ["dotnet", "Backend.dll"]

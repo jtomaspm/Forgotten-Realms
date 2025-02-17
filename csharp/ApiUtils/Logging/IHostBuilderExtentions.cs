@@ -13,7 +13,7 @@ public static class IHostBuilderExtentions
             {
                 logging.ClearProviders();
                 logging.AddSerilog(LoggerFactory.DefaultLogger());
+                logging.AddConsole();
             });
     }
-
 }
