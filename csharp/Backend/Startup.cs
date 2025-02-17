@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MySql.Data.MySqlClient;
@@ -9,6 +10,7 @@ namespace Backend;
 public class Startup
 {
     private readonly IConfiguration _configuration;
+    private readonly DatabaseConfig _databaseConfig;
     public Startup(IConfiguration configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -20,9 +22,14 @@ public class Startup
         if (_configuration["MYSQL_PORT"] is null) throw new ArgumentException("MYSQL_PORT environment variable is not defined.");
         if (_configuration["MYSQL_HOST"] is null) throw new ArgumentException("MYSQL_HOST environment variable is not defined.");
         if (_configuration["MYSQL_ROOT_PASSWORD"] is null) throw new ArgumentException("MYSQL_ROOT_PASSWORD environment variable is not defined.");
-
         _configuration["MYSQL_USER"] = "root";
-        _configuration["MYSQL_CONNECTION_STRING"] = $"Server={_configuration["MYSQL_HOST"]};Port={_configuration["MYSQL_PORT"]};Database={_configuration["MYSQL_DATABASE"]};User={_configuration["MYSQL_USER"]};Password={_configuration["MYSQL_ROOT_PASSWORD"]};";
+
+        _databaseConfig = new DatabaseConfig(
+            _configuration["MYSQL_HOST"]!,
+            _configuration["MYSQL_PORT"]!,
+            _configuration["MYSQL_USER"]!,
+            _configuration["MYSQL_ROOT_PASSWORD"]!,
+            _configuration["MYSQL_DATABASE"]!);
     }
     public void ConfigureServices(IServiceCollection services)
     {
@@ -66,8 +73,7 @@ public class Startup
                         context.Identity?.AddClaim(new Claim(ClaimTypes.Name, username));
                         context.Identity?.AddClaim(new Claim(ClaimTypes.Email, email ?? ""));
 
-                        var connectionString = _configuration["MYSQL_CONNECTION_STRING"];
-                        using var connection = new MySqlConnection(connectionString);
+                        using var connection = new MySqlConnection(_databaseConfig.ConnectionString);
                         await connection.OpenAsync();
 
                         var query = @"

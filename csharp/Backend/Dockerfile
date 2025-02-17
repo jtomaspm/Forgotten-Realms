@@ -1,23 +1,29 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE ${BACKEND_HTTP_PORT}
-EXPOSE ${BACKEND_HTTPS_PORT}
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY Backend.csproj Backend/
-RUN dotnet restore "Backend/Backend.csproj"
-COPY . Backend/
-WORKDIR "/src/Backend"
-RUN dotnet build "./Backend.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Backend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Copy the Backend and Database project files and restore dependencies
+COPY Backend/Backend.csproj Backend/
+COPY Database/Database.csproj Database/
 
-FROM base AS final
+# Restore dependencies
+RUN dotnet restore ./Backend/Backend.csproj
+
+# Copy the entire source code
+COPY . .
+
+WORKDIR /src/Backend
+RUN dotnet publish Backend.csproj -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+COPY --from=build /app .
+
+ENV ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT}
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+EXPOSE ${BACKEND_HTTP_PORT}
+
 ENTRYPOINT ["dotnet", "Backend.dll"]

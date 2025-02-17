@@ -13,7 +13,9 @@ services:
 
   backend:
     container_name: backend
-    build: ../csharp/Backend
+    build: 
+      context: ../csharp
+      dockerfile: ../csharp/Backend/Dockerfile
     env_file:
       - .env
     ports:

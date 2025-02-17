@@ -10,6 +10,14 @@ namespace Backend.Controllers
     [ApiController]
     public class AuthController(IConfiguration configuration) : ControllerBase
     {
+        [HttpGet("github")]
+        public IActionResult GitHubUserInfo(HttpContext ctx)
+        {
+            return new OkObjectResult(
+                ctx.User.Claims.Select(x => new { x.Type, x.Value }).ToList()
+            );
+        }
+
         [HttpGet("github/login")]
         public IActionResult GitHubLogin()
         {
