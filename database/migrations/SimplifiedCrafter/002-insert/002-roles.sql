@@ -3,5 +3,6 @@ INSERT INTO `Roles`
 VALUES 
     ('ADMIN'),
     ('MODERATOR'),
+    ('NPC'),
     ('PLAYER'),
     ('GUEST');

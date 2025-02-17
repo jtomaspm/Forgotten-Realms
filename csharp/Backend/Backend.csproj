@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="../ApiUtils/ApiUtils.csproj" />
       <ProjectReference Include="../Database\Database.csproj" />
     </ItemGroup>
 

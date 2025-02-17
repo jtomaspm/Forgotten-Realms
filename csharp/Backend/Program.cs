@@ -1,3 +1,5 @@
+using ApiUtils.Logging;
+
 namespace Backend;
 
 public static class Program
@@ -9,6 +11,7 @@ public static class Program
 
     private static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
+            .SetupDefaultLogging()
             .ConfigureAppConfiguration((_, config) => 
             {
                 config
