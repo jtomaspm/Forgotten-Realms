@@ -2,15 +2,20 @@
 
 namespace Database;
 
-public abstract class BaseDatabase : IDisposable
+public class Database : IDisposable
 {
     protected readonly DatabaseConfig _config;
     protected readonly MySqlConnection _connection;
 
-    public BaseDatabase(DatabaseConfig config)
+    public Database(DatabaseConfig config)
     {
         _config = config;
         _connection = new MySqlConnection(_config.ConnectionString);
+    }
+
+    public MySqlConnection GetConnection() 
+    {
+        return _connection;
     }
 
     public void Dispose()
