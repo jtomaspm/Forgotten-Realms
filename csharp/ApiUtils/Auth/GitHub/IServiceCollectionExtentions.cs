@@ -30,8 +30,8 @@ public static class IServiceCollectionExtentions
 
                 options.Scope.Add("user:email");
 
-                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                options.ClaimActions.MapJsonKey("externalId", "id");
+                options.ClaimActions.MapJsonKey("email", "email");
 
                 options.Events.OnCreatingTicket = async (ctx) => 
                 {
@@ -42,7 +42,7 @@ public static class IServiceCollectionExtentions
                     ctx.RunClaimActions(user);
 
                     // If the email is missing (private email), fetch from /user/emails
-                    if (ctx.Identity is not null && !ctx.Identity.HasClaim(c => c.Type == ClaimTypes.Email))
+                    if (ctx.Identity is not null && !ctx.Identity.HasClaim(c => c.Type == "email"))
                     {
                         var emailRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/emails");
                         emailRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
@@ -58,7 +58,7 @@ public static class IServiceCollectionExtentions
 
                             if (!string.IsNullOrEmpty(primaryEmail))
                             {
-                                ctx.Identity?.AddClaim(new Claim(ClaimTypes.Email, primaryEmail));
+                                ctx.Identity?.AddClaim(new Claim("email", primaryEmail));
                             }
                         }
                     }
