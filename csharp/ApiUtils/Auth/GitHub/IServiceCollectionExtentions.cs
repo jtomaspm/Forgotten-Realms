@@ -1,8 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace ApiUtils.Auth.GitHub;
@@ -12,14 +13,13 @@ public static class IServiceCollectionExtentions
     public static void SetupGithubAuth(this IServiceCollection services, string clientId, string clientSecret, string redirectUri)
     {
         services
-            .AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "GitHub";
-            })
-            .AddCookie()
+            .AddAuthentication("GitHubCookie")
+            .AddCookie("GitHubCookie")
             .AddOAuth("GitHub", options =>
             {
+                options.SignInScheme = "GitHubCookie";
+                options.SaveTokens = true;
+
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
                 options.CallbackPath = redirectUri;
@@ -28,25 +28,39 @@ public static class IServiceCollectionExtentions
                 options.TokenEndpoint = "https://github.com/login/oauth/access_token";
                 options.UserInformationEndpoint = "https://api.github.com/user";
 
+                options.Scope.Add("user:email");
+
                 options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
                 options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
 
-                options.Events.OnCreatingTicket = async context =>
+                options.Events.OnCreatingTicket = async (ctx) => 
                 {
-                    var userInfo = await context.Backchannel.GetAsync(context.Options.UserInformationEndpoint);
-                    if (userInfo.IsSuccessStatusCode)
+                    var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+                    using var userResponse = await ctx.Backchannel.SendAsync(request);
+                    var user = await userResponse.Content.ReadFromJsonAsync<JsonElement>();
+                    ctx.RunClaimActions(user);
+
+                    // If the email is missing (private email), fetch from /user/emails
+                    if (ctx.Identity is not null && !ctx.Identity.HasClaim(c => c.Type == ClaimTypes.Email))
                     {
-                        using var jsonDoc = JsonDocument.Parse(await userInfo.Content.ReadAsStringAsync());
-                        var root = jsonDoc.RootElement;
+                        var emailRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/emails");
+                        emailRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+                        emailRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                        var githubId = root.GetProperty("id").GetInt64();
-                        var username = root.GetProperty("login").GetString();
-                        var email = root.TryGetProperty("email", out var emailProp) ? emailProp.GetString() : null;
+                        using var emailResponse = await ctx.Backchannel.SendAsync(emailRequest);
+                        if (emailResponse.IsSuccessStatusCode)
+                        {
+                            var emails = await emailResponse.Content.ReadFromJsonAsync<JsonElement>();
+                            var primaryEmail = emails.EnumerateArray()
+                                .FirstOrDefault(e => e.GetProperty("primary").GetBoolean())
+                                .GetProperty("email").GetString();
 
-                        context.Identity?.AddClaim(new Claim("GitHubId", githubId.ToString()));
-                        context.Identity?.AddClaim(new Claim(ClaimTypes.Name, username));
-                        context.Identity?.AddClaim(new Claim(ClaimTypes.Email, email ?? ""));
+                            if (!string.IsNullOrEmpty(primaryEmail))
+                            {
+                                ctx.Identity?.AddClaim(new Claim(ClaimTypes.Email, primaryEmail));
+                            }
+                        }
                     }
                 };
             });

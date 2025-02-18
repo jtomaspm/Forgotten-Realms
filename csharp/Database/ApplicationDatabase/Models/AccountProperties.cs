@@ -10,4 +10,3 @@ public class AccountProperties
     public DateTime CreatedAt;
     public DateTime UpdatedAt;
 }
-

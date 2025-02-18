@@ -5,7 +5,8 @@ CREATE TABLE `Roles` (
 
 CREATE TABLE `Accounts` (
     `Id`            CHAR(36)        PRIMARY KEY DEFAULT (UUID()),
-    `ExternalId`    VARCHAR(255)    UNIQUE,
+    `ExternalId`    VARCHAR(255),
+    `Source`        VARCHAR(50),
     `Name`          VARCHAR(50)     UNIQUE NOT NULL,
     `Email`         VARCHAR(255)    UNIQUE NOT NULL,
     `Role`          VARCHAR(50)     NOT NULL,

@@ -7,5 +7,3 @@ public class Login
     public DateTime CreatedAt;
     public string? IpAddress;
 }
-
-
