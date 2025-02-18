@@ -6,14 +6,14 @@ namespace ApiUtils.Logging;
 
 public static class IHostBuilderExtentions
 {
-    public static IHostBuilder SetupDefaultLogging(this IHostBuilder builder)
+    public static IHostBuilder SetupDefaultLogging(this IHostBuilder builder, string filename, bool useConsole)
     {
         return builder
             .ConfigureLogging(logging => 
             {
                 logging.ClearProviders();
-                logging.AddSerilog(LoggerFactory.DefaultLogger());
-                logging.AddConsole();
+                logging.AddSerilog(LoggerFactory.DefaultLogger(filename));
+                if (useConsole) logging.AddConsole();
             });
     }
 }

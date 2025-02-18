@@ -7,13 +7,13 @@ namespace ApiUtils.Logging;
 public class LoggerFactory
 {
 
-    public static ILogger DefaultLogger() 
+    public static ILogger DefaultLogger(string filename) 
     {
         return new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.File(
                 new JsonFormatter(),
-                "/var/log/log-.log",
+                $"/var/log/{filename}-.log",
                 rollingInterval: RollingInterval.Day,
                 restrictedToMinimumLevel: LogEventLevel.Information
             )

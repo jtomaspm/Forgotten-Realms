@@ -14,13 +14,13 @@ public class Startup
         _configuration.ValidateEnv("EnvVars");
 
         _databaseConfig = new DatabaseConfig
-        {
-            Host = _configuration["MYSQL_HOST"]!,
-            Port = _configuration["MYSQL_PORT"]!,
-            User = "root",
-            Password = _configuration["MYSQL_ROOT_PASSWORD"]!,
-            Database = _configuration["MYSQL_DATABASE"]!
-        };
+        (
+            host: _configuration["MYSQL_HOST"]!,
+            port: _configuration["MYSQL_PORT"]!,
+            user: "root",
+            password: _configuration["MYSQL_ROOT_PASSWORD"]!,
+            database: _configuration["MYSQL_DATABASE"]!
+        );
     }
     public void ConfigureServices(IServiceCollection services)
     {
@@ -31,6 +31,7 @@ public class Startup
             clientSecret: _configuration["GITHUB_CLIENT_SECRET"]!, 
             redirectUri:  "/api/auth/github/callback"
         );
+        services.AddSingleton<DatabaseConfig>(_databaseConfig);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment _)

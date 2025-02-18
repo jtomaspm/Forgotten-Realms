@@ -14,7 +14,7 @@ public static class Program
     private static IHostBuilder CreateHostBuilder(string[] args) 
     {
         var hostBuilder = Host.CreateDefaultBuilder(args)
-            .SetupDefaultLogging()
+            .SetupDefaultLogging(filename: "backend", useConsole: true)
             .ConfigureAppConfiguration((_, config) => 
             {
                 config
