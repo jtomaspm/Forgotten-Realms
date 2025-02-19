@@ -22,17 +22,17 @@ jobs:
 
       - name: Build Docker Compose services
         working-directory: infrastructure
-        run: docker-compose -f docker-compose.yaml build
+        run: docker compose -f docker-compose.yaml build
 
       - name: Validate Docker Compose services
         working-directory: infrastructure
         run: |
-          docker-compose -f docker-compose.yaml up -d
+          docker compose -f docker-compose.yaml up -d
           sleep 10  # Wait for containers to start
           docker ps -a
-          docker-compose -f docker-compose.yaml ps
+          docker compose -f docker-compose.yaml ps
           
       - name: Tear down Docker Compose services
         if: always()
         working-directory: infrastructure
-        run: docker-compose -f docker-compose.yaml down
+        run: docker compose -f docker-compose.yaml down
