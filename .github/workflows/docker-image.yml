@@ -1,0 +1,24 @@
+name: Build and Validate Dockerfiles
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-dockerfiles:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find and build Dockerfiles
+        run: |
+          set -e  # Exit on error
+          find . -name 'Dockerfile' | while read dockerfile; do
+            dir=$(dirname "$dockerfile")
+            echo "Building Dockerfile in $dir"
+            docker build -t test-image "$dir"
+          done
