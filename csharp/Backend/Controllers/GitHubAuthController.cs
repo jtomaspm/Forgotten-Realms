@@ -11,8 +11,12 @@ namespace Backend.Controllers
         public async Task<IActionResult> GitHubUserInfo()
         {
             await HttpContext.GetTokenAsync("acess_token");
-            logger.LogInformation($"logged in [ Id: {HttpContext.User.Claims.First(x=>x.Type == "externalId").Value.AsSpan().ToString()}, "
-                                            + $"Email: {HttpContext.User.Claims.First(x=>x.Type == "email").Value.AsSpan().ToString()} ]");
+
+            var externalId = HttpContext.User.Claims.FirstOrDefault(x=>x.Type == "externalId");
+            var email = HttpContext.User.Claims.FirstOrDefault(x=>x.Type == "email");
+            if (email is not null && externalId is not null)
+                logger.LogInformation($"logged in [ ExternalId: {externalId.Value.AsSpan().ToString()}, "
+                                                + $"Email: {email.Value.AsSpan().ToString()} ]");
             return Ok(
                 HttpContext.User.Claims
                     .Select(c => new{c.Type, c.Value})

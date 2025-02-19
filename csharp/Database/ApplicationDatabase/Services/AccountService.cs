@@ -1,4 +1,5 @@
 using Database.ApplicationDatabase.Models;
+using Database.CommandBuilder.CommandBuilder;
 using MySql.Data.MySqlClient;
 
 namespace Database.ApplicationDatabase.Services;
@@ -47,18 +48,12 @@ public static class AccountService
     public static async Task<Account?> GetByExternalId(string externalId, string source, Database database)
     {
         var connection = await database.GetConnectionAsync();
+        var cmd = CommandBuilder.Select()
         var cmd = connection.CreateCommand();
         
         cmd.CommandText = @"
             SELECT 
-                `Id`, 
-                `ExternalId`, 
-                `Source`, 
-                `Name`, 
-                `Email`, 
-                `Role`, 
-                `CreatedAt`, 
-                `UpdatedAt` 
+                `Id`, `ExternalId`, `Source`, `Name`, `Email`, `Role`, `CreatedAt`, `UpdatedAt` 
             FROM `Accounts` 
             WHERE `ExternalId`=@externalId
               AND `Source`=@source;";
@@ -90,21 +85,13 @@ public static class AccountService
         var cmd = connection.CreateCommand();
         cmd.CommandText = @"
             INSERT INTO `Accounts` (
-                `Name`, 
-                `Email`, 
-                `Role`, 
-                `ExternalId`, 
-                `Source`
+                `Name`, `Email`, `Role`, `ExternalId`, `Source`
             ) VALUES (
-                @name, 
-                @email, 
-                @role, 
-                @externalId, 
-                @source
+                @name, @email, @role, @externalId, @source
             );";
 
         cmd.Parameters.AddWithValue("name", name);
-        cmd.Parameters.AddWithValue("email", "joaotomachado@proton.me");
+        cmd.Parameters.AddWithValue("email", email);
         cmd.Parameters.AddWithValue("role", role.Name);
         cmd.Parameters.AddWithValue("externalId", externalId);
         cmd.Parameters.AddWithValue("source", source);

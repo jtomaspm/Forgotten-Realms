@@ -35,14 +35,20 @@ public static class IServiceCollectionExtentions
 
                 options.Events.OnCreatingTicket = async (ctx) => 
                 {
+                    if (ctx.Identity is null || ctx.Identity.HasClaim(c => c.Type == "externalId")) 
+                    {
+                        ctx.Identity?.AddClaim(new Claim("role", "GUEST"));
+                        return;
+                    }
+
                     var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
                     using var userResponse = await ctx.Backchannel.SendAsync(request);
                     var user = await userResponse.Content.ReadFromJsonAsync<JsonElement>();
                     ctx.RunClaimActions(user);
-
+                    
                     // If the email is missing (private email), fetch from /user/emails
-                    if (ctx.Identity is not null && !ctx.Identity.HasClaim(c => c.Type == "email"))
+                    if (!ctx.Identity.HasClaim(c => c.Type == "email"))
                     {
                         var emailRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/emails");
                         emailRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
