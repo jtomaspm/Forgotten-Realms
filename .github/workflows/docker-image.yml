@@ -1,37 +1,38 @@
-name: Build and Validate Dockerfiles
+name: Docker Compose Build and Validate
 
 on:
   push:
     branches:
       - main
   pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  build-dockerfiles:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Find and build Dockerfiles (handling csharp separately)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Compose services
+        working-directory: infrastructure
+        run: docker-compose -f docker-compose.yaml build
+
+      - name: Validate Docker Compose services
+        working-directory: infrastructure
         run: |
-          set -e  # Exit on error
+          docker-compose -f docker-compose.yaml up -d
+          sleep 10  # Wait for containers to start
+          docker ps -a
+          docker-compose -f docker-compose.yaml ps
           
-          # Build Dockerfiles inside the csharp directory from csharp
-          if [ -d "csharp" ]; then
-            cd csharp
-            find . -name 'Dockerfile' | while read dockerfile; do
-              dir=$(dirname "$dockerfile")
-              echo "Building Dockerfile in $dir (executing from csharp/)"
-              docker build -t test-image "$dir"
-            done
-            cd ..
-          fi
-          
-          # Build Dockerfiles outside the csharp directory normally
-          find . -name 'Dockerfile' -not -path "./csharp/*" | while read dockerfile; do
-            dir=$(dirname "$dockerfile")
-            echo "Building Dockerfile in $dir"
-            docker build -t test-image "$dir"
-          done
+      - name: Tear down Docker Compose services
+        if: always()
+        working-directory: infrastructure
+        run: docker-compose -f docker-compose.yaml down
