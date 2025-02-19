@@ -4,7 +4,7 @@ using Serilog;
 
 namespace ApiUtils.Logging;
 
-public static class IHostBuilderExtentions
+public static class IHostBuilderExtensions
 {
     public static IHostBuilder SetupDefaultLogging(this IHostBuilder builder, string filename, bool useConsole)
     {

@@ -4,7 +4,7 @@ using MySql.Data.MySqlClient;
 
 namespace Database;
 
-public class Database : IDisposable
+public abstract class Database : IDisposable
 {
     protected DatabaseConfig? _config;
     protected MySqlConnection? _connection;
@@ -33,9 +33,9 @@ public class Database : IDisposable
         database._connection.Open();
     }
 
-    public static async Task<Database> CreateAsync(DatabaseConfig config)
+    public static async Task<TDatabase> CreateAsync<TDatabase>(DatabaseConfig config) where TDatabase : Database, new()
     {
-        var database = new Database
+        var database = new TDatabase
         {
             _config = config
         };

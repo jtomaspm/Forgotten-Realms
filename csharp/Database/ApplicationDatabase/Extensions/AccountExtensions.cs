@@ -2,9 +2,9 @@ using Database.ApplicationDatabase.Models;
 using Database.CommandBuilder;
 using MySql.Data.MySqlClient;
 
-namespace Database.ApplicationDatabase.Services;
+namespace Database.ApplicationDatabase.Extensions;
 
-public static class AccountService
+public static class AccountExtensions
 {
     private static async IAsyncEnumerable<Account> GetWithParams(IEnumerable<string> conditions, Dictionary<string, object> parameters, Database database) 
     {
@@ -31,7 +31,8 @@ public static class AccountService
             };
         }
     }
-    public static async Task<Account?> GetById(Guid id, Database database)
+
+    public static async Task<Account?> GetAccountById(this ApplicationDatabase database, Guid id)
     {
         var query_result = GetWithParams(["Id=@id"], new(){{ "id", id }}, database);
         await foreach (var account in query_result)
@@ -41,7 +42,7 @@ public static class AccountService
         return null;
     }
 
-    public static async Task<Account?> GetByExternalId(string externalId, string source, Database database)
+    public static async Task<Account?> GetAccountByExternalId(this ApplicationDatabase database, string externalId, string source)
     {
         var query_result = GetWithParams(
             ["ExternalId`=@externalId", "`Source`=@source"], 
@@ -73,13 +74,13 @@ public static class AccountService
         return await cmd.ExecuteNonQueryAsync();
     }
 
-    public static async Task<Account> CreateAccount(string source, string externalId, string name, string email, Role role, Database database)
+    public static async Task<Account> CreateAccount(this ApplicationDatabase database, string source, string externalId, string name, string email, Role role)
     {
         var insertedRows = await database.ExecuteInTransaction<int>(
             (connection, transaction) => 
                 InsertAccount(connection, transaction, source, externalId, name, email, role));
         if (insertedRows == 1) {
-            var account = await GetByExternalId(externalId, source, database);
+            var account = await database.GetAccountByExternalId(externalId, source);
             if (account is not null) return account;
         }
         throw new Exception("Uncaught error while creating account.");

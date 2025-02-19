@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiUtils.Auth.GitHub;
 
-public static class IServiceCollectionExtentions
+public static class IServiceCollectionExtensions
 {
     public static void SetupGithubAuth(this IServiceCollection services, string clientId, string clientSecret, string redirectUri)
     {
