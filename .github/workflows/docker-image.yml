@@ -22,17 +22,17 @@ jobs:
         
       - name: Set up environment variables
         run: |
-          echo "MYSQL_ROOT_PASSWORD=test" >> $GITHUB_ENV
-          echo "MYSQL_DATABASE=test" >> $GITHUB_ENV
-          echo "MYSQL_USER=test" >> $GITHUB_ENV
-          echo "MYSQL_PASSWORD=test" >> $GITHUB_ENV
-          echo "MYSQL_HOST=test" >> $GITHUB_ENV
-          echo "MYSQL_PORT=3100" >> $GITHUB_ENV
-          echo "BACKEND_HTTP_PORT=8080" >> $GITHUB_ENV
-          echo "GAME_ADMIN_NAME=test" >> $GITHUB_ENV
-          echo "GAME_ADMIN_EMAIL=test" >> $GITHUB_ENV
-          echo "GITHUB_CLIENT_ID=test" >> $GITHUB_ENV
-          echo "GITHUB_CLIENT_SECRET=test" >> $GITHUB_ENV
+          echo "MYSQL_ROOT_PASSWORD=test" >> infrastructure/.env
+          echo "MYSQL_DATABASE=test" >> infrastructure/.env
+          echo "MYSQL_USER=test" >> infrastructure/.env
+          echo "MYSQL_PASSWORD=test" >> infrastructure/.env
+          echo "MYSQL_HOST=test" >> infrastructure/.env
+          echo "MYSQL_PORT=3100" >> infrastructure/.env
+          echo "BACKEND_HTTP_PORT=8080" >> infrastructure/.env
+          echo "GAME_ADMIN_NAME=test" >> infrastructure/.env
+          echo "GAME_ADMIN_EMAIL=test" >> infrastructure/.env
+          echo "GITHUB_CLIENT_ID=test" >> infrastructure/.env
+          echo "GITHUB_CLIENT_SECRET=test" >> infrastructure/.env
 
       - name: Build Docker Compose services
         working-directory: infrastructure
