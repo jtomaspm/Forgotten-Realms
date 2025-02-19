@@ -11,11 +11,11 @@ Before you begin, make sure you have the following installed:
 
 ## Documentation
 
-* [Workflows]()
-* [C#]()
-    * [ApiUtils]()
-    * [Backend]()
-    * [Database]()
-* [Database]()
+* [Workflows](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/workflows.md)
+* [C#](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/csharp)
+    * [ApiUtils](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/csharp/apiutils.md)
+    * [Backend](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/csharp/backend.md)
+    * [Database](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/csharp/database.md)
+* [Database](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/environment.md)
 * [Infrastructure](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/environment.md)
 * [Scripts](https://github.com/jtomaspm/SimplifiedCrafter/blob/main/documentation/scripts.md)
