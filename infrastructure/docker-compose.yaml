@@ -1,4 +1,4 @@
-name: SimplifiedCrafter
+name: simplified_crafter
 services:
   mysql_database:
     build: ../database
