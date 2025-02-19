@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 
 namespace Database.CommandBuilder;
 
-public class CommandBuilder
+public static class DatabaseCommandBuilder
 {
     private static string GetSafePropName (string name) => $"`{name}`";
     private static string GetSafeConditionName (string name) => $"({name})";
@@ -19,10 +19,8 @@ public class CommandBuilder
         sb.AppendJoin(" AND ", names.Select(x=>GetSafeConditionName(x)));
         return sb.ToString();
     }
-    public static MySqlCommand Select(IEnumerable<string> fields, string table, IEnumerable<string>? conditions, Dictionary<string, object>? parameters)
+    public static MySqlCommand Select(this MySqlCommand cmd, IEnumerable<string> fields, string table, IEnumerable<string>? conditions, Dictionary<string, object>? parameters)
     {
-        var cmd = new MySqlCommand();
-
         var conditionString = conditions is null ? "" : $"WHERE {ToConditionListString(conditions)}";
         var query = @$"SELECT {ToFieldListString(fields)} FROM {table} {conditionString};";
 

@@ -1,5 +1,5 @@
 using Database.ApplicationDatabase.Models;
-using Database.CommandBuilder.CommandBuilder;
+using Database.CommandBuilder;
 using MySql.Data.MySqlClient;
 
 namespace Database.ApplicationDatabase.Services;
@@ -9,23 +9,12 @@ public static class AccountService
     public static async Task<Account?> GetById(Guid id, Database database)
     {
         var connection = await database.GetConnectionAsync();
-        var cmd = connection.CreateCommand();
+        var cmd = connection.CreateCommand().Select(
+            ["Id", "ExternalId, Source, Name, Email, Role, CreatedAt, UpdatedAt"], 
+            "Accounts", 
+            ["Id=@id"], 
+            new(){{ "id", id }});
         
-        cmd.CommandText = @"
-            SELECT 
-                `Id`, 
-                `ExternalId`, 
-                `Source`, 
-                `Name`, 
-                `Email`, 
-                `Role`, 
-                `CreatedAt`, 
-                `UpdatedAt` 
-            FROM `Accounts` 
-            WHERE `Id`=@id";
-
-        cmd.Parameters.AddWithValue("id", id);
-
         using var reader = await cmd.ExecuteReaderAsync();
         if (await reader.ReadAsync())
         {
@@ -48,18 +37,11 @@ public static class AccountService
     public static async Task<Account?> GetByExternalId(string externalId, string source, Database database)
     {
         var connection = await database.GetConnectionAsync();
-        var cmd = CommandBuilder.Select()
-        var cmd = connection.CreateCommand();
-        
-        cmd.CommandText = @"
-            SELECT 
-                `Id`, `ExternalId`, `Source`, `Name`, `Email`, `Role`, `CreatedAt`, `UpdatedAt` 
-            FROM `Accounts` 
-            WHERE `ExternalId`=@externalId
-              AND `Source`=@source;";
-
-        cmd.Parameters.AddWithValue("externalId", externalId);
-        cmd.Parameters.AddWithValue("source", source);
+        var cmd = connection.CreateCommand().Select(
+            ["Id", "ExternalId, Source, Name, Email, Role, CreatedAt, UpdatedAt"], 
+            "Accounts", 
+            ["ExternalId`=@externalId", "`Source`=@source"], 
+            new(){{ "externalId", externalId }, { "source", source }});
 
         using var reader = await cmd.ExecuteReaderAsync();
         if (await reader.ReadAsync())

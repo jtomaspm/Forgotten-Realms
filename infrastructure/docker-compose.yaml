@@ -49,7 +49,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./logging/grafana/provisioning:/etc/grafana/provisioning
