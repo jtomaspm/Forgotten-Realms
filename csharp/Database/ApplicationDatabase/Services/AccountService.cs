@@ -6,59 +6,51 @@ namespace Database.ApplicationDatabase.Services;
 
 public static class AccountService
 {
-    public static async Task<Account?> GetById(Guid id, Database database)
+    private static async IAsyncEnumerable<Account> GetWithParams(IEnumerable<string> conditions, Dictionary<string, object> parameters, Database database) 
     {
         var connection = await database.GetConnectionAsync();
         var cmd = connection.CreateCommand().Select(
             ["Id", "ExternalId, Source, Name, Email, Role, CreatedAt, UpdatedAt"], 
             "Accounts", 
-            ["Id=@id"], 
-            new(){{ "id", id }});
+            conditions, 
+            parameters);
         
         using var reader = await cmd.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
+        while (await reader.ReadAsync())
         {
-            return new Account() 
+            yield return new Account() 
             {
                 Id = reader.GetGuid(0),
                 ExternalId = reader.GetString(1),
                 Source = reader.GetString(2),
                 Name = reader.GetString(3),
                 Email = reader.GetString(4),
-                Role = Role.FromName(reader.GetString(4)),
-                CreatedAt = reader.GetDateTime(5),
-                UpdatedAt = reader.GetDateTime(6),
+                Role = Role.FromName(reader.GetString(5)),
+                CreatedAt = reader.GetDateTime(6),
+                UpdatedAt = reader.GetDateTime(7),
             };
         }
-
+    }
+    public static async Task<Account?> GetById(Guid id, Database database)
+    {
+        var query_result = GetWithParams(["Id=@id"], new(){{ "id", id }}, database);
+        await foreach (var account in query_result)
+        {
+            return account;
+        }
         return null;
     }
 
     public static async Task<Account?> GetByExternalId(string externalId, string source, Database database)
     {
-        var connection = await database.GetConnectionAsync();
-        var cmd = connection.CreateCommand().Select(
-            ["Id", "ExternalId, Source, Name, Email, Role, CreatedAt, UpdatedAt"], 
-            "Accounts", 
+        var query_result = GetWithParams(
             ["ExternalId`=@externalId", "`Source`=@source"], 
-            new(){{ "externalId", externalId }, { "source", source }});
-
-        using var reader = await cmd.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
+            new(){{ "externalId", externalId }, { "source", source }}, 
+            database);
+        await foreach (var account in query_result)
         {
-            return new Account() 
-            {
-                Id = reader.GetGuid(0),
-                ExternalId = reader.GetString(1),
-                Source = reader.GetString(2),
-                Name = reader.GetString(3),
-                Email = reader.GetString(4),
-                Role = Role.FromName(reader.GetString(4)),
-                CreatedAt = reader.GetDateTime(5),
-                UpdatedAt = reader.GetDateTime(6),
-            };
+            return account;
         }
-
         return null;
     }
 
