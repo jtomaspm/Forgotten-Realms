@@ -41,6 +41,7 @@ public static class AccountExtensions
                 else
                     throw new Exception("Error inserting new account in database.");
 
+                //TODO: Create account properties
                 return account;
             }
         );
