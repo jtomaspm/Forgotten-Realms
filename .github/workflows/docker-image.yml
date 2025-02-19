@@ -1,0 +1,53 @@
+name: Docker Compose Build and Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Set up environment variables
+        run: |
+          echo "MYSQL_ROOT_PASSWORD=test" >> infrastructure/.env
+          echo "MYSQL_DATABASE=test" >> infrastructure/.env
+          echo "MYSQL_USER=test" >> infrastructure/.env
+          echo "MYSQL_PASSWORD=test" >> infrastructure/.env
+          echo "MYSQL_HOST=test" >> infrastructure/.env
+          echo "MYSQL_PORT=3300" >> infrastructure/.env
+          echo "LOKI_PORT=3100" >> infrastructure/.env
+          echo "BACKEND_HTTP_PORT=8080" >> infrastructure/.env
+          echo "GAME_ADMIN_NAME=test" >> infrastructure/.env
+          echo "GAME_ADMIN_EMAIL=test" >> infrastructure/.env
+          echo "GITHUB_CLIENT_ID=test" >> infrastructure/.env
+          echo "GITHUB_CLIENT_SECRET=test" >> infrastructure/.env
+
+      - name: Build Docker Compose services
+        working-directory: infrastructure
+        run: docker compose -f docker-compose.yaml build
+
+      - name: Validate Docker Compose services
+        working-directory: infrastructure
+        run: |
+          docker compose -f docker-compose.yaml up -d
+          sleep 10  # Wait for containers to start
+          docker ps -a
+          docker compose -f docker-compose.yaml ps
+          
+      - name: Tear down Docker Compose services
+        if: always()
+        working-directory: infrastructure
+        run: docker compose -f docker-compose.yaml down

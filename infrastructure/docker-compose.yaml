@@ -1,4 +1,4 @@
-name: SimplifiedCrafter
+name: simplified_crafter
 services:
   mysql_database:
     build: ../database
@@ -33,7 +33,7 @@ services:
     image: grafana/loki:latest
     container_name: loki
     ports:
-      - "3100:3100"
+      - "${LOKI_PORT}:${LOKI_PORT}"
     volumes:
       - ./logging/loki-config.yml:/etc/loki/local-config.yaml
 
