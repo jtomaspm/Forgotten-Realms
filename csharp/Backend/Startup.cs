@@ -1,5 +1,6 @@
 using ApiUtils.Auth.GitHub;
 using ApiUtils.Configuration;
+using ApiUtils.Middleware;
 using Database;
 
 namespace Backend;
@@ -36,6 +37,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment _)
     {
+        app.UseMiddleware<GlobalExceptionHandler>();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();

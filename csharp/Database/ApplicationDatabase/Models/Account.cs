@@ -8,6 +8,6 @@ public class Account
     public required string Name;
     public required string Email;
     public required Role Role;
-    public DateTime CreatedAt = DateTime.UtcNow;
-    public DateTime UpdatedAt = DateTime.UtcNow;
+    public DateTime CreatedAt;
+    public DateTime UpdatedAt;
 }

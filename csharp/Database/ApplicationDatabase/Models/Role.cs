@@ -14,10 +14,10 @@ public class Role
 {
     public required RoleEnum Name;
 
-    public static Role Player() => new(){Name=RoleEnum.PLAYER};
     public static Role Admin() => new(){Name=RoleEnum.ADMIN};
-    public static Role Npc() => new(){Name=RoleEnum.NPC};
     public static Role Moderator() => new(){Name=RoleEnum.MODERATOR};
+    public static Role Npc() => new(){Name=RoleEnum.NPC};
+    public static Role Player() => new(){Name=RoleEnum.PLAYER};
     public static Role Guest() => new(){Name=RoleEnum.GUEST};
 
     public Role[] AboveIncluding() => Name switch
@@ -29,4 +29,17 @@ public class Role
         RoleEnum.GUEST      => [Role.Guest(), Role.Player(), Role.Npc(), Role.Moderator(), Role.Admin()],
         _                   => [],
     };
+
+    public static Role FromName(string name)
+    {
+        var roles = new Dictionary<string, Role>() 
+        {
+            { "ADMIN", Role.Admin() },
+            { "MODERATOR", Role.Moderator() },
+            { "NPC", Role.Npc() },
+            { "PLAYER", Role.Player() },
+            { "GUEST", Role.Guest() },
+        };
+        return roles[name];
+    }
 }

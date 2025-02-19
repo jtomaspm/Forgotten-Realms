@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using System.Runtime.CompilerServices;
 using MySql.Data.MySqlClient;
 
 namespace Database;
@@ -60,6 +61,39 @@ public class Database : IDisposable
             await Database.SetupDatabaseAsync(this);
         }
         return _connection!;
+    }
+
+    public async Task ExecuteInTransaction(Func<MySqlConnection,MySqlTransaction,Task> callback)
+    {
+        if (_connection is null) await GetConnectionAsync();
+        using var transaction = _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
+        try 
+        {
+            await callback(_connection, transaction);
+            await transaction.CommitAsync();
+        } 
+        catch (Exception e) 
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Create Account Transaction failed", e);
+        }
+    }
+
+    public async Task<TResult> ExecuteInTransaction<TResult>(Func<MySqlConnection,MySqlTransaction,Task<TResult>> callback)
+    {
+        if (_connection is null) await GetConnectionAsync();
+        using var transaction = _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
+        try 
+        {
+            var result = await callback(_connection, transaction);
+            await transaction.CommitAsync();
+            return result;
+        } 
+        catch (Exception e) 
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Create Account Transaction failed", e);
+        }
     }
 
     public DatabaseConfig GetConfig() => this._config ?? throw new ArgumentNullException("This database should be configured.");

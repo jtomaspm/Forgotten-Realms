@@ -1,46 +1,126 @@
 using Database.ApplicationDatabase.Models;
+using MySql.Data.MySqlClient;
 
 namespace Database.ApplicationDatabase.Services;
 
-public class AccountService
+public static class AccountService
 {
-    public static async Task<Account> CreateAccount(Database database, string source, string externalId, string name, string email, Role role)
+    public static async Task<Account?> GetById(Guid id, Database database)
     {
-        var account = new Account
-        {
-            Name = name,
-            Email = email,
-            Source = source,
-            ExternalId = externalId,
-            Role = role
-        };
-
         var connection = await database.GetConnectionAsync();
-        using (var transaction = connection.BeginTransaction() ?? throw new Exception("Error creating database transaction"))
+        var cmd = connection.CreateCommand();
+        
+        cmd.CommandText = @"
+            SELECT 
+                `Id`, 
+                `ExternalId`, 
+                `Source`, 
+                `Name`, 
+                `Email`, 
+                `Role`, 
+                `CreatedAt`, 
+                `UpdatedAt` 
+            FROM `Accounts` 
+            WHERE `Id`=@id";
+
+        cmd.Parameters.AddWithValue("id", id);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
         {
-            try 
+            return new Account() 
             {
-                var cmd = connection.CreateCommand();
-                cmd.CommandText = "SELECT `Id`, `Name` FROM `Accounts` WHERE Email=@email";
-                cmd.Parameters.AddWithValue("email", "joaotomachado@proton.me");
-
-                using (var reader = await cmd.ExecuteReaderAsync())
-                while (await reader.ReadAsync())
-                {
-                        var accountId = reader.GetGuid(0);
-                        var accountName = reader.GetString(1);
-                        Console.WriteLine($"$$$$$$$$$$$$[Account]$$$$$$$$$\nId:{accountId}\nName:{accountName}");
-                }
-
-                await transaction.CommitAsync();
-            } 
-            catch (Exception e) 
-            {
-                await transaction.RollbackAsync();
-                throw new Exception("Create Account Transaction failed", e);
-            }
+                Id = reader.GetGuid(0),
+                ExternalId = reader.GetString(1),
+                Source = reader.GetString(2),
+                Name = reader.GetString(3),
+                Email = reader.GetString(4),
+                Role = Role.FromName(reader.GetString(4)),
+                CreatedAt = reader.GetDateTime(5),
+                UpdatedAt = reader.GetDateTime(6),
+            };
         }
 
-        return account;
+        return null;
+    }
+
+    public static async Task<Account?> GetByExternalId(string externalId, string source, Database database)
+    {
+        var connection = await database.GetConnectionAsync();
+        var cmd = connection.CreateCommand();
+        
+        cmd.CommandText = @"
+            SELECT 
+                `Id`, 
+                `ExternalId`, 
+                `Source`, 
+                `Name`, 
+                `Email`, 
+                `Role`, 
+                `CreatedAt`, 
+                `UpdatedAt` 
+            FROM `Accounts` 
+            WHERE `ExternalId`=@externalId
+              AND `Source`=@source;";
+
+        cmd.Parameters.AddWithValue("externalId", externalId);
+        cmd.Parameters.AddWithValue("source", source);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            return new Account() 
+            {
+                Id = reader.GetGuid(0),
+                ExternalId = reader.GetString(1),
+                Source = reader.GetString(2),
+                Name = reader.GetString(3),
+                Email = reader.GetString(4),
+                Role = Role.FromName(reader.GetString(4)),
+                CreatedAt = reader.GetDateTime(5),
+                UpdatedAt = reader.GetDateTime(6),
+            };
+        }
+
+        return null;
+    }
+
+    private static async Task<int> InsertAccount(MySqlConnection connection, MySqlTransaction _, string source, string externalId, string name, string email, Role role)
+    {
+        var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            INSERT INTO `Accounts` (
+                `Name`, 
+                `Email`, 
+                `Role`, 
+                `ExternalId`, 
+                `Source`
+            ) VALUES (
+                @name, 
+                @email, 
+                @role, 
+                @externalId, 
+                @source
+            );";
+
+        cmd.Parameters.AddWithValue("name", name);
+        cmd.Parameters.AddWithValue("email", "joaotomachado@proton.me");
+        cmd.Parameters.AddWithValue("role", role.Name);
+        cmd.Parameters.AddWithValue("externalId", externalId);
+        cmd.Parameters.AddWithValue("source", source);
+
+        return await cmd.ExecuteNonQueryAsync();
+    }
+
+    public static async Task<Account> CreateAccount(string source, string externalId, string name, string email, Role role, Database database)
+    {
+        var insertedRows = await database.ExecuteInTransaction<int>(
+            (connection, transaction) => 
+                InsertAccount(connection, transaction, source, externalId, name, email, role));
+        if (insertedRows == 1) {
+            var account = await GetByExternalId(externalId, source, database);
+            if (account is not null) return account;
+        }
+        throw new Exception("Uncaught error while creating account.");
     }
 }
