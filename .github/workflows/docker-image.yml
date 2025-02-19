@@ -27,7 +27,8 @@ jobs:
           echo "MYSQL_USER=test" >> infrastructure/.env
           echo "MYSQL_PASSWORD=test" >> infrastructure/.env
           echo "MYSQL_HOST=test" >> infrastructure/.env
-          echo "MYSQL_PORT=3100" >> infrastructure/.env
+          echo "MYSQL_PORT=3300" >> infrastructure/.env
+          echo "LOKI_PORT=3100" >> infrastructure/.env
           echo "BACKEND_HTTP_PORT=8080" >> infrastructure/.env
           echo "GAME_ADMIN_NAME=test" >> infrastructure/.env
           echo "GAME_ADMIN_EMAIL=test" >> infrastructure/.env
