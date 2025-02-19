@@ -1,5 +1,7 @@
 ﻿using System.Dynamic;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
 using MySql.Data.MySqlClient;
 
 namespace Database;
@@ -97,6 +99,13 @@ public abstract class Database : IDisposable
     }
 
     public DatabaseConfig GetConfig() => this._config ?? throw new ArgumentNullException("This database should be configured.");
+
+
+    public static string GenerateSHA256Token() =>
+        Convert.ToBase64String(
+            SHA256.HashData(
+                Encoding.UTF8.GetBytes(
+                    Guid.NewGuid().ToString())));
 
     public void Dispose()
     {
