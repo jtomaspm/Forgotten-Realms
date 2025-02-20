@@ -1,7 +1,7 @@
-﻿using System.Dynamic;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
+using Database.CommandBuilder;
 using MySql.Data.MySqlClient;
 
 namespace Database;
@@ -10,7 +10,10 @@ public abstract class Database : IDisposable
 {
     protected DatabaseConfig? _config;
     protected MySqlConnection? _connection;
-
+    public async Task<SelectCommandBuilder> Select() => new ((await GetConnectionAsync()).CreateCommand());
+    public static SelectCommandBuilder Select(MySqlCommand cmd) => new (cmd);
+    public async Task<InsertCommandBuilder> Insert() => new ((await GetConnectionAsync()).CreateCommand());
+    public static InsertCommandBuilder Insert(MySqlCommand cmd) => new (cmd);
     private Database(){}
 
     public Database(DatabaseConfig config)
