@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Database.CommandBuilder;
+﻿using Database.CommandBuilder;
 using MySql.Data.MySqlClient;
 
 namespace Database;
@@ -50,7 +47,7 @@ public abstract class Database : IDisposable
         return database;       
     }
 
-    public MySqlConnection GetConnection() 
+    internal MySqlConnection GetConnection() 
     {
         if (_connection is null) 
         {
@@ -59,7 +56,7 @@ public abstract class Database : IDisposable
         return _connection!;
     }
 
-    public async Task<MySqlConnection> GetConnectionAsync() 
+    internal async Task<MySqlConnection> GetConnectionAsync() 
     {
         if (_connection is null) 
         {
@@ -68,7 +65,7 @@ public abstract class Database : IDisposable
         return _connection!;
     }
 
-    public async Task ExecuteInTransaction(Func<MySqlConnection,MySqlTransaction,Task> callback)
+    internal async Task ExecuteInTransaction(Func<MySqlConnection,MySqlTransaction,Task> callback)
     {
         if (_connection is null) await GetConnectionAsync();
         using var transaction = _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
@@ -84,7 +81,14 @@ public abstract class Database : IDisposable
         }
     }
 
-    public async Task<TResult> ExecuteInTransaction<TResult>(Func<MySqlConnection,MySqlTransaction,Task<TResult>> callback)
+    public async Task ExecuteInTransaction(Func<MySqlTransaction,Task> callback)
+    {
+        await ExecuteInTransaction(async (connection, transaction) => {
+            await callback(transaction);
+        });
+    }
+
+    internal async Task<TResult> ExecuteInTransaction<TResult>(Func<MySqlConnection,MySqlTransaction,Task<TResult>> callback)
     {
         if (_connection is null) await GetConnectionAsync();
         using var transaction = _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
@@ -101,14 +105,10 @@ public abstract class Database : IDisposable
         }
     }
 
+    public async Task<TResult> ExecuteInTransaction<TResult>(Func<MySqlTransaction,Task<TResult>> callback) =>
+        await ExecuteInTransaction(async (connection, transaction) => await callback(transaction));
+
     public DatabaseConfig GetConfig() => this._config ?? throw new ArgumentNullException("This database should be configured.");
-
-
-    public static string GenerateSHA256Token() =>
-        Convert.ToBase64String(
-            SHA256.HashData(
-                Encoding.UTF8.GetBytes(
-                    Guid.NewGuid().ToString())));
 
     public void Dispose()
     {

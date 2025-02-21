@@ -19,8 +19,7 @@ public class Role
     public static Role Npc() => new(){Name=RoleEnum.NPC};
     public static Role Player() => new(){Name=RoleEnum.PLAYER};
     public static Role Guest() => new(){Name=RoleEnum.GUEST};
-
-    public Role[] AboveIncluding() => Name switch
+    public static Role[] AboveIncluding(RoleEnum roleName) => roleName switch
     {
         RoleEnum.ADMIN      => [Role.Admin()],
         RoleEnum.MODERATOR  => [Role.Moderator(), Role.Admin()],
@@ -29,17 +28,16 @@ public class Role
         RoleEnum.GUEST      => [Role.Guest(), Role.Player(), Role.Npc(), Role.Moderator(), Role.Admin()],
         _                   => [],
     };
-
-    public static Role FromName(string name)
+    private static readonly Dictionary<string, Func<Role>> _roles = new () 
     {
-        var roles = new Dictionary<string, Role>() 
-        {
-            { "ADMIN", Role.Admin() },
-            { "MODERATOR", Role.Moderator() },
-            { "NPC", Role.Npc() },
-            { "PLAYER", Role.Player() },
-            { "GUEST", Role.Guest() },
-        };
-        return roles[name];
+        { "ADMIN", Role.Admin },
+        { "MODERATOR", Role.Moderator },
+        { "NPC", Role.Npc },
+        { "PLAYER", Role.Player },
+        { "GUEST", Role.Guest },
+    };
+    public static Role FromNameString(string name)
+    {
+        return _roles[name]();
     }
 }

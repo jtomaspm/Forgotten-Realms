@@ -1,6 +1,4 @@
-using System.Reflection.Metadata.Ecma335;
 using Database.ApplicationDatabase.Models;
-using Org.BouncyCastle.Asn1.Cms;
 
 
 namespace Database.ApplicationDatabase.Extensions;
@@ -78,7 +76,7 @@ public static class AccountExtensions
                 Source = reader.IsDBNull(2) ? null : reader.GetString(2),
                 Name = reader.GetString(3),
                 Email = reader.GetString(4),
-                Role = Role.FromName(reader.GetString(5)),
+                Role = Role.FromNameString(reader.GetString(5)),
                 CreatedAt = reader.GetDateTime(6),
                 UpdatedAt = reader.GetDateTime(7),
             };
