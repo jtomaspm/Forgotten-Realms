@@ -1,4 +1,6 @@
+using System.Reflection.Metadata.Ecma335;
 using Database.ApplicationDatabase.Models;
+using Org.BouncyCastle.Asn1.Cms;
 
 
 namespace Database.ApplicationDatabase.Extensions;
@@ -8,28 +10,21 @@ public static class AccountExtensions
     public static async Task<Account?> GetAccountById(this ApplicationDatabase database, Guid id)
         => await GetWithParams
         (
-            ["Id=@id"], 
-            new()
-            {
-                { "id", id }
-            }, 
-            database
+            conditions: ["Id=@id"], 
+            parameters: new() {{ "id", id }}, 
+            database:   database
         )
         .FirstOrDefaultAsync();
-
     public static async Task<Account?> GetAccountByExternalId(this ApplicationDatabase database, string externalId, string source)
         => await GetWithParams
         (
-            ["ExternalId`=@externalId", "`Source`=@source"], 
-            new()
-            {
-                { "externalId", externalId }, { "source", source }
-            }, 
-            database
+            conditions: ["ExternalId`=@externalId", "`Source`=@source"], 
+            parameters: new() {{ "externalId", externalId }, { "source", source }}, 
+            database: database
         )
         .FirstOrDefaultAsync();
-    public static async Task<Account> CreateAccount(this ApplicationDatabase database, string source, string externalId, string name, string email, Role role)
-        => await database.ExecuteInTransaction<Account>
+    public static async Task<AccountDetails> CreateAccount(this ApplicationDatabase database, string source, string externalId, string name, string email, Role role)
+        => await database.ExecuteInTransaction<AccountDetails>
         (
             async (connection, transaction) => 
             {
@@ -55,8 +50,13 @@ public static class AccountExtensions
                 else
                     throw new Exception("Error inserting new account in database.");
 
-                //TODO: Create account properties
-                return account;
+                var accountProperties = await database.CreateAccountProperties(account.Id, false, false);
+
+                var accountDetails = (AccountDetails) account;
+                accountDetails.AccountProperties = accountProperties;
+                accountDetails.Worlds = [];
+
+                return accountDetails;
             }
         );
     private static async IAsyncEnumerable<Account> GetWithParams(IEnumerable<string> conditions, Dictionary<string, object> parameters, Database database) 
@@ -74,8 +74,8 @@ public static class AccountExtensions
             yield return new Account() 
             {
                 Id = reader.GetGuid(0),
-                ExternalId = reader.GetString(1),
-                Source = reader.GetString(2),
+                ExternalId = reader.IsDBNull(1) ? null : reader.GetString(1),
+                Source = reader.IsDBNull(2) ? null : reader.GetString(2),
                 Name = reader.GetString(3),
                 Email = reader.GetString(4),
                 Role = Role.FromName(reader.GetString(5)),

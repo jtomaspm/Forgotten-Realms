@@ -41,7 +41,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("GitHub");
-            return Ok(new { message = "Logged out successfully" });
+            return Ok(new { Message = "Logged out successfully" });
         }
     }
 }
