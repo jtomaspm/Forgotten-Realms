@@ -14,7 +14,7 @@ public static class AuthExtensions
     {
         var session = await database.GetSessionByAccountId(accountId);
         if (session is not null && (await database.DeleteSession(accountId) == 0)) 
-            throw new Exception($"Error deleting current account session for {accountId}");    
+            throw new Exception($"Error deleting current account session for AccountId: {accountId}");    
 
         var sid = Guid.NewGuid();
         var token = database.GenerateJwtToken(sid, accountId);

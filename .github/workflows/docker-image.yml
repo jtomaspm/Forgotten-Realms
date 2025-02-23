@@ -35,6 +35,8 @@ jobs:
           echo "GITHUB_CLIENT_ID=test" >> infrastructure/.env
           echo "GITHUB_CLIENT_SECRET=test" >> infrastructure/.env
           echo "GRAFANA_PORT=3000" >> infrastructure/.env
+          echo "JWT_ISSUER=test" >> infrastructure/.env
+          echo "JWT_SECRET=test" >> infrastructure/.env
 
       - name: Build Docker Compose services
         working-directory: infrastructure
