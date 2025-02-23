@@ -10,6 +10,7 @@ public class Startup
 {
     private readonly IConfiguration _configuration;
     private readonly DatabaseConfig _databaseConfig;
+    private readonly IDatabaseFactory<ApplicationDatabase> _databaseFactory;
     public Startup(IConfiguration configuration)
     {
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -25,18 +26,13 @@ public class Startup
             password: _configuration["MYSQL_ROOT_PASSWORD"]!,
             database: _configuration["MYSQL_DATABASE"]!
         );
+        _databaseFactory = new DatabaseFactory<ApplicationDatabase>(_databaseConfig);
     }
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.SetupGithubAuth
-        (
-            clientId:     _configuration["GITHUB_CLIENT_ID"]!, 
-            clientSecret: _configuration["GITHUB_CLIENT_SECRET"]!, 
-            redirectUri:  "/api/auth/github/callback",
-            databaseFactory: new DatabaseFactory<ApplicationDatabase>(_databaseConfig)
-        );
-        services.AddSingleton<DatabaseConfig>(_databaseConfig);
+        services.AddSingleton(_databaseConfig);
+        services.AddSingleton(_databaseFactory);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment _)

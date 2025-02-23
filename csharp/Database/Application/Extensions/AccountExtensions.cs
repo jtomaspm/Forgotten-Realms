@@ -21,7 +21,7 @@ public static class AccountExtensions
             database: database
         )
         .FirstOrDefaultAsync();
-    public static async Task<AccountDetails> CreateAccount(this ApplicationDatabase database, string source, string externalId, string name, string email, Role role)
+    public static async Task<AccountDetails> CreateAccount(this ApplicationDatabase database, string source, string externalId, string? name, string email, Role role)
         => await database.ExecuteInTransaction<AccountDetails>
         (
             async (connection, transaction) => 
@@ -29,27 +29,35 @@ public static class AccountExtensions
                 var id = Guid.NewGuid();
                 var date = DateTime.UtcNow;
 
+                List<string> fields = ["Id", "Email", "Role", "ExternalId", "Source", "CreatedAt", "UpdatedAt"];
+                List<List<string>> values = [["@id", "@email", "@role", "@externalId", "@source", "@createdAt", "@updatedAt"]];
+                Dictionary<string, object> parameters = new () 
+                {
+                    {"id", id},
+                    {"email", email},
+                    {"role", role.Name},
+                    {"externalId", externalId},
+                    {"source", source},
+                    {"createdAt", date},
+                    {"updatedAt", date},
+                };
+                if (name is not null) {
+                    fields.Add("Name");
+                    values[0].Add("@name");
+                    parameters["name"] = name;
+                }
+
                 var cmd = (await database.Insert())
                     .Table("Accounts")
-                    .AddFields(["Id", "Name", "Email", "Role", "ExternalId", "Source", "CreatedAt", "UpdatedAt"])
-                    .AddValues([["@id", "@name", "@email", "@role", "@externalId", "@source", "@createdAt", "@updatedAt"]])
-                    .SetParameters(new()
-                        {
-                            {"id", id},
-                            {"name", name},
-                            {"email", email},
-                            {"role", role.Name},
-                            {"externalId", externalId},
-                            {"source", source},
-                            {"createdAt", date},
-                            {"updatedAt", date},
-                        })
+                    .AddFields(fields)
+                    .AddValues(values)
+                    .SetParameters(parameters)
                     .Build();
 
                 if ((await cmd.ExecuteNonQueryAsync()) != 1)
                     throw new Exception("Error inserting new account in database.");
 
-                var accountProperties = await database.CreateAccountProperties(id, false, false);
+                var accountProperties = await database.CreateAccountProperties(id, true, false);
 
                 return new() 
                 {
@@ -85,7 +93,7 @@ public static class AccountExtensions
                 Id = reader.GetGuid(0),
                 ExternalId = reader.IsDBNull(1) ? null : reader.GetString(1),
                 Source = reader.IsDBNull(2) ? null : reader.GetString(2),
-                Name = reader.GetString(3),
+                Name = reader.IsDBNull(3) ? null : reader.GetString(3),
                 Email = reader.GetString(4),
                 Role = Role.FromNameString(reader.GetString(5)),
                 CreatedAt = reader.GetDateTime(6),

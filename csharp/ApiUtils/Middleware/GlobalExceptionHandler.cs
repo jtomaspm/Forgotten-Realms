@@ -20,7 +20,7 @@ public class GlobalExceptionHandler(RequestDelegate next, ILogger<GlobalExceptio
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context)
+    private static async Task HandleExceptionAsync(HttpContext context)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
