@@ -1,3 +1,7 @@
 namespace Database.Game;
 
-public class GameDatabase(DatabaseConfig config) : Database(config);
+public class GameDatabase : Database
+{
+    public GameDatabase() : base(){}
+    public GameDatabase(DatabaseConfig config) : base(config){}
+}

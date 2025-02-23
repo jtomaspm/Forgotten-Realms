@@ -2,6 +2,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
+using Database;
+using Database.Application;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +12,7 @@ namespace ApiUtils.Auth.GitHub;
 
 public static class IServiceCollectionExtensions
 {
-    public static void SetupGithubAuth(this IServiceCollection services, string clientId, string clientSecret, string redirectUri)
+    public static void SetupGithubAuth(this IServiceCollection services, string clientId, string clientSecret, string redirectUri, IDatabaseFactory<ApplicationDatabase> databaseFactory)
     {
         services
             .AddAuthentication("GitHubCookie")

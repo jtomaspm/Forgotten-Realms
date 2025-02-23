@@ -1,3 +1,8 @@
 namespace Database.Application;
 
-public class ApplicationDatabase(DatabaseConfig config) : Database(config);
+public class ApplicationDatabase : Database
+{
+    public ApplicationDatabase() : base(){}
+    public ApplicationDatabase(DatabaseConfig config) : base(config){}
+}
+

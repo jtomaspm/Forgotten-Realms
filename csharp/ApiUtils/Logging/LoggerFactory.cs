@@ -7,9 +7,8 @@ namespace ApiUtils.Logging;
 public class LoggerFactory
 {
 
-    public static ILogger DefaultLogger(string filename) 
-    {
-        return new LoggerConfiguration()
+    public static ILogger DefaultLogger(string filename) =>
+        new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.File(
                 new JsonFormatter(),
@@ -18,6 +17,5 @@ public class LoggerFactory
                 restrictedToMinimumLevel: LogEventLevel.Information
             )
             .CreateLogger();
-    }
 
 }

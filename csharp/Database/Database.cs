@@ -17,7 +17,7 @@ public abstract class Database : IDisposable
     public static InsertCommandBuilder Insert(MySqlCommand cmd) => new (cmd);
     public async Task<DeleteCommandBuilder> Delete() => new ((await GetConnectionAsync()).CreateCommand());
     public static DeleteCommandBuilder Delete(MySqlCommand cmd) => new (cmd);
-    private Database(){}
+    internal Database(){}
 
     public Database(DatabaseConfig config)
     {

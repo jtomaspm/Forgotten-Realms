@@ -2,6 +2,7 @@ using ApiUtils.Auth.GitHub;
 using ApiUtils.Configuration;
 using ApiUtils.Middleware;
 using Database;
+using Database.Application;
 
 namespace Backend;
 
@@ -32,7 +33,8 @@ public class Startup
         (
             clientId:     _configuration["GITHUB_CLIENT_ID"]!, 
             clientSecret: _configuration["GITHUB_CLIENT_SECRET"]!, 
-            redirectUri:  "/api/auth/github/callback"
+            redirectUri:  "/api/auth/github/callback",
+            databaseFactory: new DatabaseFactory<ApplicationDatabase>(_databaseConfig)
         );
         services.AddSingleton<DatabaseConfig>(_databaseConfig);
     }
