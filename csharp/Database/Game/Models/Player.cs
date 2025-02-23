@@ -1,6 +1,6 @@
 using System;
 
-namespace Database.GameDatabase.Models;
+namespace Database.Game.Models;
 
 public class Player
 {

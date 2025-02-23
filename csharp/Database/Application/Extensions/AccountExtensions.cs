@@ -1,7 +1,7 @@
-using Database.ApplicationDatabase.Models;
+using Database.Application.Models;
 
 
-namespace Database.ApplicationDatabase.Extensions;
+namespace Database.Application.Extensions;
 
 public static class AccountExtensions
 {

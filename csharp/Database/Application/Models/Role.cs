@@ -1,5 +1,5 @@
 
-namespace Database.ApplicationDatabase.Models;
+namespace Database.Application.Models;
 
 public enum RoleEnum 
 {
