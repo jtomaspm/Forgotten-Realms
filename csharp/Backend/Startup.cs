@@ -16,6 +16,8 @@ public class Startup
 
         _databaseConfig = new DatabaseConfig
         (
+            jwtIssuer: "SimplifiedCrafter",
+            jwtSecret: "#TODO",
             host: _configuration["MYSQL_HOST"]!,
             port: _configuration["MYSQL_PORT"]!,
             user: "root",
