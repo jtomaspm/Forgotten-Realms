@@ -7,14 +7,18 @@ public class DatabaseConfig
     public readonly string User;
     public readonly string Password;
     public readonly string Database;
+    public readonly string JwtIssuer;
+    public readonly string JwtSecret;
 
-    public DatabaseConfig(string host, string port, string user, string password, string database)
+    public DatabaseConfig(string host, string port, string user, string password, string database, string jwtIssuer, string jwtSecret)
     {
         Host = host;
         Port = port;
         User = user;
         Password = password;
         Database = database;
+        JwtIssuer = jwtIssuer;
+        JwtSecret = jwtSecret;
     }
 
     public string ConnectionString
@@ -31,6 +35,8 @@ public class DatabaseConfig
         port: Port,
         user: User,
         password: Password,
-        database: newDatabase
+        database: newDatabase,
+        jwtIssuer: JwtIssuer,
+        jwtSecret: JwtSecret
     );
 }

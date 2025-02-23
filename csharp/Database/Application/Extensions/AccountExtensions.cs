@@ -26,35 +26,46 @@ public static class AccountExtensions
         (
             async (connection, transaction) => 
             {
+                var id = Guid.NewGuid();
+                var date = DateTime.UtcNow;
+
                 var cmd = (await database.Insert())
                     .Table("Accounts")
-                    .AddFields(["Name", "Email", "Role", "ExternalId", "Source"])
-                    .AddValues([["@name", "@email", "@role", "@externalId", "@source"]])
+                    .AddFields(["Id", "Name", "Email", "Role", "ExternalId", "Source", "CreatedAt", "UpdatedAt"])
+                    .AddValues([["@id", "@name", "@email", "@role", "@externalId", "@source", "@createdAt", "@updatedAt"]])
                     .SetParameters(new()
                         {
+                            {"id", id},
                             {"name", name},
                             {"email", email},
                             {"role", role.Name},
                             {"externalId", externalId},
                             {"source", source},
+                            {"createdAt", date},
+                            {"updatedAt", date},
                         })
                     .Build();
 
-                Account account;
-                var insertResult = await cmd.ExecuteNonQueryAsync();
-                if (insertResult == 1)
-                    account = await database.GetAccountByExternalId(externalId, source) 
-                        ?? throw new Exception("Uncaught error while creating account.");
-                else
+                if ((await cmd.ExecuteNonQueryAsync()) != 1)
                     throw new Exception("Error inserting new account in database.");
 
-                var accountProperties = await database.CreateAccountProperties(account.Id, false, false);
+                var accountProperties = await database.CreateAccountProperties(id, false, false);
 
-                var accountDetails = (AccountDetails) account;
-                accountDetails.AccountProperties = accountProperties;
-                accountDetails.Worlds = [];
-
-                return accountDetails;
+                return new() 
+                {
+                    Id = id,
+                    Name = name,
+                    Email = email,
+                    Role = role,
+                    ExternalId = externalId,
+                    Source = source,
+                    CreatedAt = date,
+                    UpdatedAt = date,
+                    AccountProperties = accountProperties,
+                    LastLogin = null,
+                    Session = null,
+                    Worlds = []
+                };
             }
         );
     private static async IAsyncEnumerable<Account> GetWithParams(IEnumerable<string> conditions, Dictionary<string, object> parameters, Database database) 

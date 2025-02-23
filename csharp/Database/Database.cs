@@ -1,4 +1,8 @@
-﻿using Database.CommandBuilder;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Database.CommandBuilder;
+using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
 
 namespace Database;
@@ -11,6 +15,8 @@ public abstract class Database : IDisposable
     public static SelectCommandBuilder Select(MySqlCommand cmd) => new (cmd);
     public async Task<InsertCommandBuilder> Insert() => new ((await GetConnectionAsync()).CreateCommand());
     public static InsertCommandBuilder Insert(MySqlCommand cmd) => new (cmd);
+    public async Task<DeleteCommandBuilder> Delete() => new ((await GetConnectionAsync()).CreateCommand());
+    public static DeleteCommandBuilder Delete(MySqlCommand cmd) => new (cmd);
     private Database(){}
 
     public Database(DatabaseConfig config)
@@ -108,7 +114,28 @@ public abstract class Database : IDisposable
     public async Task<TResult> ExecuteInTransaction<TResult>(Func<MySqlTransaction,Task<TResult>> callback) =>
         await ExecuteInTransaction(async (connection, transaction) => await callback(transaction));
 
-    public DatabaseConfig GetConfig() => this._config ?? throw new ArgumentNullException("This database should be configured.");
+    public DatabaseConfig GetConfig() => _config ?? throw new ArgumentNullException("This database should be configured.");
+
+    internal string GenerateJwtToken(Guid sessionId, Guid accountId)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetConfig().JwtSecret));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        
+        var claims = new[]
+        {
+            new Claim("sessionId", sessionId.ToString()),
+            new Claim("accountId", accountId.ToString())
+        };
+        
+        var token = new JwtSecurityToken(
+            issuer: GetConfig().JwtIssuer,
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(7),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 
     public void Dispose()
     {

@@ -15,27 +15,40 @@ public static class AccountPropertiesExtensions
 
     public static async Task<AccountProperties> CreateAccountProperties(this ApplicationDatabase database, Guid accountId, bool emailVerified, bool sendEmailNotifications)
     {
+        var verificationToken = Guid.NewGuid();
+        var date = DateTime.UtcNow;
+        var expiresAt = date.AddDays(7);
+
         var cmd = (await database.Insert())
             .Table("AccountProperties")
-            .AddFields(["AccountId", "VerificationToken", "TokenExpiresAt", "EmailVerified", "SendEmailNotifications"])
-            .AddValues([["@accountId", "@verificationToken", "@tokenExpiresAt", "@emailVerified", "@sendEmailNotifications"]])
+            .AddFields(["AccountId", "VerificationToken", "TokenExpiresAt", "EmailVerified", "SendEmailNotifications", "CreatedAt", "UpdatedAt"])
+            .AddValues([["@accountId", "@verificationToken", "@expiresAt", "@emailVerified", "@sendEmailNotifications", "createdAt", "updatedAt"]])
             .SetParameters(new()
                 {
                     { "accountId", accountId },
+                    { "verificationToken", verificationToken },
+                    { "expiresAt", expiresAt },
                     { "emailVerified", emailVerified },
                     { "sendEmailNotifications", sendEmailNotifications },
+                    { "createdAt", date },
+                    { "updatedAt", date },
                 })
             .Build();
 
-        AccountProperties accountProperties;
         var insertResult = await cmd.ExecuteNonQueryAsync();
-        if (insertResult == 1)
-            accountProperties = await database.GetAccountPropertiesById(accountId)
-                ?? throw new Exception("Uncaught error while creating account properties.");
-        else
+        if (insertResult != 1)
             throw new Exception("Error inserting new account properties in database.");
-        
-        return accountProperties;
+
+        return new() 
+        {
+            AccountId = accountId,
+            VerificationToken = verificationToken,
+            TokenExpiresAt = expiresAt,
+            EmailVerified = emailVerified,
+            SendEmailNotifications = sendEmailNotifications,
+            CreatedAt = date,
+            UpdatedAt = date,
+        };
     }
 
     private static async IAsyncEnumerable<AccountProperties> GetWithParams(IEnumerable<string> conditions, Dictionary<string, object> parameters, Database database)
@@ -50,7 +63,7 @@ public static class AccountPropertiesExtensions
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
-            yield return new AccountProperties()
+            yield return new()
             {
                 AccountId = reader.GetGuid(0),
                 VerificationToken = reader.GetGuid(1),
