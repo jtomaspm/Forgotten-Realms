@@ -19,7 +19,7 @@ CREATE TABLE `Accounts` (
 CREATE TABLE `AccountProperties` (
     `AccountId`                 CHAR(36)        PRIMARY KEY,
     `VerificationToken`         CHAR(36)        DEFAULT (UUID()),
-    `TokenExpiresAt`            TIMESTAMP       DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY))),
+    `TokenExpiresAt`            TIMESTAMP       DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY)),
     `EmailVerified`             BOOLEAN         DEFAULT FALSE,
     `SendEmailNotifications`    BOOLEAN         DEFAULT FALSE,
     `CreatedAt`                 TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,

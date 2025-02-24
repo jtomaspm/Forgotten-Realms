@@ -34,7 +34,7 @@ namespace Backend.Controllers.Auth
         public IActionResult GitHubLogin()
         {
             string client_id = configuration["GITHUB_CLIENT_ID"]!;
-            string redirect_uri = "/api/auth/github/callback";
+            string redirect_uri = $"http://localhost:{configuration["BACKEND_HTTP_PORT"]}/api/auth/github/callback";
             string scope = "user:email";
             return Redirect($"https://github.com/login/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}");
         }
@@ -43,9 +43,11 @@ namespace Backend.Controllers.Auth
         [HttpGet("callback")]
         public async Task<IActionResult> Callback(string code)
         {
+            logger.LogInformation("Starting callback...");
             var clientId = configuration["GITHUB_CLIENT_ID"]!;
+            logger.LogInformation($"ClientId: {clientId}");
             var clientSecret = configuration["GITHUB_CLIENT_SECRET"]!;
-            var redirectUri = "/api/auth/github/test";
+            logger.LogInformation($"ClientSecret: {clientSecret}");
 
             var httpClient = new HttpClient();
             var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://github.com/login/oauth/access_token")
@@ -55,7 +57,6 @@ namespace Backend.Controllers.Auth
                     new KeyValuePair<string, string>("client_id", clientId),
                     new KeyValuePair<string, string>("client_secret", clientSecret),
                     new KeyValuePair<string, string>("code", code),
-                    new KeyValuePair<string, string>("redirect_uri", redirectUri),
                 ])
             };
 
@@ -64,9 +65,12 @@ namespace Backend.Controllers.Auth
             var response = await httpClient.SendAsync(tokenRequest);
             var responseContent = await response.Content.ReadAsStringAsync();
 
+            logger.LogInformation(responseContent);
+
             var tokenJson = JsonDocument.Parse(responseContent);
             var accessToken = tokenJson.RootElement.GetProperty("access_token").GetString();
 
+            logger.LogInformation($"AccessToken: {accessToken}");
 
             if (string.IsNullOrEmpty(accessToken))
             {
@@ -75,23 +79,29 @@ namespace Backend.Controllers.Auth
 
             var userRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user");
             userRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            userRequest.Headers.UserAgent.ParseAdd("SimplifiedCrafter/Backend");
 
             var userResponse = await httpClient.SendAsync(userRequest);
+            logger.LogInformation(await userResponse.Content.ReadAsStringAsync());
 
             var emailRequest = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/user/emails");
             emailRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            emailRequest.Headers.UserAgent.ParseAdd("SimplifiedCrafter/Backend");
 
             var externalId = (await userResponse.Content.ReadFromJsonAsync<JsonElement>())
                 .GetProperty("id")
-                .GetString();
-            var source = "GithHub";
+                .GetRawText();
+            var source = "GitHub";
 
+            logger.LogInformation($"ExternalId: {externalId}");
             if (externalId is null) 
                 return Unauthorized("Failed to fetch user information from GitHub.");
 
             //TODO: Process the user data here, you can create a session or JWT, etc.
             using var database = await databaseFactory.CreateDatabase();
             var account = await database.GetAccountByExternalId(externalId, source);
+
+            logger.LogInformation("{@Account}", account);
 
             if (account is null)
             {
@@ -101,13 +111,14 @@ namespace Backend.Controllers.Auth
                     .FirstOrDefault(e => e.GetProperty("primary").GetBoolean())
                     .GetProperty("email")
                     .GetString();
+                logger.LogInformation($"Email: {email}");
 
                 if (email is null)
                     return Unauthorized("Failed to fetch user email from GitHub.");
 
                 account = await database.CreateAccount(source, externalId, null, email, Role.Player());
             }
-            return Ok(account);
+            return Ok(new {account.Id, account.ExternalId, account.Source, account.Email, account.Name, Role=account.Role.Name.ToString(), account.CreatedAt, account.UpdatedAt});
 
         }
 

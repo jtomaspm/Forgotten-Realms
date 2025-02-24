@@ -1,104 +1,66 @@
 using Database.Application.Models;
+using Dapper;
 
 
 namespace Database.Application.Extensions;
 
 public static class AccountExtensions
 {
-    public static async Task<Account?> GetAccountById(this ApplicationDatabase database, Guid id)
-        => await GetWithParams
-        (
-            conditions: ["Id=@id"], 
-            parameters: new() {{ "id", id }}, 
-            database:   database
-        )
-        .FirstOrDefaultAsync();
-    public static async Task<Account?> GetAccountByExternalId(this ApplicationDatabase database, string externalId, string source)
-        => await GetWithParams
-        (
-            conditions: ["ExternalId`=@externalId", "`Source`=@source"], 
-            parameters: new() {{ "externalId", externalId }, { "source", source }}, 
-            database: database
-        )
-        .FirstOrDefaultAsync();
+    public static async Task<Account?> GetAccountById(this ApplicationDatabase database, Guid id) =>
+        await (await database.GetConnectionAsync())
+            .QueryFirstOrDefaultAsync<Account>(@$"
+                SELECT * 
+                FROM `Accounts`
+                WHERE `Id`=@id
+                LIMIT 1
+            ", new {id});
+
+    public static async Task<Account?> GetAccountByExternalId(this ApplicationDatabase database, string externalId, string source) =>
+        await (await database.GetConnectionAsync())
+            .QueryFirstOrDefaultAsync<Account>(@$"
+                SELECT * 
+                FROM `Accounts`
+                WHERE `ExternalId`=@externalId AND `Source`=@source
+                LIMIT 1
+            ", new {externalId, source});
+
     public static async Task<AccountDetails> CreateAccount(this ApplicationDatabase database, string source, string externalId, string? name, string email, Role role)
-        => await database.ExecuteInTransaction<AccountDetails>
-        (
-            async (connection, transaction) => 
-            {
-                var id = Guid.NewGuid();
-                var date = DateTime.UtcNow;
-
-                List<string> fields = ["Id", "Email", "Role", "ExternalId", "Source", "CreatedAt", "UpdatedAt"];
-                List<List<string>> values = [["@id", "@email", "@role", "@externalId", "@source", "@createdAt", "@updatedAt"]];
-                Dictionary<string, object> parameters = new () 
-                {
-                    {"id", id},
-                    {"email", email},
-                    {"role", role.Name},
-                    {"externalId", externalId},
-                    {"source", source},
-                    {"createdAt", date},
-                    {"updatedAt", date},
-                };
-                if (name is not null) {
-                    fields.Add("Name");
-                    values[0].Add("@name");
-                    parameters["name"] = name;
-                }
-
-                var cmd = (await database.Insert())
-                    .Table("Accounts")
-                    .AddFields(fields)
-                    .AddValues(values)
-                    .SetParameters(parameters)
-                    .Build();
-
-                if ((await cmd.ExecuteNonQueryAsync()) != 1)
-                    throw new Exception("Error inserting new account in database.");
-
-                var accountProperties = await database.CreateAccountProperties(id, true, false);
-
-                return new() 
-                {
-                    Id = id,
-                    Name = name,
-                    Email = email,
-                    Role = role,
-                    ExternalId = externalId,
-                    Source = source,
-                    CreatedAt = date,
-                    UpdatedAt = date,
-                    AccountProperties = accountProperties,
-                    LastLogin = null,
-                    Session = null,
-                    Worlds = []
-                };
-            }
-        );
-    private static async IAsyncEnumerable<Account> GetWithParams(IEnumerable<string> conditions, Dictionary<string, object> parameters, Database database) 
     {
-        var cmd = (await database.Select())
-            .AddFields(["Id", "ExternalId, Source, Name, Email, Role, CreatedAt, UpdatedAt"])
-            .Table("Accounts")
-            .AddConditions(conditions)
-            .SetParameters(parameters)
-            .Build();
+        if (!database.InTrasaction) 
+            return await database.ExecuteInTransaction(
+                async (_, _) => 
+                    await database.CreateAccount(source, externalId, name, email, role));
         
-        using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+        var connection = await database.GetConnectionAsync();
+        
+        var id = Guid.NewGuid();
+        var date = DateTime.UtcNow;
+
+        var rowsAffected = await connection.ExecuteAsync(@"
+            INSERT INTO `Accounts`
+                (`Id`, `Name`, `Email`, `Role`, `ExternalId`, `Source`, `CreatedAt`, `UpdatedAt`)
+            VALUES
+                (@id, @name, @email, @role, @externalId, @source, @createdAt, @updatedAt)
+        ", new {id, name, email, role, externalId, source, createdAt=date, updatedAt=date});
+
+        if (rowsAffected != 1) throw new Exception("Error inserting new account in database.");
+
+        var accountProperties = await database.CreateAccountProperties(id, true, false);
+
+        return new() 
         {
-            yield return new Account() 
-            {
-                Id = reader.GetGuid(0),
-                ExternalId = reader.IsDBNull(1) ? null : reader.GetString(1),
-                Source = reader.IsDBNull(2) ? null : reader.GetString(2),
-                Name = reader.IsDBNull(3) ? null : reader.GetString(3),
-                Email = reader.GetString(4),
-                Role = Role.FromNameString(reader.GetString(5)),
-                CreatedAt = reader.GetDateTime(6),
-                UpdatedAt = reader.GetDateTime(7),
-            };
-        }
+            Id = id,
+            Name = name,
+            Email = email,
+            Role = role,
+            ExternalId = externalId,
+            Source = source,
+            CreatedAt = date,
+            UpdatedAt = date,
+            AccountProperties = accountProperties,
+            LastLogin = null,
+            Session = null,
+            Worlds = []
+        };
     }
 }

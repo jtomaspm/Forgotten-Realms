@@ -1,8 +1,9 @@
-using ApiUtils.Auth.GitHub;
 using ApiUtils.Configuration;
 using ApiUtils.Middleware;
+using Dapper;
 using Database;
 using Database.Application;
+using Database.Application.TypeHandlers;
 
 namespace Backend;
 
@@ -27,6 +28,7 @@ public class Startup
             database: _configuration["MYSQL_DATABASE"]!
         );
         _databaseFactory = new DatabaseFactory<ApplicationDatabase>(_databaseConfig);
+        SqlMapper.AddTypeHandler(new RoleTypeHandler());
     }
     public void ConfigureServices(IServiceCollection services)
     {
@@ -39,8 +41,6 @@ public class Startup
     {
         app.UseMiddleware<GlobalExceptionHandler>();
         app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

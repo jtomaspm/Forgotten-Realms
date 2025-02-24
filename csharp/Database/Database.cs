@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Database.CommandBuilder;
 using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
 
@@ -11,12 +10,8 @@ public abstract class Database : IDisposable
 {
     protected DatabaseConfig? _config;
     protected MySqlConnection? _connection;
-    public async Task<SelectCommandBuilder> Select() => new ((await GetConnectionAsync()).CreateCommand());
-    public static SelectCommandBuilder Select(MySqlCommand cmd) => new (cmd);
-    public async Task<InsertCommandBuilder> Insert() => new ((await GetConnectionAsync()).CreateCommand());
-    public static InsertCommandBuilder Insert(MySqlCommand cmd) => new (cmd);
-    public async Task<DeleteCommandBuilder> Delete() => new ((await GetConnectionAsync()).CreateCommand());
-    public static DeleteCommandBuilder Delete(MySqlCommand cmd) => new (cmd);
+    protected MySqlTransaction? _transaction;
+    internal bool InTrasaction { get => _transaction is not null; }
     internal Database(){}
 
     public Database(DatabaseConfig config)
@@ -74,18 +69,23 @@ public abstract class Database : IDisposable
     internal async Task ExecuteInTransaction(Func<MySqlConnection,MySqlTransaction,Task> callback)
     {
         if (_connection is null) await GetConnectionAsync();
-        using var transaction = _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
+        _transaction ??= _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
         try 
         {
-            await callback(_connection, transaction);
-            await transaction.CommitAsync();
+            await callback(_connection!, _transaction);
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
         } 
         catch (Exception e) 
         {
-            await transaction.RollbackAsync();
+            await _transaction!.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
             throw new Exception("Create Account Transaction failed", e);
         }
     }
+
 
     public async Task ExecuteInTransaction(Func<MySqlTransaction,Task> callback)
     {
@@ -97,16 +97,20 @@ public abstract class Database : IDisposable
     internal async Task<TResult> ExecuteInTransaction<TResult>(Func<MySqlConnection,MySqlTransaction,Task<TResult>> callback)
     {
         if (_connection is null) await GetConnectionAsync();
-        using var transaction = _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
+        _transaction ??= _connection!.BeginTransaction() ?? throw new Exception("Error creating database transaction");
         try 
         {
-            var result = await callback(_connection, transaction);
-            await transaction.CommitAsync();
+            var result = await callback(_connection!, _transaction);
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
             return result;
         } 
         catch (Exception e) 
         {
-            await transaction.RollbackAsync();
+            await _transaction!.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
             throw new Exception("Create Account Transaction failed", e);
         }
     }
