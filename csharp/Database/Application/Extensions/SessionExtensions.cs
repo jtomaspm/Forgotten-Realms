@@ -54,7 +54,7 @@ public static class SessionExtensions
                 (`Id`, `AccountId`, `Token`, `CreatedAt`, `ExpiresAt`)
             VALUES
                 (@id, @accountId, @token, @createdAt, @expiresAt)
-        ", new {id=sid, accountId, token, createdAt, expiresAt});
+        ", new {id=sid, accountId, token=Database.SHA256Token(token), createdAt, expiresAt});
         if (insertResult != 1)
             throw new Exception("Error inserting new session in database.");
 

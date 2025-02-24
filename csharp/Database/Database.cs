@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
@@ -140,6 +141,9 @@ public abstract class Database : IDisposable
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public static string SHA256Token(string jwtToken) =>
+        Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(jwtToken)));
 
     public void Dispose()
     {

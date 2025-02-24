@@ -99,26 +99,80 @@ namespace Backend.Controllers.Auth
 
             //TODO: Process the user data here, you can create a session or JWT, etc.
             using var database = await databaseFactory.CreateDatabase();
-            var account = await database.GetAccountByExternalId(externalId, source);
+            var account = await database.ExecuteInTransaction(async _ => {
+                var acc = await database.GetAccountByExternalId(externalId, source);
 
-            logger.LogInformation("{@Account}", account);
+                logger.LogInformation("{@Account}", acc);
+                AccountDetails result;
+                if (acc is not null)
+                {
+                    result = new() 
+                    {
+                        Id = acc.Id,
+                        ExternalId = acc.ExternalId,
+                        Source = acc.Source,
+                        Name = acc.Name,
+                        Email = acc.Email,
+                        Role = acc.Role,
+                        CreatedAt = acc.CreatedAt,
+                        UpdatedAt = acc.UpdatedAt,
+                        AccountProperties = await database.GetAccountPropertiesById(acc.Id) ?? throw new Exception($"Account created without properties: {acc.Id}"),
+                        LastLogin = null,
+                        Session = null,
+                        Worlds = [], //TODO
+                    };
+                }
+                else
+                {
+                    var emailResponse = await httpClient.SendAsync(emailRequest);
+                    var email = (await emailResponse.Content.ReadFromJsonAsync<JsonElement>())
+                        .EnumerateArray()
+                        .FirstOrDefault(e => e.GetProperty("primary").GetBoolean())
+                        .GetProperty("email")
+                        .GetString();
+                    logger.LogInformation($"Email: {email}");
 
-            if (account is null)
+                    if (email is null)
+                        return null;
+
+                    result = await database.CreateAccount(source, externalId, null, email, Role.Player());
+                }
+
+                var ipAddress = HttpContext.Connection.RemoteIpAddress is not null ? HttpContext.Connection.RemoteIpAddress.ToString() : "";
+                result.LastLogin = await database.CreateLogin(result.Id, ipAddress);
+                result.Session = await database.CreateSession(result.Id);
+
+                return result;
+            });
+            if (account is null) 
+                return Unauthorized(new {Message="Error fetching user data from GitHub."});
+            return Ok(new 
             {
-                var emailResponse = await httpClient.SendAsync(emailRequest);
-                var email = (await emailResponse.Content.ReadFromJsonAsync<JsonElement>())
-                    .EnumerateArray()
-                    .FirstOrDefault(e => e.GetProperty("primary").GetBoolean())
-                    .GetProperty("email")
-                    .GetString();
-                logger.LogInformation($"Email: {email}");
-
-                if (email is null)
-                    return Unauthorized("Failed to fetch user email from GitHub.");
-
-                account = await database.CreateAccount(source, externalId, null, email, Role.Player());
-            }
-            return Ok(new {account.Id, account.ExternalId, account.Source, account.Email, account.Name, Role=account.Role.Name.ToString(), account.CreatedAt, account.UpdatedAt});
+                account.Id, 
+                account.ExternalId, 
+                account.Source, 
+                account.Email, 
+                account.Name, 
+                Role=account.Role.Name.ToString(), 
+                account.CreatedAt, 
+                account.UpdatedAt,
+                Properties=new 
+                {
+                    account.AccountProperties.EmailVerified,
+                    account.AccountProperties.SendEmailNotifications,
+                    account.AccountProperties.VerificationToken,
+                    account.AccountProperties.TokenExpiresAt,
+                },
+                LastLogin=new{
+                    account.LastLogin!.IpAddress,
+                    account.LastLogin!.CreatedAt
+                },
+                Session=new{
+                    Sid=account.Session!.Id,
+                    account.Session!.Token,
+                    account.Session!.ExpiresAt,
+                }
+            });
 
         }
 
