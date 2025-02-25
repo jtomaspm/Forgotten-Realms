@@ -1,5 +1,6 @@
 using ApiUtils.Configuration;
 using ApiUtils.Middleware;
+using Backend.Middleware;
 using Dapper;
 using Database;
 using Database.Application;
@@ -40,6 +41,7 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment _)
     {
         app.UseMiddleware<GlobalExceptionHandler>();
+        app.UseMiddleware<AuthenticationMiddleware>();
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {

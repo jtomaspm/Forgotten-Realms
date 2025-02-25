@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Database.Application.Models;
 using Microsoft.IdentityModel.Tokens;
 using MySql.Data.MySqlClient;
 
@@ -18,12 +19,12 @@ public abstract class Database : IDisposable
     public Database(DatabaseConfig config)
     {
         _config = config;
-        Database.SetupDatabase(this);
+        SetupDatabase(this);
     }
 
     private static async Task SetupDatabaseAsync(Database database) 
     {
-        if (database._config is null) throw new ArgumentNullException("Attempting to Setup a database that is not configured.");
+        if (database._config is null) throw new Exception("Attempting to Setup a database that is not configured.");
 
         database._connection = new MySqlConnection(database._config.ConnectionString);
         await database._connection.OpenAsync();
@@ -31,7 +32,7 @@ public abstract class Database : IDisposable
 
     private static void SetupDatabase(Database database) 
     {
-        if (database._config is null) throw new ArgumentNullException("Attempting to Setup a database that is not configured.");
+        if (database._config is null) throw new Exception("Attempting to Setup a database that is not configured.");
 
         database._connection = new MySqlConnection(database._config.ConnectionString);
         database._connection.Open();
@@ -44,7 +45,7 @@ public abstract class Database : IDisposable
             _config = config
         };
 
-        await Database.SetupDatabaseAsync(database);
+        await SetupDatabaseAsync(database);
 
         return database;       
     }
@@ -52,18 +53,14 @@ public abstract class Database : IDisposable
     internal MySqlConnection GetConnection() 
     {
         if (_connection is null) 
-        {
-            Database.SetupDatabase(this);
-        }
+            SetupDatabase(this);
         return _connection!;
     }
 
     internal async Task<MySqlConnection> GetConnectionAsync() 
     {
         if (_connection is null) 
-        {
-            await Database.SetupDatabaseAsync(this);
-        }
+            await SetupDatabaseAsync(this);
         return _connection!;
     }
 
@@ -121,26 +118,6 @@ public abstract class Database : IDisposable
 
     public DatabaseConfig GetConfig() => _config ?? throw new ArgumentNullException("This database should be configured.");
 
-    internal string GenerateJwtToken(Guid sessionId, Guid accountId)
-    {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GetConfig().JwtSecret));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        
-        var claims = new[]
-        {
-            new Claim("sessionId", sessionId.ToString()),
-            new Claim("accountId", accountId.ToString())
-        };
-        
-        var token = new JwtSecurityToken(
-            issuer: GetConfig().JwtIssuer,
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(7),
-            signingCredentials: credentials
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
 
     public static string SHA256Token(string jwtToken) =>
         Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(jwtToken)));

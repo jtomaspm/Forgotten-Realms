@@ -7,6 +7,8 @@ public class Session
     public required string Token;
     public DateTime CreatedAt;
     public DateTime ExpiresAt;
+
+    public bool IsExpired() => DateTime.UtcNow > ExpiresAt;
 }
 
 
