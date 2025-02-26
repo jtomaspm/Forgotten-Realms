@@ -87,7 +87,7 @@ namespace Backend.Controllers.Auth
             if (externalId is null) 
                 return Unauthorized("Failed to fetch user information from GitHub.");
 
-            using var database = await _databaseFactory.CreateDatabase();
+            using var database = await _databaseFactory.New();
             var account = await database.ExecuteInTransaction(async _ => {
                 var acc = await database.GetAccountByExternalId(externalId, source);
 

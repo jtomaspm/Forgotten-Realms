@@ -30,7 +30,7 @@ public class AuthenticationMiddleware
 
         var token = authorizationHeader["Bearer ".Length..].Trim();
         
-        using (var database = await _databaseFactory.CreateDatabase())
+        using (var database = await _databaseFactory.New())
         {
             var validationResponse = await database.ValidateJwtToken(token);
             if (validationResponse is null || validationResponse.Session is null || validationResponse.Session.IsExpired()) 
