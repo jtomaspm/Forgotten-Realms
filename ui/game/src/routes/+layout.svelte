@@ -14,7 +14,4 @@
 
 <style lang="postcss">
 	@reference "tailwindcss";
-    :global(html, body) {
-        @apply h-full;
-    }
 </style>

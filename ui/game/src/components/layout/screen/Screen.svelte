@@ -20,7 +20,8 @@
 <style lang="postcss">
     @reference "tailwindcss";
     #screen-container {
-        @apply flex flex-row w-full bg-blue-500;
+        @apply flex flex-row w-full;
+        background-image: url('$lib/static/background.jpg');
     }
     .side-panel {
         @apply flex-1 h-auto;
