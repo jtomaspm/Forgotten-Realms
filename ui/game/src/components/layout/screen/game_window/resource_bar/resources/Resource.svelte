@@ -10,7 +10,9 @@
     } = $props();
 </script>
 
-<Button class="mb-[10px]" color="dark">
-    <Icon />
-    <p>{txt}</p>
+<Button class="h-[35px]" color="dark">
+    <div class="mt-[5px] flex items-center">
+        <Icon />
+        <p>{txt}</p>
+    </div>
 </Button>
