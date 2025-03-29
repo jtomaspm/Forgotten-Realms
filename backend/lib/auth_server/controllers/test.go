@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"golang/lib/auth_server/configuration"
+	"backend/lib/auth_server/configuration"
 
 	"github.com/gin-gonic/gin"
 )

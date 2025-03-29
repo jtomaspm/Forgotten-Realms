@@ -1,9 +1,9 @@
 package server
 
 import (
-	"golang/lib/auth_server/configuration"
-	"golang/lib/core/api"
-	"golang/lib/database"
+	"backend/lib/auth_server/configuration"
+	"backend/lib/core/api"
+	"backend/lib/database"
 	"net/http"
 )
 

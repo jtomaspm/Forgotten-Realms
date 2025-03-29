@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"golang/lib/game_server/configuration"
+	"backend/lib/game_server/configuration"
 
 	"github.com/gin-gonic/gin"
 )

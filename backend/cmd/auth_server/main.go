@@ -1,10 +1,10 @@
 package main
 
 import (
-	"golang/lib/auth_server/configuration"
-	"golang/lib/auth_server/server"
-	"golang/lib/core"
-	"golang/lib/database"
+	"backend/lib/auth_server/configuration"
+	"backend/lib/auth_server/server"
+	"backend/lib/core"
+	"backend/lib/database"
 )
 
 func main() {

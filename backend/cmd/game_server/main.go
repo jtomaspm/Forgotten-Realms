@@ -1,10 +1,10 @@
 package main
 
 import (
-	"golang/lib/core"
-	"golang/lib/database"
-	"golang/lib/game_server/configuration"
-	"golang/lib/game_server/server"
+	"backend/lib/core"
+	"backend/lib/database"
+	"backend/lib/game_server/configuration"
+	"backend/lib/game_server/server"
 )
 
 func main() {

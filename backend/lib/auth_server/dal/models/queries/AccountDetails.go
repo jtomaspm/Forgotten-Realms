@@ -1,6 +1,6 @@
 package queries
 
-import "golang/lib/auth_server/dal/models"
+import "backend/lib/auth_server/dal/models"
 
 type AccountDetails struct {
 	Account           models.Account

@@ -1,9 +1,9 @@
 package server
 
 import (
-	"golang/lib/core/api"
-	"golang/lib/database"
-	"golang/lib/game_server/configuration"
+	"backend/lib/core/api"
+	"backend/lib/database"
+	"backend/lib/game_server/configuration"
 	"net/http"
 )
 

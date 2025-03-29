@@ -1,6 +1,6 @@
 package configuration
 
-import "golang/lib/core"
+import "backend/lib/core"
 
 type Configuration struct {
 	ServerSettings *core.Configuration

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang/lib/core"
+	"backend/lib/core"
 )
 
 func main() {
