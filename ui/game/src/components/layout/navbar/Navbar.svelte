@@ -27,8 +27,8 @@
         <NavBarButton {color} href="/info/player" txt="" Icon={UserSolid} />
     </ButtonGroup>
     <ButtonGroup>
-        <NavBarButton {color} href="/report" txt="" Icon={ClipboardListSolid} />
-        <NavBarButton {color} href="/mail" txt="" Icon={MailBoxSolid} />
+        <NavBarButton {color} href="/report" txt="3" Icon={ClipboardListSolid} />
+        <NavBarButton {color} href="/mail" txt="7" Icon={MailBoxSolid} />
     </ButtonGroup>
     <NavBarButton {color} href="/settings" txt="Settings" Icon={CogSolid} />
 </div>
