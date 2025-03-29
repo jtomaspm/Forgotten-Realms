@@ -1,16 +1,16 @@
 package main
 
 import (
+	"golang/lib/auth_server/configuration"
+	"golang/lib/auth_server/server"
 	"golang/lib/core"
 	"golang/lib/database"
-	"golang/lib/game_server/configuration"
-	"golang/lib/game_server/server"
 )
 
 func main() {
-	core.Initialize("Game server starting...")
+	core.Initialize("Auth server starting...")
 	serverSettings := core.Configuration{
-		Port:             "7072",
+		Port:             "7070",
 		ConnectionString: "",
 	}
 	configuration := configuration.Configuration{
