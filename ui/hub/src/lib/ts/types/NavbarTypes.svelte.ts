@@ -1,0 +1,1 @@
+export type TabName =  "Home" | "Play" | "Market" | "Inventory" | "Social" | "Info";
