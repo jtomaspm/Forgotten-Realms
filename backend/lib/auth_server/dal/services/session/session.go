@@ -59,7 +59,7 @@ func GetAccount(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) (views
 		SELECT id, name, email, role
 		FROM accounts a
 		JOIN sessions s ON a.id = s.account_id
-		WHERE s.token = 'your-session-token';
+		WHERE s.token = $1
 		LIMIT 1	
 	`, token,
 	).Scan(

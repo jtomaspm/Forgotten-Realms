@@ -2,6 +2,7 @@ package account
 
 import (
 	"backend/lib/auth_server/dal/models"
+	"backend/lib/auth_server/dal/models/queries"
 	"context"
 	"fmt"
 	"time"
@@ -54,15 +55,15 @@ func GetPropertiesByToken(ctx context.Context, pool *pgxpool.Pool, token uuid.UU
 	return properties, nil
 }
 
-func CreateProperties(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID) (uuid.UUID, error) {
+func CreateProperties(ctx context.Context, pool *pgxpool.Pool, properties *queries.CreateAccountProperties) (uuid.UUID, error) {
 	var verificationToken uuid.UUID
 	query := `
-		INSERT INTO account_properties (account_id) 
-		VALUES ($1) 
+		INSERT INTO account_properties (account_id, send_email_notifications) 
+		VALUES ($1, $2) 
 		RETURNING verification_token;
 	`
 	err := pool.QueryRow(
-		ctx, query, accountId,
+		ctx, query, properties.AccountId, properties.SendEmailNotifications,
 	).Scan(&verificationToken)
 	if err != nil {
 		return verificationToken, err

@@ -12,17 +12,17 @@ type CreateLogin struct {
 }
 
 type CreateAccount struct {
-	ExternalId string
-	Source     string
-	Name       string
-	Email      string
-	Role       models.Role
+	ExternalId             string
+	Source                 string
+	Name                   string
+	Email                  string
+	Role                   models.Role
+	SendEmailNotifications bool
 }
 
 type CreateAccountProperties struct {
 	AccountId              uuid.UUID
-	EmailVerified          string
-	SendEmailNotifications string
+	SendEmailNotifications bool
 }
 
 type CreateSession struct {

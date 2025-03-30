@@ -1,11 +1,9 @@
-CREATE FUNCTION set_updated_at() RETURNS TRIGGER AS $$
+DO $$ 
 BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TYPE role AS ENUM ('admin', 'moderator', 'npc', 'player', 'guest');
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role') THEN
+        CREATE TYPE role AS ENUM ('admin', 'moderator', 'npc', 'player', 'guest');
+    END IF;
+END $$;
 
 CREATE TABLE accounts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

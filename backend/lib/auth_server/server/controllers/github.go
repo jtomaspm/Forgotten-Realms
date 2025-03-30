@@ -10,6 +10,7 @@ import (
 	"backend/lib/database"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -177,13 +178,15 @@ func (controller *GithubController) callback(ctx *gin.Context) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString(controller.Configuration.JwtSecret)
+	signedToken, err := token.SignedString([]byte(controller.Configuration.JwtSecret))
 	if err != nil {
+		log.Println(err)
 		ctx.JSON(errorStatus, gin.H{"error": errorMsg})
 		return
 	}
 	ctx.JSON(http.StatusMethodNotAllowed, gin.H{
 		"token":      signedToken,
+		"email":      email,
 		"expires_at": expires_at,
 		"message":    "Create new account using token",
 	})

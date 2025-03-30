@@ -81,5 +81,8 @@ func Create(ctx context.Context, pool *pgxpool.Pool, account *queries.CreateAcco
 	if err != nil {
 		return id, err
 	}
-	return CreateProperties(ctx, pool, id)
+	return CreateProperties(ctx, pool, &queries.CreateAccountProperties{
+		AccountId:              id,
+		SendEmailNotifications: account.SendEmailNotifications,
+	})
 }

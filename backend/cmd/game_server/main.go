@@ -18,8 +18,9 @@ func main() {
 		ServerSettings: &serverSettings,
 	}
 
-	database := database.New(serverSettings.ConnectionString)
+	db := database.New(serverSettings.ConnectionString)
+	defer db.Close()
 
-	var server = server.New(&configuration, database)
-	server.Start()
+	s := server.New(&configuration, db)
+	s.Start()
 }

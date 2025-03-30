@@ -5,29 +5,43 @@ import (
 	"backend/lib/auth_server/server"
 	"backend/lib/core"
 	"backend/lib/database"
+	"log"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	core.Initialize("Auth server starting...")
+	_ = godotenv.Load()
+	envVars, err := configuration.GetEnv()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	serverSettings := core.Configuration{
 		Port:             "7070",
-		ConnectionString: "",
+		ConnectionString: "postgres://postgres:123@localhost:5432/testdb",
 		UserAgent:        "backend/auth",
 	}
 	githubSettings := configuration.GitHub{
-		ClientId:     "",
-		ClientSecret: "",
-		RedirectUri:  "",
+		ClientId:     envVars.GitHubClientId,
+		ClientSecret: envVars.GitHubClientSecret,
+		RedirectUri:  envVars.GitHubRedirectUri,
 		Source:       "GitHub",
 	}
 	configuration := configuration.Configuration{
-		JwtSecret: "",
+		JwtSecret: envVars.JwtSecret,
 		GitHub:    &githubSettings,
 		Server:    &serverSettings,
 	}
 
-	database := database.New(serverSettings.ConnectionString)
+	db := database.New(serverSettings.ConnectionString)
+	defer db.Close()
 
-	var server = server.New(&configuration, database)
-	server.Start()
+	err = database.Migrate(db, "./migrations/auth_server/")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	s := server.New(&configuration, db)
+	s.Start()
 }

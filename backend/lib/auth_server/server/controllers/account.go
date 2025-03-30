@@ -9,6 +9,7 @@ import (
 	"backend/lib/auth_server/server/models"
 	"backend/lib/database"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -51,7 +52,7 @@ func (controller *AccountController) get(ctx *gin.Context) {
 		"id":    account.Id,
 		"name":  account.Name,
 		"email": account.Email,
-		"role":  account.Role,
+		"role":  account.Role.String(),
 	})
 }
 
@@ -78,12 +79,18 @@ func (controller *AccountController) getId(ctx *gin.Context) {
 }
 
 func (controller *AccountController) create(ctx *gin.Context) {
-	name := ctx.GetHeader("Name")
-	if name == "" {
+	var body struct {
+		Name                   string `json:"name"`
+		SendEmailNotifications bool   `json:"send_email_notifications"`
+	}
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	if body.Name == "" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Name header is required"})
 		return
 	}
-
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is required"})
@@ -96,23 +103,27 @@ func (controller *AccountController) create(ctx *gin.Context) {
 	}
 	tokenString := parts[1]
 	var claims models.NewUserClaims
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return controller.Configuration.JwtSecret, nil
+		return []byte(controller.Configuration.JwtSecret), nil
 	})
+	if err != nil {
+		log.Printf("Error: %s\n", err)
+	}
 	if err != nil || !token.Valid {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 		return
 	}
 
 	verificationToken, err := account.Create(ctx, controller.Database.Pool, &queries.CreateAccount{
-		ExternalId: claims.ExternalId,
-		Source:     claims.Source,
-		Email:      claims.Email,
-		Role:       dalModels.PLAYER,
-		Name:       name,
+		ExternalId:             claims.ExternalId,
+		Source:                 claims.Source,
+		Email:                  claims.Email,
+		Role:                   dalModels.PLAYER,
+		Name:                   body.Name,
+		SendEmailNotifications: body.SendEmailNotifications,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create new account"})

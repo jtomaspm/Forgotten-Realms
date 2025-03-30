@@ -20,8 +20,8 @@ func New(configuration *configuration.Configuration, database *database.Database
 		{
 			BasePath: "/api",
 			Controllers: []api.Controller{
-				&controllers.GithubController{Configuration: configuration},
-				&controllers.AccountController{Configuration: configuration},
+				&controllers.GithubController{Configuration: configuration, Database: database},
+				&controllers.AccountController{Configuration: configuration, Database: database},
 			},
 		},
 	}
