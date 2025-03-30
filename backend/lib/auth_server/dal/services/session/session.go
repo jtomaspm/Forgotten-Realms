@@ -60,6 +60,7 @@ func GetAccount(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) (views
 		FROM accounts a
 		JOIN sessions s ON a.id = s.account_id
 		WHERE s.token = $1
+		AND expires_at > CURRENT_TIMESTAMP
 		LIMIT 1	
 	`, token,
 	).Scan(

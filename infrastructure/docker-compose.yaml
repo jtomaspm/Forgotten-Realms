@@ -1,34 +1,5 @@
 name: simplified_crafter
 services:
-  mysql_database:
-    build: ../database
-    container_name: mysql_database
-    restart: always
-    env_file:
-      - .env
-    expose:
-      - ${MYSQL_PORT}
-    ports:
-      - "${MYSQL_PORT}:${MYSQL_PORT}"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-  backend:
-    container_name: backend
-    build: 
-      context: ../csharp
-      dockerfile: ../csharp/Backend/Dockerfile
-    env_file:
-      - .env
-    expose:
-      - ${BACKEND_HTTP_PORT}
-    ports:
-      - "${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}"
-    volumes:
-      - /var/log/SimplifiedCrafter:/var/log
-    depends_on:
-      - mysql_database
-
   loki:
     image: grafana/loki:latest
     container_name: loki
