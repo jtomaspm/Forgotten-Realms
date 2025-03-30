@@ -9,7 +9,7 @@ import (
 type Session struct {
 	Id        uuid.UUID
 	AccountId uuid.UUID
-	Token     string
+	Token     uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

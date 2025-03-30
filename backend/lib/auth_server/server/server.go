@@ -2,6 +2,7 @@ package server
 
 import (
 	"backend/lib/auth_server/configuration"
+	"backend/lib/auth_server/server/controllers"
 	"backend/lib/core/api"
 	"backend/lib/database"
 	"net/http"
@@ -17,13 +18,15 @@ type Server struct {
 func New(configuration *configuration.Configuration, database *database.Database) *Server {
 	var routes = []api.Route{
 		{
-			BasePath:    "/api",
-			Controllers: []api.Controller{},
+			BasePath: "/api",
+			Controllers: []api.Controller{
+				&controllers.GithubController{Configuration: configuration},
+			},
 		},
 	}
 	router := api.NewRouter(routes)
 	server := &http.Server{
-		Addr:    ":" + configuration.ServerSettings.Port,
+		Addr:    ":" + configuration.Server.Port,
 		Handler: router.Engine,
 	}
 	return &Server{

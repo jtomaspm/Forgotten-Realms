@@ -1,4 +1,4 @@
-package queries
+package views
 
 import "backend/lib/auth_server/dal/models"
 

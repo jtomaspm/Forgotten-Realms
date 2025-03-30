@@ -12,6 +12,7 @@ func main() {
 	serverSettings := core.Configuration{
 		Port:             "7072",
 		ConnectionString: "",
+		UserAgent:        "backend/auth",
 	}
 	configuration := configuration.Configuration{
 		ServerSettings: &serverSettings,

@@ -12,9 +12,18 @@ func main() {
 	serverSettings := core.Configuration{
 		Port:             "7070",
 		ConnectionString: "",
+		UserAgent:        "backend/auth",
+	}
+	githubSettings := configuration.GitHub{
+		ClientId:     "",
+		ClientSecret: "",
+		RedirectUri:  "",
+		Source:       "GitHub",
 	}
 	configuration := configuration.Configuration{
-		ServerSettings: &serverSettings,
+		JwtSecret: "",
+		GitHub:    &githubSettings,
+		Server:    &serverSettings,
 	}
 
 	database := database.New(serverSettings.ConnectionString)
