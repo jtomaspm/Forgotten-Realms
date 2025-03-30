@@ -5,6 +5,7 @@ import (
 	dalModels "backend/lib/auth_server/dal/models"
 	"backend/lib/auth_server/dal/models/queries"
 	"backend/lib/auth_server/dal/services/account"
+	"backend/lib/auth_server/dal/services/session"
 	"backend/lib/auth_server/server/models"
 	"backend/lib/database"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
 type AccountController struct {
@@ -22,7 +24,57 @@ type AccountController struct {
 
 func (controller *AccountController) Mount(basePath string, engine *gin.Engine) {
 	path := basePath + "/account"
-	engine.POST(path+"/create", controller.create)
+	engine.POST(path+"", controller.create)
+	engine.GET(path+"", controller.get)
+	engine.GET(path+"/id", controller.getId)
+	engine.GET(path+"/verify", controller.verifyEmail)
+}
+
+func (controller *AccountController) get(ctx *gin.Context) {
+	errorStatus := http.StatusBadRequest
+	tokenStr := ctx.Query("token")
+	if tokenStr == "" {
+		ctx.JSON(errorStatus, gin.H{"error": "Missing token parameter"})
+		return
+	}
+	token, err := uuid.Parse(tokenStr)
+	if err != nil {
+		ctx.JSON(errorStatus, gin.H{"error": "Invalid token"})
+		return
+	}
+	account, err := session.GetAccount(ctx, controller.Database.Pool, token)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"id":    account.Id,
+		"name":  account.Name,
+		"email": account.Email,
+		"role":  account.Role,
+	})
+}
+
+func (controller *AccountController) getId(ctx *gin.Context) {
+	errorStatus := http.StatusBadRequest
+	tokenStr := ctx.Query("token")
+	if tokenStr == "" {
+		ctx.JSON(errorStatus, gin.H{"error": "Missing token parameter"})
+		return
+	}
+	token, err := uuid.Parse(tokenStr)
+	if err != nil {
+		ctx.JSON(errorStatus, gin.H{"error": "Invalid token"})
+		return
+	}
+	id, err := session.GetAccountId(ctx, controller.Database.Pool, token)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"id": id,
+	})
 }
 
 func (controller *AccountController) create(ctx *gin.Context) {
@@ -70,5 +122,27 @@ func (controller *AccountController) create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "Account created, verify email using token",
 		"token":   verificationToken,
+	})
+}
+
+func (controller *AccountController) verifyEmail(ctx *gin.Context) {
+	errorStatus := http.StatusBadRequest
+	tokenStr := ctx.Query("token")
+	if tokenStr == "" {
+		ctx.JSON(errorStatus, gin.H{"error": "Missing token parameter"})
+		return
+	}
+	token, err := uuid.Parse(tokenStr)
+	if err != nil {
+		ctx.JSON(errorStatus, gin.H{"error": "Invalid token"})
+		return
+	}
+	err = account.Verify(ctx, controller.Database.Pool, token)
+	if err != nil {
+		ctx.JSON(errorStatus, gin.H{"error": "Invalid token"})
+		return
+	}
+	ctx.JSON(http.StatusAccepted, gin.H{
+		"message": "Success, you may now login",
 	})
 }

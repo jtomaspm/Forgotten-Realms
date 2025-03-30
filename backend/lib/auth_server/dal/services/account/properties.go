@@ -32,6 +32,28 @@ func GetProperties(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID)
 	return properties, nil
 }
 
+func GetPropertiesByToken(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) (models.AccountProperties, error) {
+	var properties models.AccountProperties
+	err := pool.QueryRow(ctx, `
+		SELECT account_id, verification_token, token_expires_at, email_verified, send_email_notifications, created_at, updated_at 
+		FROM account_properties
+		WHERE verification_token=$1
+		LIMIT 1	
+	`, token).Scan(
+		&properties.AccountId,
+		&properties.VerificationToken,
+		&properties.TokenExpiresAt,
+		&properties.EmailVerified,
+		&properties.SendEmailNotifications,
+		&properties.CreatedAt,
+		&properties.UpdatedAt,
+	)
+	if err != nil {
+		return properties, err
+	}
+	return properties, nil
+}
+
 func CreateProperties(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID) (uuid.UUID, error) {
 	var verificationToken uuid.UUID
 	query := `
@@ -48,8 +70,8 @@ func CreateProperties(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UU
 	return verificationToken, nil
 }
 
-func Verify(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID, token uuid.UUID) error {
-	properties, err := GetProperties(ctx, pool, accountId)
+func Verify(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) error {
+	properties, err := GetPropertiesByToken(ctx, pool, token)
 	if err != nil {
 		return err
 	}
@@ -69,7 +91,7 @@ func Verify(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID, token 
 		WHERE account_id=$1;
 	`
 	_, err = pool.Exec(
-		ctx, query, accountId,
+		ctx, query, properties.AccountId,
 	)
 	return err
 }

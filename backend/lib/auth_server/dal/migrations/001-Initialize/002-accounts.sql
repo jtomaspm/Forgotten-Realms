@@ -1,3 +1,10 @@
+CREATE FUNCTION set_updated_at() RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TYPE role AS ENUM ('admin', 'moderator', 'npc', 'player', 'guest');
 
 CREATE TABLE accounts (
@@ -8,8 +15,7 @@ CREATE TABLE accounts (
     email VARCHAR(255) UNIQUE NOT NULL,
     role role NOT NULL,  
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (role) REFERENCES roles(name) ON DELETE CASCADE
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE account_properties (
@@ -22,3 +28,13 @@ CREATE TABLE account_properties (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
+
+CREATE TRIGGER trigger_set_updated_at_account_properties
+BEFORE UPDATE ON account_properties
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trigger_set_updated_at_accounts
+BEFORE UPDATE ON accounts
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();

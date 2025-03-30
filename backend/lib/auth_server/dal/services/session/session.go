@@ -1,6 +1,8 @@
 package session
 
 import (
+	"backend/lib/auth_server/dal/models"
+	"backend/lib/auth_server/dal/models/views"
 	"context"
 	"time"
 
@@ -48,4 +50,30 @@ func GetAccountId(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) (uui
 		return accountId, err
 	}
 	return accountId, nil
+}
+
+func GetAccount(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) (views.AccountShort, error) {
+	var account views.AccountShort
+	var role string
+	err := pool.QueryRow(ctx, `
+		SELECT id, name, email, role
+		FROM accounts a
+		JOIN sessions s ON a.id = s.account_id
+		WHERE s.token = 'your-session-token';
+		LIMIT 1	
+	`, token,
+	).Scan(
+		&account.Id,
+		&account.Name,
+		&account.Email,
+		&role,
+	)
+	if err != nil {
+		return account, err
+	}
+	account.Role, err = models.FromString(role)
+	if err != nil {
+		return account, err
+	}
+	return account, nil
 }
