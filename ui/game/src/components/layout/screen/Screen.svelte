@@ -20,8 +20,12 @@
 <style lang="postcss">
     @reference "tailwindcss";
     #screen-container {
-        @apply flex flex-row w-full;
+        @apply flex flex-row w-full min-h-screen;
         background-image: url('$lib/static/background.jpg');
+        background-attachment: fixed;
+        background-size: auto;
+        background-repeat: no-repeat;
+        background-position: top center;
     }
     .side-panel {
         @apply flex-1 h-auto;

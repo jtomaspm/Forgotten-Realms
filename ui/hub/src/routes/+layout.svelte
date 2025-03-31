@@ -25,5 +25,9 @@
     #background {
         @apply w-screen h-screen;
         background-image: url('$lib/static/background.jpg');
+        background-attachment: fixed;
+        background-size: auto;
+        background-repeat: no-repeat;
+        background-position: top center;
     }
 </style>
