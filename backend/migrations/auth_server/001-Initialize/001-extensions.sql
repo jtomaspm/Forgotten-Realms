@@ -6,7 +6,7 @@ BEGIN
         SELECT 1 FROM pg_proc 
         JOIN pg_namespace ON pg_proc.pronamespace = pg_namespace.oid
         WHERE proname = 'set_updated_at' 
-        AND nspname = 'public'  -- Change this if the function is in another schema
+        AND nspname = 'public'
     ) THEN
         EXECUTE 'CREATE FUNCTION set_updated_at() 
         RETURNS TRIGGER AS $func$
