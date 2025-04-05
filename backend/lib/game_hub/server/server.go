@@ -1,8 +1,10 @@
 package server
 
 import (
-	"backend/lib/game_server/configuration"
+	"backend/lib/game_hub/configuration"
+	"backend/lib/game_hub/server/controllers"
 	"backend/pkg/api"
+	"backend/pkg/api/middleware"
 	"backend/pkg/database"
 	"net/http"
 )
@@ -17,11 +19,17 @@ type Server struct {
 func New(configuration *configuration.Configuration, database *database.Database) *Server {
 	var routes = []api.Route{
 		{
-			BasePath:    "/api",
-			Controllers: []api.Controller{},
+			BasePath: "/api",
+			Controllers: []api.Controller{
+				&controllers.RealmsController{
+					Configuration: configuration,
+					Database:      database,
+				},
+			},
 		},
 	}
 	router := api.NewRouter(routes)
+	router.Engine.Use(middleware.AuthMiddleware(configuration.Docker.Auth))
 	server := &http.Server{
 		Addr:    ":" + configuration.ServerSettings.Port,
 		Handler: router.Engine,

@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"backend/lib/core"
+	"backend/pkg/core"
 	"fmt"
 	"os"
 )

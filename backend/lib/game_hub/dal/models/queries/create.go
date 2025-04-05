@@ -1,0 +1,14 @@
+package queries
+
+import "github.com/google/uuid"
+
+type CreateRealm struct {
+	Name string
+	Api  string
+	Ui   string
+}
+
+type CreateAccountRealm struct {
+	AccountId uuid.UUID
+	RealmId   uuid.UUID
+}

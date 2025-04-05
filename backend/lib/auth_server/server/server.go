@@ -3,8 +3,8 @@ package server
 import (
 	"backend/lib/auth_server/configuration"
 	"backend/lib/auth_server/server/controllers"
-	"backend/lib/core/api"
-	"backend/lib/database"
+	"backend/pkg/api"
+	"backend/pkg/database"
 	"net/http"
 )
 

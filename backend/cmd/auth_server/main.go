@@ -3,8 +3,8 @@ package main
 import (
 	"backend/lib/auth_server/configuration"
 	"backend/lib/auth_server/server"
-	"backend/lib/core"
-	"backend/lib/database"
+	"backend/pkg/core"
+	"backend/pkg/database"
 	"log"
 
 	"github.com/joho/godotenv"

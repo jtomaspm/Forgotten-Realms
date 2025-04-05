@@ -7,7 +7,7 @@ import (
 	"backend/lib/auth_server/dal/services/login"
 	"backend/lib/auth_server/dal/services/session"
 	"backend/lib/auth_server/server/models"
-	"backend/lib/database"
+	"backend/pkg/database"
 	"encoding/json"
 	"fmt"
 	"log"

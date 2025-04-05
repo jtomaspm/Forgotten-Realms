@@ -1,10 +1,10 @@
 package main
 
 import (
-	"backend/lib/core"
-	"backend/lib/database"
 	"backend/lib/game_server/configuration"
 	"backend/lib/game_server/server"
+	"backend/pkg/core"
+	"backend/pkg/database"
 )
 
 func main() {
