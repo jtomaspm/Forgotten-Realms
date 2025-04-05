@@ -13,32 +13,41 @@ import (
 func main() {
 	core.Initialize("Hub server starting...")
 	_ = godotenv.Load()
-	envVars, err := core.GetEnv()
+	coreEnv, err := core.GetEnv()
 	if err != nil {
 		log.Fatalln(err)
 	}
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	dbConfig := database.Configuration{
+		Host:     coreEnv.DbHost,
+		Port:     coreEnv.DbPort,
+		Username: coreEnv.DbUser,
+		Password: coreEnv.DbPassword,
+		Database: coreEnv.DbName,
+	}
 	serverSettings := core.Configuration{
-		Port:             "7070",
-		ConnectionString: "postgres://postgres:123@localhost:5432/testdb",
-		UserAgent:        "backend/game_hub",
+		Port:      "7070",
+		Database:  &dbConfig,
+		UserAgent: "backend/game_hub",
 	}
 	dockerSettings := core.Docker{
-		Auth:  envVars.DockerAuth,
-		Hub:   envVars.DockerHub,
-		Token: envVars.DockerToken,
+		Auth:  coreEnv.DockerAuth,
+		Hub:   coreEnv.DockerHub,
+		Token: coreEnv.DockerToken,
 	}
 	configuration := configuration.Configuration{
 		Docker:         &dockerSettings,
 		ServerSettings: &serverSettings,
 	}
 
-	db := database.New(serverSettings.ConnectionString)
-	defer db.Close()
-
-	err = database.Migrate(db, "./migrations/game_server/")
+	db, err := database.Migrate(dbConfig, "./migrations/game_hub/")
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer db.Close()
 
 	s := server.New(&configuration, db)
 	s.Start()

@@ -8,6 +8,6 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main ./cmd/game_server
 FROM gcr.io/distroless/base-debian12
 WORKDIR /root/
 COPY --from=builder /app/main .
-EXPOSE 4000
+COPY --from=builder /app/migrations/game_server ./migrations/game_server
 
 CMD ["./main"]

@@ -35,7 +35,7 @@ func getAccount(ctx *gin.Context, authServer string) (Account, error) {
 	if err != nil {
 		return account, err
 	}
-	reqPath := authServer + "/api/account?token=" + token
+	reqPath := "http://" + authServer + "/api/account?token=" + token
 
 	resp, err := http.Get(reqPath)
 	if err != nil {

@@ -17,10 +17,23 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	coreEnv, err := core.GetEnv()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	dbConfig := database.Configuration{
+		Host:     coreEnv.DbHost,
+		Port:     coreEnv.DbPort,
+		Username: coreEnv.DbUser,
+		Password: coreEnv.DbPassword,
+		Database: coreEnv.DbName,
+	}
+
 	serverSettings := core.Configuration{
-		Port:             "7070",
-		ConnectionString: "postgres://postgres:123@localhost:5432/testdb",
-		UserAgent:        "backend/auth",
+		Port:      coreEnv.ServerPort,
+		UserAgent: coreEnv.UserAgent,
+		Database:  &dbConfig,
 	}
 	githubSettings := configuration.GitHub{
 		ClientId:     envVars.GitHubClientId,
@@ -34,13 +47,11 @@ func main() {
 		Server:    &serverSettings,
 	}
 
-	db := database.New(serverSettings.ConnectionString)
-	defer db.Close()
-
-	err = database.Migrate(db, "./migrations/auth_server/")
+	db, err := database.Migrate(dbConfig, "./migrations/auth_server/")
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer db.Close()
 
 	s := server.New(&configuration, db)
 	s.Start()
