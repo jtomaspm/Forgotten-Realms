@@ -3,6 +3,7 @@ package api
 import (
 	"backend/pkg/api/middleware"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +23,13 @@ type AuthSettings struct {
 
 func NewRouter(routes []Route, auth *AuthSettings) *Router {
 	engine := gin.Default()
+
+	engine.Use(cors.New(cors.Config{
+		AllowAllOrigins: true,
+		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:    []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:   []string{"Content-Length"},
+	}))
 
 	if auth.UseAuth {
 		engine.Use(middleware.AuthMiddleware(auth.AuthServer))

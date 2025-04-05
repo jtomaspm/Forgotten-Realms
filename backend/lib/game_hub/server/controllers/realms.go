@@ -51,6 +51,9 @@ func (controller *RealmsController) registerRealm(ctx *gin.Context) {
 	}
 	realmId, err := realms.RegisterRealm(ctx, controller.Database.Pool, &realm)
 	if err != nil {
+		realmId, err = realms.GetByCreateQuery(ctx, controller.Database.Pool, &realm)
+	}
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register realm"})
 		log.Println("Failed to register realm:", err)
 		return

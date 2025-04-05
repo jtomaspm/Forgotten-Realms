@@ -50,5 +50,6 @@ func main() {
 	defer db.Close()
 
 	s := server.New(&configuration, db)
+	s.RegisterInHub()
 	s.Start()
 }

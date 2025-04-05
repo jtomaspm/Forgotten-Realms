@@ -55,6 +55,23 @@ func GetById(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) (models.Real
 	return realm, nil
 }
 
+func GetByCreateQuery(ctx context.Context, pool *pgxpool.Pool, realm *queries.CreateRealm) (uuid.UUID, error) {
+	var id uuid.UUID
+	err := pool.QueryRow(ctx, `
+		SELECT id
+		FROM realms
+		WHERE name=$1, api=$2
+		LIMIT 1	
+	`, realm.Name, realm.Api,
+	).Scan(
+		&id,
+	)
+	if err != nil {
+		return id, err
+	}
+	return id, nil
+}
+
 func RegisterRealm(ctx context.Context, pool *pgxpool.Pool, realm *queries.CreateRealm) (uuid.UUID, error) {
 	var id uuid.UUID
 	err := pool.QueryRow(

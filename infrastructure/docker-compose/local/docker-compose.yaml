@@ -1,4 +1,24 @@
 services:
+  game-ui:
+    restart: always
+    build: ./ui/game
+    ports:
+      - "${GAME_UI_PORT}:3000"
+    depends_on:
+      - hub
+    networks:
+      - app-network
+
+  hub-ui:
+    restart: always
+    build: ./ui/hub
+    ports:
+      - "${HUB_UI_PORT}:3000"
+    depends_on:
+      - hub
+    networks:
+      - app-network
+
   auth:
     restart: always
     build:
@@ -20,10 +40,9 @@ services:
       - DB_NAME=auth
       - DB_HOST=${POSTGRES_HOST}
       - DB_PORT=${POSTGRES_PORT}
-      - USER_AGENT=hub
+      - USER_AGENT=auth
     depends_on:
       - postgres
-      - redis
     networks:
       - app-network
 
@@ -108,15 +127,6 @@ services:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-  redis:
-    image: redis:latest
-    container_name: redis-db
-    restart: always
-    ports:
-      - "6379:6379"
     networks:
       - app-network
 
