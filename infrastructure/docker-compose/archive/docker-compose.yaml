@@ -25,6 +25,26 @@ services:
       - grafana_data:/var/lib/grafana
       - ./logging/grafana/provisioning:/etc/grafana/provisioning
 
+  game-ui:
+    restart: always
+    build: ./ui/game
+    ports:
+      - "3000:3000"
+    depends_on:
+      - game-server
+    networks:
+      - app-network
+
+  hub-ui:
+    restart: always
+    build: ./ui/hub
+    ports:
+      - "3001:3000"
+    depends_on:
+      - game-hub
+    networks:
+      - app-network
+
 volumes:
   mysql_data:
   grafana_data:

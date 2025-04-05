@@ -37,7 +37,7 @@ func GetAll(ctx context.Context, pool *pgxpool.Pool) ([]views.RegisteredRealm, e
 func GetById(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) (models.Realm, error) {
 	var realm models.Realm
 	err := pool.QueryRow(ctx, `
-		SELECT id, name, api, ui, created_at, updated_at 
+		SELECT id, name, api, created_at, updated_at 
 		FROM realms
 		WHERE id=$1
 		LIMIT 1	
@@ -46,7 +46,6 @@ func GetById(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) (models.Real
 		&realm.Id,
 		&realm.Name,
 		&realm.Api,
-		&realm.Ui,
 		&realm.CreatedAt,
 		&realm.UpdatedAt,
 	)
@@ -61,11 +60,11 @@ func RegisterRealm(ctx context.Context, pool *pgxpool.Pool, realm *queries.Creat
 	err := pool.QueryRow(
 		ctx,
 		`
-		INSERT INTO realms (name, api, ui) 
+		INSERT INTO realms (name, api) 
 		VALUES ($1, $2) 
 		RETURNING id;
 		`,
-		realm.Name, realm.Api, realm.Ui,
+		realm.Name, realm.Api,
 	).Scan(&id)
 	if err != nil {
 		return id, err

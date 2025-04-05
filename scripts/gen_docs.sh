@@ -7,16 +7,16 @@ fi
 
 # Set folder and filename based on the number of arguments
 if [ -n "$2" ]; then
-  folder="documentation/$1"
+  folder="./documentation/$1"
   filename="$2"
 else
-  folder="documentation"
+  folder="./documentation"
   filename="$1"
 fi
 
 capitalized_filename="$(echo "${filename:0:1}" | tr '[:lower:]' '[:upper:]')${filename:1}"
 
-mkdir -p "../$folder"
+mkdir -p "$folder"
 
 cat <<EOF > "../$folder/$filename.md"
 # $capitalized_filename
