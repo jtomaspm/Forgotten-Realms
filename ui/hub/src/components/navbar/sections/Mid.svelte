@@ -3,21 +3,15 @@
 	import NavbarButton from '../../buttons/NavbarButton.svelte';
 	import type { TabName } from '$lib/ts/types/NavbarTypes.svelte';
 
-    let activeTab : TabName = $state.raw("Home")
-
-    function changeTab(tabName: TabName) {
-        activeTab = tabName
-    }
-
-    let { loggedIn }
-        : { loggedIn: boolean } 
+    let { activeTab, loggedIn, changeTab }
+        : { activeTab: TabName, loggedIn: boolean, changeTab: (tab: TabName) => void } 
         = $props();
 </script>
 
 <div>
     <NavbarButton onclick={()=>{changeTab("Home")}} Icon={HomeSolid} tabName="Home" {activeTab}/>
     {#if loggedIn}
-    <NavbarButton onclick={()=>{changeTab("Play")}} Icon={GlobeSolid} tabName="Play" {activeTab} />
+    <NavbarButton onclick={()=>{changeTab("Realms")}} Icon={GlobeSolid} tabName="Realms" {activeTab} />
     <NavbarButton onclick={()=>{changeTab("Market")}} Icon={ChartMixedDollarSolid} tabName="Market" {activeTab} />
     <NavbarButton onclick={()=>{changeTab("Inventory")}} Icon={ShoppingBagSolid} tabName="Inventory" {activeTab} />
     {/if}

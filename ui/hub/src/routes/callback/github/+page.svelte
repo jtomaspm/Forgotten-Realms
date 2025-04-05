@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { AuthCallbackResponse } from '$lib/ts/types/AuthCallbackResponse';
+	import type { AuthLoginCallbackResponse, AuthRegistrationCallbackResponse } from '$lib/ts/types/AuthCallbackResponse';
     import { onMount } from 'svelte';
 	import CreateAccount from '../../../components/registration/CreateAccount.svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;
 
     let errorMessage = $state.raw("");
-    let createUser : AuthCallbackResponse | undefined = $state.raw();
+    let authResponse : AuthRegistrationCallbackResponse | undefined = $state.raw();
 
     onMount(async () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -22,13 +22,14 @@
             });
             
             if (response.status === 200) {
-                const data = await response.json();
-                console.log('Login successful:', data);
+                const data: AuthLoginCallbackResponse = await response.json();
+                localStorage.setItem("popfrsid", data.token);
+                window.location.href = "/";
                 return;
             }
 
             if (response.status === 405) {
-                createUser = await response.json();
+                authResponse = await response.json();
                 return;
             }
 
@@ -45,7 +46,7 @@
   {#if errorMessage}
     <p style="color: red;">{errorMessage}</p>
   {/if}
-  {#if createUser && !errorMessage}
-    <CreateAccount {createUser} />
+  {#if authResponse && !errorMessage}
+    <CreateAccount {authResponse} />
   {/if}
 </main>

@@ -1,17 +1,18 @@
 <script lang="ts">
+	import type { TabName } from "$lib/ts/types/NavbarTypes.svelte";
 	import Bottom from "./sections/Bottom.svelte";
 	import Mid from "./sections/Mid.svelte";
 	import Top from "./sections/Top.svelte";
 
-    let { loggedIn }
-        : { loggedIn: boolean } 
+    let { activeTab, loggedIn, changeTab }
+        : { activeTab: TabName, loggedIn: boolean, changeTab: (tab: TabName) => void } 
         = $props();
 </script>
 
 <div id="navbar">
     <div id="navbar-container">
         <Top />
-        <Mid {loggedIn} />
+        <Mid {activeTab} {loggedIn} {changeTab} />
         <Bottom />
     </div>
 </div>

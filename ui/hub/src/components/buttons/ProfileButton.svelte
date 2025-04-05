@@ -8,15 +8,10 @@
         = $props();
 </script>
 
-<div class="profile-btn-container">
-    <Button color="dark">
-        Profile
-    </Button>
-</div>
+<Button color="dark">
+    Profile
+</Button>
 
 <style lang="postcss">
     @reference "tailwindcss";
-    .profile-btn-container {
-        @apply fixed top-6 right-6 z-50;
-    }
 </style>
