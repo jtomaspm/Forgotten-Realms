@@ -17,7 +17,7 @@ func GetAll(ctx context.Context, pool *pgxpool.Pool) ([]views.RegisteredRealm, e
 			name,
 			api,
 			FALSE AS registered,
-			created_at,
+			created_at
 		FROM realms 
 	`,
 	)

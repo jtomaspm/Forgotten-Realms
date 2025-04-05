@@ -25,7 +25,10 @@ func New(configuration *configuration.Configuration, database *database.Database
 			},
 		},
 	}
-	router := api.NewRouter(routes)
+	router := api.NewRouter(routes, &api.AuthSettings{
+		AuthServer: "",
+		UseAuth:    false,
+	})
 	server := &http.Server{
 		Addr:    ":" + configuration.Server.Port,
 		Handler: router.Engine,

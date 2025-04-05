@@ -21,7 +21,10 @@ func New(configuration *configuration.Configuration, database *database.Database
 			Controllers: []api.Controller{},
 		},
 	}
-	router := api.NewRouter(routes)
+	router := api.NewRouter(routes, &api.AuthSettings{
+		AuthServer: configuration.Docker.Auth,
+		UseAuth:    true,
+	})
 	server := &http.Server{
 		Addr:    ":" + configuration.ServerSettings.Port,
 		Handler: router.Engine,

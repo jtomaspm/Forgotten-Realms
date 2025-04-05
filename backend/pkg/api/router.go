@@ -1,6 +1,8 @@
 package api
 
 import (
+	"backend/pkg/api/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,8 +15,17 @@ type Router struct {
 	Engine *gin.Engine
 }
 
-func NewRouter(routes []Route) *Router {
+type AuthSettings struct {
+	AuthServer string
+	UseAuth    bool
+}
+
+func NewRouter(routes []Route, auth *AuthSettings) *Router {
 	engine := gin.Default()
+
+	if auth.UseAuth {
+		engine.Use(middleware.AuthMiddleware(auth.AuthServer))
+	}
 
 	for _, route := range routes {
 		for _, controller := range route.Controllers {

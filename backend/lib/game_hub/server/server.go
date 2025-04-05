@@ -4,7 +4,6 @@ import (
 	"backend/lib/game_hub/configuration"
 	"backend/lib/game_hub/server/controllers"
 	"backend/pkg/api"
-	"backend/pkg/api/middleware"
 	"backend/pkg/database"
 	"net/http"
 )
@@ -28,8 +27,10 @@ func New(configuration *configuration.Configuration, database *database.Database
 			},
 		},
 	}
-	router := api.NewRouter(routes)
-	router.Engine.Use(middleware.AuthMiddleware(configuration.Docker.Auth))
+	router := api.NewRouter(routes, &api.AuthSettings{
+		AuthServer: configuration.Docker.Auth,
+		UseAuth:    true,
+	})
 	server := &http.Server{
 		Addr:    ":" + configuration.ServerSettings.Port,
 		Handler: router.Engine,

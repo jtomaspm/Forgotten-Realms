@@ -29,9 +29,9 @@ func main() {
 		Database: coreEnv.DbName,
 	}
 	serverSettings := core.Configuration{
-		Port:      "7070",
+		Port:      coreEnv.ServerPort,
+		UserAgent: coreEnv.UserAgent,
 		Database:  &dbConfig,
-		UserAgent: "backend/game_hub",
 	}
 	dockerSettings := core.Docker{
 		Auth:  coreEnv.DockerAuth,

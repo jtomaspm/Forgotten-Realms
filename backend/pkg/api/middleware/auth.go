@@ -58,9 +58,8 @@ func AuthMiddleware(authServer string) gin.HandlerFunc {
 		account, err := getAccount(ctx, authServer)
 		if err == nil {
 			ctx.Set("account", account)
-			ctx.Next()
-			return
 		}
+		ctx.Next()
 	}
 }
 
