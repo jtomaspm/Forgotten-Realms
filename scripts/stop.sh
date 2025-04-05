@@ -26,6 +26,6 @@ if [[ ! " ${configs[@]} " =~ " ${ENVIRONMENT} " ]]; then
 fi
 
 echo "Deleting volumes and containers for environment: $ENVIRONMENT"
-echo "Remove -v flag from scripts/stop.sh to keep volumes."
+#echo "Remove -v flag from scripts/stop.sh to keep volumes."
 docker-compose --project-directory . --env-file "./infrastructure/docker-compose/${ENVIRONMENT}/.env" -f "./infrastructure/docker-compose/${ENVIRONMENT}/docker-compose.yaml" down -v
 exit 0

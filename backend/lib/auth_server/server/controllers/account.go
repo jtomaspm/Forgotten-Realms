@@ -130,7 +130,7 @@ func (controller *AccountController) create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
+	ctx.JSON(http.StatusCreated, gin.H{
 		"message": "Account created, verify email using token",
 		"token":   verificationToken,
 	})

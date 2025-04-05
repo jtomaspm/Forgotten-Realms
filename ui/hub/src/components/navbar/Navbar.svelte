@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { User } from "$lib/ts/types/User.svelte";
 	import Bottom from "./sections/Bottom.svelte";
 	import Mid from "./sections/Mid.svelte";
 	import Top from "./sections/Top.svelte";

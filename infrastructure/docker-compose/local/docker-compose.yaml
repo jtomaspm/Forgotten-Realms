@@ -1,9 +1,16 @@
 services:
   game-ui:
     restart: always
-    build: ./ui/game
+    build: 
+      context: ./ui/game
+      args:
+        VITE_AUTH_URL: ${VITE_AUTH_URL}
+        VITE_HUB_URL: ${VITE_HUB_URL}
     ports:
       - "${GAME_UI_PORT}:3000"
+    environment:
+      - VITE_AUTH_URL=${VITE_AUTH_URL}
+      - VITE_HUB_URL=${VITE_HUB_URL}
     depends_on:
       - hub
     networks:
@@ -11,9 +18,16 @@ services:
 
   hub-ui:
     restart: always
-    build: ./ui/hub
+    build: 
+      context: ./ui/hub
+      args:
+        VITE_AUTH_URL: ${VITE_AUTH_URL}
+        VITE_HUB_URL: ${VITE_HUB_URL}
     ports:
       - "${HUB_UI_PORT}:3000"
+    environment:
+      - VITE_AUTH_URL=${VITE_AUTH_URL}
+      - VITE_HUB_URL=${VITE_HUB_URL}
     depends_on:
       - hub
     networks:
