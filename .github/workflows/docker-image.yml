@@ -40,11 +40,9 @@ jobs:
           echo "DOCKER_TOKEN=test" >> infrastructure/docker-compose/local/.env
 
       - name: Build Docker Compose services
-        working-directory: infrastructure
         run: docker compose --project-directory . --env-file "./infrastructure/docker-compose/local/.env" -f "./infrastructure/docker-compose/local/docker-compose.yaml" build
 
       - name: Validate Docker Compose services
-        working-directory: infrastructure
         run: |
           docker compose --project-directory . --env-file "./infrastructure/docker-compose/local/.env" -f "./infrastructure/docker-compose/local/docker-compose.yaml" up -d
           sleep 10  # Wait for containers to start
@@ -53,5 +51,4 @@ jobs:
           
       - name: Tear down Docker Compose services
         if: always()
-        working-directory: infrastructure
         run: docker compose --project-directory . --env-file "./infrastructure/docker-compose/local/.env" -f "./infrastructure/docker-compose/local/docker-compose.yaml" down
