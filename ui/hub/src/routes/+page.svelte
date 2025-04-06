@@ -10,12 +10,18 @@
 	import Market from '../components/tabs/market/Market.svelte';
 	import Social from '../components/tabs/social/Social.svelte';
 	import Info from '../components/tabs/info/Info.svelte';
+	import type { RealmListing } from '$lib/ts/types/Realm.svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;
 
     let activeTab: TabName = $state.raw("Home");
     function changeTab(tab: TabName) {
         activeTab = tab
     }
+    let realm: RealmListing | undefined = $state.raw();
+    const setRealm = (r: RealmListing) => {
+        realm = r;
+    };
+
 
 	let user : User | undefined = $state.raw()
     let loggedIn = $derived(user != undefined && !(user.Token === ""))
@@ -44,8 +50,8 @@
 
 {#if activeTab === "Home"}
     <Home />
-{:else if activeTab === "Realms" && user}
-    <Realms {user} />
+{:else if activeTab === "Realms"}
+    <Realms {user} {loggedIn} {realm} {setRealm} />
 {:else if activeTab === "Market" && user}
     <Market />
 {:else if activeTab === "Inventory" && user}

@@ -14,7 +14,7 @@ func GetByAccountId(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID
 		SELECT 
 			r.id AS realm_id,
 			r.name,
-			r.api,
+			r.status,
 			(ar.account_id IS NOT NULL) AS registered,
 			r.created_at
 		FROM realms r
@@ -28,7 +28,7 @@ func GetByAccountId(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID
 	realms := make([]views.RegisteredRealm, 0)
 	for rows.Next() {
 		var realm views.RegisteredRealm
-		if rows.Scan(&realm.Id, &realm.Name, &realm.Api, &realm.Registered, &realm.CreatedAt) == nil {
+		if rows.Scan(&realm.Id, &realm.Name, &realm.Status, &realm.Registered, &realm.CreatedAt) == nil {
 			realms = append(realms, realm)
 		}
 	}

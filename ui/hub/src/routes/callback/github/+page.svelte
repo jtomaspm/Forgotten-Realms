@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AuthLoginCallbackResponse, AuthRegistrationCallbackResponse } from '$lib/ts/types/AuthCallbackResponse';
+	import type { AuthLoginCallbackResponse, AuthRegistrationCallbackResponse } from '$lib/ts/types/AuthCallbackResponse.svelte';
     import { onMount } from 'svelte';
 	import CreateAccount from '../../../components/registration/CreateAccount.svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;

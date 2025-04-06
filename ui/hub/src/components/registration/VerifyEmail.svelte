@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AccountCreated, AuthRegistrationCallbackResponse } from "$lib/ts/types/AuthCallbackResponse";
+	import type { AccountCreated, AuthRegistrationCallbackResponse } from "$lib/ts/types/AuthCallbackResponse.svelte";
 	import { Button, Modal } from "flowbite-svelte";
 	import { ArrowLeftOutline, CheckCircleOutline, CheckCircleSolid, ExclamationCircleOutline } from "flowbite-svelte-icons";
     const authUrl = import.meta.env.VITE_AUTH_URL;

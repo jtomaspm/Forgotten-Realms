@@ -10,10 +10,10 @@
 
 <div>
     <NavbarButton onclick={()=>{changeTab("Home")}} Icon={HomeSolid} tabName="Home" {activeTab}/>
-    {#if loggedIn}
     <NavbarButton onclick={()=>{changeTab("Realms")}} Icon={GlobeSolid} tabName="Realms" {activeTab} />
-    <NavbarButton onclick={()=>{changeTab("Market")}} Icon={ChartMixedDollarSolid} tabName="Market" {activeTab} />
-    <NavbarButton onclick={()=>{changeTab("Inventory")}} Icon={ShoppingBagSolid} tabName="Inventory" {activeTab} />
+    {#if loggedIn}
+        <NavbarButton onclick={()=>{changeTab("Market")}} Icon={ChartMixedDollarSolid} tabName="Market" {activeTab} />
+        <NavbarButton onclick={()=>{changeTab("Inventory")}} Icon={ShoppingBagSolid} tabName="Inventory" {activeTab} />
     {/if}
     <NavbarButton onclick={()=>{changeTab("Social")}} Icon={UsersSolid} tabName="Social" {activeTab} />
     <NavbarButton onclick={()=>{changeTab("Info")}} Icon={InfoCircleSolid} tabName="Info" {activeTab} />

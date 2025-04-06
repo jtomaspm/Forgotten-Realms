@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AccountCreated, AuthRegistrationCallbackResponse } from "$lib/ts/types/AuthCallbackResponse";
+	import type { AccountCreated, AuthRegistrationCallbackResponse } from "$lib/ts/types/AuthCallbackResponse.svelte";
 	import { Card } from "flowbite-svelte";
 	import NameForm from "./NameForm.svelte";
 	import VerifyEmail from "./VerifyEmail.svelte";

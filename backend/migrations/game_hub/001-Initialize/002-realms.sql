@@ -1,7 +1,15 @@
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'realm_status') THEN
+        CREATE TYPE realm_status AS ENUM ('open', 'closed', 'ended');
+    END IF;
+END $$;
+
 CREATE TABLE realms (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(50) UNIQUE NOT NULL,
     api VARCHAR(50) UNIQUE NOT NULL,
+    status realm_status NOT NULL DEFAULT 'open',
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

@@ -15,7 +15,7 @@ func GetAll(ctx context.Context, pool *pgxpool.Pool) ([]views.RegisteredRealm, e
 		SELECT 
 			id,
 			name,
-			api,
+			status,
 			FALSE AS registered,
 			created_at
 		FROM realms 
@@ -27,7 +27,7 @@ func GetAll(ctx context.Context, pool *pgxpool.Pool) ([]views.RegisteredRealm, e
 	realms := make([]views.RegisteredRealm, 0)
 	for rows.Next() {
 		var realm views.RegisteredRealm
-		if rows.Scan(&realm.Id, &realm.Name, &realm.Api, &realm.Registered, &realm.CreatedAt) == nil {
+		if rows.Scan(&realm.Id, &realm.Name, &realm.Status, &realm.Registered, &realm.CreatedAt) == nil {
 			realms = append(realms, realm)
 		}
 	}
@@ -36,8 +36,9 @@ func GetAll(ctx context.Context, pool *pgxpool.Pool) ([]views.RegisteredRealm, e
 
 func GetById(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) (models.Realm, error) {
 	var realm models.Realm
+	var status string
 	err := pool.QueryRow(ctx, `
-		SELECT id, name, api, created_at, updated_at 
+		SELECT id, name, api, status, created_at, updated_at 
 		FROM realms
 		WHERE id=$1
 		LIMIT 1	
@@ -46,9 +47,14 @@ func GetById(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) (models.Real
 		&realm.Id,
 		&realm.Name,
 		&realm.Api,
+		&status,
 		&realm.CreatedAt,
 		&realm.UpdatedAt,
 	)
+	if err != nil {
+		return realm, err
+	}
+	realm.Status, err = models.FromString(status)
 	if err != nil {
 		return realm, err
 	}

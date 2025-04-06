@@ -20,7 +20,7 @@
 <style lang="postcss">
     @reference "tailwindcss";
     .btn-container {
-        @apply fixed top-6 right-6 z-50;
+        @apply fixed top-4 right-4 z-50;
     }
 </style>
 

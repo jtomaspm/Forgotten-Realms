@@ -9,7 +9,7 @@ import (
 type RegisteredRealm struct {
 	Id         uuid.UUID `json:"id"`
 	Name       string    `json:"name"`
-	Api        string    `json:"api"`
+	Status     string    `json:"status"`
 	Registered bool      `json:"registered"`
 	CreatedAt  time.Time `json:"created_at"`
 }
