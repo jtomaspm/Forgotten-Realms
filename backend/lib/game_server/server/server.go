@@ -52,6 +52,7 @@ func (server *Server) RegisterInHub() (uuid.UUID, error) {
 		Name string `json:"name"`
 		Api  string `json:"api"`
 	}{
+		//TODO: Change to specific settings in dotenv to share with frontend client
 		Name: server.Configuration.ServerSettings.UserAgent,
 		Api:  server.Configuration.ServerSettings.UserAgent + ":" + server.Configuration.ServerSettings.Port,
 	}

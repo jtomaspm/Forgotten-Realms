@@ -12,17 +12,20 @@
 
 <div class="display-wrapper">
     <div class="display-container">
-        <h1>{realm.name}</h1>
-        {#if realm.registered && realm.status !== 'ended'}
+        <div class="title-container">
+            <h1>{realm.name}</h1>
+            <p>Started {openDays === 0 ? "today" : openDays === 1 ? "yesterday" : `${openDays} days ago`}</p>
+        </div>
+        {#if  !loggedIn}
+            <p>Must be signed in to play in the forgotten realms.</p>
+        {:else if realm.registered && realm.status !== 'ended'}
             <div class="btn-container">
                 <PlayButton />
             </div>
-            <p>Started {openDays === 0 ? "today" : openDays === 1 ? "yesterday" : `${openDays} days ago`}</p>
         {:else if !realm.registered && realm.status === 'open'}
             <div class="btn-container">
                 <RegisterButton />
             </div>
-            <p>Started {openDays === 0 ? "today" : openDays === 1 ? "yesterday" : `${openDays} days ago`}</p>
         {:else if realm.status === 'ended'}
             <div class="realm-status">
                 <p>Realm has ended. You can no longer play on it.</p>
@@ -30,7 +33,6 @@
         {:else if realm.status === 'closed'}
             <div class="realm-status">
                 <p>Realm is closed. No new players allowed.</p>
-                <p>Started {openDays === 0 ? "today" : openDays === 1 ? "yesterday" : `${openDays} days ago`}</p>
             </div>
         {:else}
             <div class="realm-status">
@@ -52,6 +54,12 @@
         @apply mb-[10px];
     }
     h1 {
-        @apply text-3xl mb-[15px];
+        @apply text-3xl mr-[10px];
+    }
+    .title-container {
+        @apply flex mb-[15px] items-end;
+    }
+    .title-container p {
+        @apply text-gray-500;
     }
 </style>
