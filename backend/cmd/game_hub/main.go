@@ -4,6 +4,7 @@ import (
 	"backend/lib/game_hub/configuration"
 	"backend/lib/game_hub/server"
 	"backend/pkg/core"
+	"backend/pkg/core/models"
 	"backend/pkg/database"
 	"log"
 
@@ -13,7 +14,7 @@ import (
 func main() {
 	core.Initialize("Hub server starting...")
 	_ = godotenv.Load()
-	coreEnv, err := core.GetEnv()
+	coreEnv, err := models.GetEnv()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -28,19 +29,19 @@ func main() {
 		Password: coreEnv.DbPassword,
 		Database: coreEnv.DbName,
 	}
-	serverSettings := core.Configuration{
+	serverSettings := models.Configuration{
 		Port:      coreEnv.ServerPort,
 		UserAgent: coreEnv.UserAgent,
 		Database:  &dbConfig,
 	}
-	dockerSettings := core.Docker{
+	dockerSettings := models.Docker{
 		Auth:  coreEnv.DockerAuth,
 		Hub:   coreEnv.DockerHub,
 		Token: coreEnv.DockerToken,
 	}
 	configuration := configuration.Configuration{
-		Docker:         &dockerSettings,
-		ServerSettings: &serverSettings,
+		Docker: &dockerSettings,
+		Server: &serverSettings,
 	}
 
 	db, err := database.Migrate(dbConfig, "./migrations/game_hub/")

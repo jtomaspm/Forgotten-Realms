@@ -4,6 +4,7 @@ import (
 	"backend/lib/auth_server/configuration"
 	"backend/lib/auth_server/server"
 	"backend/pkg/core"
+	"backend/pkg/core/models"
 	"backend/pkg/database"
 	"log"
 
@@ -17,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	coreEnv, err := core.GetEnv()
+	coreEnv, err := models.GetEnv()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -30,7 +31,7 @@ func main() {
 		Database: coreEnv.DbName,
 	}
 
-	serverSettings := core.Configuration{
+	serverSettings := models.Configuration{
 		Port:      coreEnv.ServerPort,
 		UserAgent: coreEnv.UserAgent,
 		Database:  &dbConfig,

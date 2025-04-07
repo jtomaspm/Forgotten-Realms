@@ -7,6 +7,7 @@ import (
 	"backend/lib/game_hub/dal/services/realms"
 	"backend/pkg/api/middleware"
 	"backend/pkg/database"
+	sdkRealms "backend/pkg/sdk/hub/realms"
 	"log"
 	"net/http"
 
@@ -21,6 +22,7 @@ type RealmsController struct {
 func (controller *RealmsController) Mount(basePath string, engine *gin.Engine) {
 	engine.GET(basePath+"/realm", controller.getRealms)
 	engine.POST(basePath+"/realm", controller.registerRealm)
+	engine.POST(basePath+"/realm/account", controller.registerAccount)
 }
 
 func (Controller *RealmsController) getRealms(ctx *gin.Context) {
@@ -59,4 +61,23 @@ func (controller *RealmsController) registerRealm(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"id": realmId})
+}
+
+func (controller *RealmsController) registerAccount(ctx *gin.Context) {
+	if !middleware.IsRequestInternal(ctx, controller.Configuration.Docker.Token) {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	var command sdkRealms.RegisterAccountRequestBody
+	if err := ctx.ShouldBindJSON(&command); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+	err := realms.RegisterAccount(ctx, controller.Database.Pool, &command)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register account"})
+		log.Println("Failed to register account:", err)
+		return
+	}
+	ctx.Status(http.StatusCreated)
 }

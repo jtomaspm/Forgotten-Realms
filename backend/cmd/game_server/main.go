@@ -4,6 +4,7 @@ import (
 	"backend/lib/game_server/configuration"
 	"backend/lib/game_server/server"
 	"backend/pkg/core"
+	"backend/pkg/core/models"
 	"backend/pkg/database"
 	"log"
 
@@ -13,7 +14,7 @@ import (
 func main() {
 	core.Initialize("Game server starting...")
 	_ = godotenv.Load()
-	coreEnv, err := core.GetEnv()
+	coreEnv, err := models.GetEnv()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -21,6 +22,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	realmConfig, err := configuration.GetEnv()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	dbConfig := database.Configuration{
 		Host:     coreEnv.DbHost,
 		Port:     coreEnv.DbPort,
@@ -28,19 +33,20 @@ func main() {
 		Password: coreEnv.DbPassword,
 		Database: coreEnv.DbName,
 	}
-	serverSettings := core.Configuration{
+	serverSettings := models.Configuration{
 		Port:      coreEnv.ServerPort,
 		UserAgent: coreEnv.UserAgent,
 		Database:  &dbConfig,
 	}
-	dockerSettings := core.Docker{
+	dockerSettings := models.Docker{
 		Auth:  coreEnv.DockerAuth,
 		Hub:   coreEnv.DockerHub,
 		Token: coreEnv.DockerToken,
 	}
 	configuration := configuration.Configuration{
-		Docker:         &dockerSettings,
-		ServerSettings: &serverSettings,
+		Realm:  realmConfig,
+		Docker: &dockerSettings,
+		Server: &serverSettings,
 	}
 
 	db, err := database.Migrate(dbConfig, "./migrations/game_server/")
@@ -50,6 +56,9 @@ func main() {
 	defer db.Close()
 
 	s := server.New(&configuration, db)
-	s.RegisterInHub()
+	_, err = s.RegisterInHub()
+	if err != nil {
+		log.Fatal(err)
+	}
 	s.Start()
 }

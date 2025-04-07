@@ -1,3 +1,5 @@
+SET TIME ZONE 'UTC';
+
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 DO $$ 

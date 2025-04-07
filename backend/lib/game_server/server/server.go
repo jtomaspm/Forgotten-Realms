@@ -2,11 +2,10 @@ package server
 
 import (
 	"backend/lib/game_server/configuration"
+	"backend/lib/game_server/server/controllers"
 	"backend/pkg/api"
 	"backend/pkg/database"
-	"bytes"
-	"encoding/json"
-	"fmt"
+	"backend/pkg/sdk/hub/realms"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -22,8 +21,13 @@ type Server struct {
 func New(configuration *configuration.Configuration, database *database.Database) *Server {
 	var routes = []api.Route{
 		{
-			BasePath:    "/api",
-			Controllers: []api.Controller{},
+			BasePath: "/api",
+			Controllers: []api.Controller{
+				&controllers.PlayersController{
+					Configuration: configuration,
+					Database:      database,
+				},
+			},
 		},
 	}
 	router := api.NewRouter(routes, &api.AuthSettings{
@@ -31,7 +35,7 @@ func New(configuration *configuration.Configuration, database *database.Database
 		UseAuth:    true,
 	})
 	server := &http.Server{
-		Addr:    ":" + configuration.ServerSettings.Port,
+		Addr:    ":" + configuration.Server.Port,
 		Handler: router.Engine,
 	}
 	return &Server{
@@ -43,48 +47,19 @@ func New(configuration *configuration.Configuration, database *database.Database
 }
 
 func (server *Server) RegisterInHub() (uuid.UUID, error) {
-	var response struct {
-		Id uuid.UUID `json:"id"`
-	}
-	reqPath := "http://" + server.Configuration.Docker.Hub + "/api/realm"
-
-	body := struct {
-		Name string `json:"name"`
-		Api  string `json:"api"`
-	}{
-		//TODO: Change to specific settings in dotenv to share with frontend client
-		Name: server.Configuration.ServerSettings.UserAgent,
-		Api:  server.Configuration.ServerSettings.UserAgent + ":" + server.Configuration.ServerSettings.Port,
-	}
-
-	bodyBytes, err := json.Marshal(body)
+	id, err := realms.RegisterRealm(&realms.RegisterRealmRequest{
+		Hub:           server.Configuration.Docker.Hub,
+		InternalToken: server.Configuration.Docker.Token,
+		Body: &realms.RegisterRealmRequestBody{
+			Name: server.Configuration.Realm.Name,
+			Api:  server.Configuration.Realm.PublicEndpoint,
+		},
+	})
 	if err != nil {
-		return response.Id, fmt.Errorf("failed to marshal request body: %v", err)
+		return uuid.UUID{}, err
 	}
-
-	req, err := http.NewRequest("POST", reqPath, bytes.NewReader(bodyBytes))
-	if err != nil {
-		return response.Id, err
-	}
-
-	req.Header.Set("Authorization", "Internal "+server.Configuration.Docker.Token)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return response.Id, err
-	}
-	defer resp.Body.Close()
-
-	if !(resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated) {
-		return response.Id, fmt.Errorf("failed to register realm: %s", resp.Status)
-	}
-
-	err = json.NewDecoder(resp.Body).Decode(&response)
-	if err != nil {
-		return response.Id, err
-	}
-	return response.Id, nil
+	server.Configuration.Realm.Id = id
+	return id, nil
 }
 
 func (server *Server) Start() {

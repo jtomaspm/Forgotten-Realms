@@ -4,6 +4,7 @@ import (
 	"backend/lib/game_hub/dal/models"
 	"backend/lib/game_hub/dal/models/queries"
 	"backend/lib/game_hub/dal/models/views"
+	"backend/pkg/database"
 	"context"
 
 	"github.com/google/uuid"
@@ -78,7 +79,7 @@ func GetByCreateQuery(ctx context.Context, pool *pgxpool.Pool, realm *queries.Cr
 	return id, nil
 }
 
-func RegisterRealm(ctx context.Context, pool *pgxpool.Pool, realm *queries.CreateRealm) (uuid.UUID, error) {
+func RegisterRealm(ctx context.Context, pool database.Querier, realm *queries.CreateRealm) (uuid.UUID, error) {
 	var id uuid.UUID
 	err := pool.QueryRow(
 		ctx,

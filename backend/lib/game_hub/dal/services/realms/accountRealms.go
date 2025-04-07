@@ -1,8 +1,8 @@
 package realms
 
 import (
-	"backend/lib/game_hub/dal/models/queries"
 	"backend/lib/game_hub/dal/models/views"
+	"backend/pkg/sdk/hub/realms"
 	"context"
 
 	"github.com/google/uuid"
@@ -35,7 +35,7 @@ func GetByAccountId(ctx context.Context, pool *pgxpool.Pool, accountId uuid.UUID
 	return realms, nil
 }
 
-func RegisterAccount(ctx context.Context, pool *pgxpool.Pool, accountRealm *queries.CreateAccountRealm) error {
+func RegisterAccount(ctx context.Context, pool *pgxpool.Pool, accountRealm *realms.RegisterAccountRequestBody) error {
 	_, err := pool.Exec(
 		ctx,
 		`

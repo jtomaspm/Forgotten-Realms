@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"backend/lib/auth_server/configuration"
-	dalModels "backend/lib/auth_server/dal/models"
 	"backend/lib/auth_server/dal/models/queries"
 	"backend/lib/auth_server/dal/services/account"
 	"backend/lib/auth_server/dal/services/session"
 	"backend/lib/auth_server/server/models"
+	modelsCore "backend/pkg/core/models"
 	"backend/pkg/database"
 	"fmt"
 	"log"
@@ -121,7 +121,7 @@ func (controller *AccountController) create(ctx *gin.Context) {
 		ExternalId:             claims.ExternalId,
 		Source:                 claims.Source,
 		Email:                  claims.Email,
-		Role:                   dalModels.PLAYER,
+		Role:                   modelsCore.PLAYER,
 		Name:                   body.Name,
 		SendEmailNotifications: body.SendEmailNotifications,
 	})

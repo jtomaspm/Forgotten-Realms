@@ -1,7 +1,7 @@
 package queries
 
 import (
-	"backend/lib/auth_server/dal/models"
+	"backend/pkg/core/models"
 
 	"github.com/google/uuid"
 )

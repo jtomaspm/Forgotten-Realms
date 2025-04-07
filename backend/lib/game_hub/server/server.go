@@ -32,7 +32,7 @@ func New(configuration *configuration.Configuration, database *database.Database
 		UseAuth:    true,
 	})
 	server := &http.Server{
-		Addr:    ":" + configuration.ServerSettings.Port,
+		Addr:    ":" + configuration.Server.Port,
 		Handler: router.Engine,
 	}
 	return &Server{

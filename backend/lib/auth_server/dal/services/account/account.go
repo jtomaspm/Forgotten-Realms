@@ -3,6 +3,7 @@ package account
 import (
 	"backend/lib/auth_server/dal/models"
 	"backend/lib/auth_server/dal/models/queries"
+	coreModels "backend/pkg/core/models"
 	"context"
 
 	"github.com/google/uuid"
@@ -31,7 +32,7 @@ func GetById(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) (models.Acco
 	if err != nil {
 		return account, err
 	}
-	account.Role, err = models.FromString(role)
+	account.Role, err = coreModels.FromString(role)
 	if err != nil {
 		return account, err
 	}
@@ -60,7 +61,7 @@ func GetByExternalId(ctx context.Context, pool *pgxpool.Pool, account *queries.G
 	if err != nil {
 		return result, err
 	}
-	result.Role, err = models.FromString(role)
+	result.Role, err = coreModels.FromString(role)
 	if err != nil {
 		return result, err
 	}

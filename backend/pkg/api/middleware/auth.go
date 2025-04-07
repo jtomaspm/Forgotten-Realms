@@ -1,21 +1,12 @@
 package middleware
 
 import (
-	"encoding/json"
+	"backend/pkg/sdk/auth"
 	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
-
-type Account struct {
-	Id    uuid.UUID `json:"id"`
-	Name  string    `json:"name"`
-	Email string    `json:"email"`
-	Role  string    `json:"role"`
-}
 
 func getAuthToken(ctx *gin.Context) (string, error) {
 	authHeader := ctx.GetHeader("Authorization")
@@ -29,28 +20,15 @@ func getAuthToken(ctx *gin.Context) (string, error) {
 	return parts[1], nil
 }
 
-func getAccount(ctx *gin.Context, authServer string) (Account, error) {
-	var account Account
+func getAccount(ctx *gin.Context, authServer string) (auth.Account, error) {
 	token, err := getAuthToken(ctx)
 	if err != nil {
-		return account, err
+		return auth.Account{}, err
 	}
-	reqPath := "http://" + authServer + "/api/account?token=" + token
-
-	resp, err := http.Get(reqPath)
-	if err != nil {
-		return account, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return account, fmt.Errorf("failed to get account: %s", resp.Status)
-	}
-	err = json.NewDecoder(resp.Body).Decode(&account)
-	if err != nil {
-		return account, err
-	}
-	return account, nil
+	return auth.GetAccount(&auth.GetAccountRequest{
+		Auth:  authServer,
+		Token: token,
+	})
 }
 
 func AuthMiddleware(authServer string) gin.HandlerFunc {
@@ -63,14 +41,14 @@ func AuthMiddleware(authServer string) gin.HandlerFunc {
 	}
 }
 
-func GetAccountFromContext(ctx *gin.Context) (Account, error) {
+func GetAccountFromContext(ctx *gin.Context) (auth.Account, error) {
 	account, exists := ctx.Get("account")
 	if !exists {
-		return Account{}, fmt.Errorf("account not found in context")
+		return auth.Account{}, fmt.Errorf("account not found in context")
 	}
-	acc, ok := account.(Account)
+	acc, ok := account.(auth.Account)
 	if !ok {
-		return Account{}, fmt.Errorf("account is not of type Account")
+		return auth.Account{}, fmt.Errorf("account is not of type Account")
 	}
 	return acc, nil
 }

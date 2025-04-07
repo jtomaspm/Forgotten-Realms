@@ -1,8 +1,8 @@
 package session
 
 import (
-	"backend/lib/auth_server/dal/models"
 	"backend/lib/auth_server/dal/models/views"
+	"backend/pkg/core/models"
 	"context"
 	"time"
 

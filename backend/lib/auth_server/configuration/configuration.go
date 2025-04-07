@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"backend/pkg/core"
+	"backend/pkg/core/models"
 	"fmt"
 	"os"
 )
@@ -16,7 +16,7 @@ type GitHub struct {
 type Configuration struct {
 	JwtSecret string
 	GitHub    *GitHub
-	Server    *core.Configuration
+	Server    *models.Configuration
 }
 
 type EnvVariables struct {
