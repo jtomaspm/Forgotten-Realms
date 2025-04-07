@@ -79,7 +79,7 @@ func Verify(ctx context.Context, pool *pgxpool.Pool, token uuid.UUID) error {
 	if properties.EmailVerified {
 		return fmt.Errorf("email already verified")
 	}
-	if properties.TokenExpiresAt.Before(time.Now()) {
+	if properties.TokenExpiresAt.Before(time.Now().UTC()) {
 		return fmt.Errorf("token expired")
 	}
 	if properties.VerificationToken != token {

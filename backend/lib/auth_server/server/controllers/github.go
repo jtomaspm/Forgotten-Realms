@@ -167,7 +167,7 @@ func (controller *GithubController) callback(ctx *gin.Context) {
 	//Provide needed fields new account flow
 	errorStatus = http.StatusInternalServerError
 	errorMsg = "Failed to generate new user claims"
-	expires_at := time.Now().Add(10 * time.Minute)
+	expires_at := time.Now().UTC().Add(10 * time.Minute)
 	claims := models.NewUserClaims{
 		ExternalId: externalId,
 		Source:     controller.Configuration.GitHub.Source,

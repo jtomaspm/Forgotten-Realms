@@ -3,11 +3,12 @@
 	import type { User } from "$lib/ts/types/User.svelte";
 	import PlayButton from "./play-btn/PlayButton.svelte";
 	import RegisterButton from "./play-btn/RegisterButton.svelte";
+    import { DateTime } from "ts-luxon";
 
     let { user, loggedIn, realm }
         : { user: User | undefined, loggedIn: boolean, realm: RealmListing } 
         = $props();
-    let openDays = $derived(Math.floor((Date.now() - Date.parse(realm.created_at)) / (1000 * 60 * 60 * 24)))
+    let openDays = $derived(Math.abs(Math.trunc(DateTime.fromISO(realm.created_at, { zone: 'utc' }).diffNow(['days']).days)));
 </script>
 
 <div class="display-wrapper">

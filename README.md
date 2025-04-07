@@ -27,7 +27,7 @@ Forgotten Realms is an immersive MMO-RTS game set in a newly discovered world fi
 
 ### Backend
 * **Language**: Go (Golang)
-* **Database**: PostgreSQL (for persistence), Redis (for caching and session management)
+* **Database**: Postgres (for persistence), Redis (for caching and session management)
 * **Real-Time**: WebSockets for live player interactions, battle outcomes, and world updates.
 
 ### Server Architecture

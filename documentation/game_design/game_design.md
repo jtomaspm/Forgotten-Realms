@@ -117,6 +117,8 @@ Energy.infused warriors, flying units.
     * Heavy infantry using barrier-shields and pulse cannons; strong vs. cavalry.
   * Vanguard
     * Heavily armored guardian powered by enchanted gems; slow but tanky.
+  * Colossus
+    * Massive golem fueled by unstable magic cores. Excels at breaking formations (AoE damage), but slow and vulnerable to siege.
 * spy (spy troops and buildings in other villages)
   * Seeker Drone 
     * Magical-mechanical drone that scans enemy villages undetected.   
