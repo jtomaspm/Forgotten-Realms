@@ -32,6 +32,7 @@ jobs:
           echo "POSTGRES_PORT=3000" >> infrastructure/docker-compose/local/.env
           echo "AUTH_PORT=3001" >> infrastructure/docker-compose/local/.env
           echo "HUB_PORT=3002" >> infrastructure/docker-compose/local/.env
+          echo "FRONTEND_PORT=1080" >> infrastructure/docker-compose/local/.env
           echo "REALM_PORT=3003" >> infrastructure/docker-compose/local/.env
           echo "LOKI_PORT=3004" >> infrastructure/docker-compose/local/.env
           echo "GRAFANA_PORT=3005" >> infrastructure/docker-compose/local/.env

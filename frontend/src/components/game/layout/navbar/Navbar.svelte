@@ -17,18 +17,18 @@
 
 <div>
     <ButtonGroup>
-        <NavBarButton {color} href="/player" txt="" Icon={GridSolid} />
-        <NavBarButton {color} href="/village" txt="" Icon={HomeSolid} />
+        <NavBarButton {color} href="/game/player" txt="" Icon={GridSolid} />
+        <NavBarButton {color} href="/game/village" txt="" Icon={HomeSolid} />
     </ButtonGroup>
-    <NavBarButton {color} href="/map" txt="Map" Icon={GlobeSolid} />
-    <NavBarButton {color} href="/ranking" txt="Ranking" Icon={AwardSolid} />
+    <NavBarButton {color} href="/game/map" txt="Map" Icon={GlobeSolid} />
+    <NavBarButton {color} href="/game/ranking" txt="Ranking" Icon={AwardSolid} />
     <ButtonGroup>
-        <NavBarButton {color} href="/ally" txt="" Icon={UsersGroupSolid} />
-        <NavBarButton {color} href="/info/player" txt="" Icon={UserSolid} />
+        <NavBarButton {color} href="/game/ally" txt="" Icon={UsersGroupSolid} />
+        <NavBarButton {color} href="/game/info/player" txt="" Icon={UserSolid} />
     </ButtonGroup>
     <ButtonGroup>
-        <NavBarButton {color} href="/report" txt="3" Icon={ClipboardListSolid} />
-        <NavBarButton {color} href="/mail" txt="7" Icon={MailBoxSolid} />
+        <NavBarButton {color} href="/game/report" txt="3" Icon={ClipboardListSolid} />
+        <NavBarButton {color} href="/game/mail" txt="7" Icon={MailBoxSolid} />
     </ButtonGroup>
     <NavBarButton {color} href="/settings" txt="Settings" Icon={CogSolid} />
 </div>

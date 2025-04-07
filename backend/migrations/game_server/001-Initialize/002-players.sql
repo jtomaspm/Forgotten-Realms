@@ -1,7 +1,7 @@
 DO $$ 
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'faction') THEN
-        CREATE TYPE role AS ENUM ('caldari', 'varnak', 'dawnhold');
+        CREATE TYPE faction AS ENUM ('caldari', 'varnak', 'dawnhold');
     END IF;
 END $$;
 

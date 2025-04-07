@@ -1,15 +1,15 @@
 <script lang="ts">
 	import type { User } from '$lib/ts/types/User.svelte';
 	import { onMount } from 'svelte';
-	import AccountButton from '../components/buttons/AccountButton.svelte';
-	import Navbar from '../components/navbar/Navbar.svelte';
+	import AccountButton from '../../components/hub/buttons/AccountButton.svelte';
+	import Navbar from '../../components/hub/navbar/Navbar.svelte';
 	import type { TabName } from '$lib/ts/types/NavbarTypes.svelte';
-	import Home from '../components/tabs/home/Home.svelte';
-	import Realms from '../components/tabs/realms/Realms.svelte';
-	import Inventory from '../components/tabs/inventory/Inventory.svelte';
-	import Market from '../components/tabs/market/Market.svelte';
-	import Social from '../components/tabs/social/Social.svelte';
-	import Info from '../components/tabs/info/Info.svelte';
+	import Home from '../../components/hub/tabs/home/Home.svelte';
+	import Realms from '../../components/hub/tabs/realms/Realms.svelte';
+	import Inventory from '../../components/hub/tabs/inventory/Inventory.svelte';
+	import Market from '../../components/hub/tabs/market/Market.svelte';
+	import Social from '../../components/hub/tabs/social/Social.svelte';
+	import Info from '../../components/hub/tabs/info/Info.svelte';
 	import type { RealmListing } from '$lib/ts/types/Realm.svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;
 
