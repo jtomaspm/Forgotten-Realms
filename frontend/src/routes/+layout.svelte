@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../../app.css';
+	import '../app.css';
 	let { children } = $props();
 </script>
 
@@ -10,7 +10,7 @@
 <style lang="postcss">
     @reference "tailwindcss";
     #background {
-        @apply w-screen h-screen;
+        @apply w-screen min-h-screen;
         background-image: url('$lib/static/background.jpg');
         background-attachment: fixed;
         background-size: auto;

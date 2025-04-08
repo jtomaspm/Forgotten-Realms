@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { CreateAccount } from "$lib/ts/sdk/auth/Account.svelte";
 	import type { AccountCreated, AuthRegistrationCallbackResponse } from "$lib/ts/types/AuthCallbackResponse.svelte";
 	import { Button, Modal } from "flowbite-svelte";
 	import { ArrowRightOutline, ExclamationCircleOutline } from "flowbite-svelte-icons";
@@ -17,8 +18,7 @@
     let { authResponse, accountCreated }
         : { authResponse: AuthRegistrationCallbackResponse, accountCreated: AccountCreated }
         = $props();
-    function submitName()  {
-        accountCreated.created = false;
+    async function submitName()  {
         if (name.trim() === "") {
             errorMessage = "Name cannot be empty."
             error = true;
@@ -29,36 +29,19 @@
             error = true;
             return;
         }
-        fetch(`${authUrl}/api/account`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " +  authResponse.token
-            },
-            body: JSON.stringify({
+        let response = await CreateAccount({url: authUrl}, authResponse.token, {
                 name: name,
                 send_email_notifications: sendEmailNotifications
-            })
-        }).then(response => {
-            if (response.status === 201) {
-                response.json().then(data => {
-                    accountCreated.token = data.token ?? "";
-                    accountCreated.name = name;
-                    accountCreated.created = true;
-                }).catch(error => {
-                    errorMessage = "Error handling api response."
-                    error = true;
-                });
-                return;
-            }
-            response.json().then(errorData => {
-                errorMessage = errorData.error || "Failed to login";
-                error = true;
             });
-        }).catch(error => {
-            errorMessage = 'An error occurred while processing the login.';
+        console.log(response);
+        if (response.error) {
             error = true;
-        });
+            errorMessage = response.error.Errors.pop() ?? "Unknown error."
+            return;
+        }
+        accountCreated.token = response.token;
+        accountCreated.name = name;
+        accountCreated.created = true;
     }
 </script>
 

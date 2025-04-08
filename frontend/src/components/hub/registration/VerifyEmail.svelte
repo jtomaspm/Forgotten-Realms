@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { VerifyEmail } from "$lib/ts/sdk/auth/Account.svelte";
 	import type { AccountCreated, AuthRegistrationCallbackResponse } from "$lib/ts/types/AuthCallbackResponse.svelte";
 	import { Button, Modal } from "flowbite-svelte";
 	import { ArrowLeftOutline, CheckCircleOutline, CheckCircleSolid, ExclamationCircleOutline } from "flowbite-svelte-icons";
@@ -15,18 +16,14 @@
         window.location.href = '/';
     }
     async function verifyEmail() {
-        try {
-            const response = await fetch(`${authUrl}/api/account/verify?token=${accountCreated.token}`, {
-                method: 'GET',
-            });
-            if (response.status === 202) {
-                error = false;
-                modalTxt = "Email verified.";
-                accountCreated.token = "";
-                modal = true;
-            }
-        } catch (ex) {
-            console.log(ex);
+        var err = await VerifyEmail({url: authUrl}, accountCreated.token);
+        if (!err.error) {
+            error = false;
+            modalTxt = "Email verified.";
+            accountCreated.token = "";
+            modal = true;
+        } else {
+            console.log(err);
             error = true;
             modalTxt = "Failed to verify email.";
             modal = true;

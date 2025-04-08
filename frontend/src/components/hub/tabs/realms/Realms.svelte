@@ -4,6 +4,7 @@
 	import { onMount } from "svelte";
 	import RealmDisplay from "./RealmDisplay.svelte";
 	import WorldSelector from "./WorldSelector.svelte";
+	import { GetRealms } from "$lib/ts/sdk/hub/Realms.svelte";
     const hubUrl = import.meta.env.VITE_HUB_URL;
 
     let { user, loggedIn, realm, setRealm }
@@ -27,20 +28,11 @@
     );
 
     onMount(async () => {
-        let headers : any = {
-            'Content-Type': 'application/json',
-        } ;
-        if (loggedIn && user) {
-            headers.Authorization = "Bearer " + user.Token
+        let response = await GetRealms({url: hubUrl}, (loggedIn && user) ? user.Token : undefined)
+        if (response.error) {
+            return
         }
-        let response = await fetch(`${hubUrl}/api/realm`, {
-            method: 'GET',
-            headers: headers
-        })
-        if (!(response.status === 200)) {
-            return;
-        }
-        realms = (await response.json()).realms;
+        realms = response.realms;
         if (realm) {
             return;
         }

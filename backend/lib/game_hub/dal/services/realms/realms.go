@@ -67,7 +67,7 @@ func GetByCreateQuery(ctx context.Context, pool *pgxpool.Pool, realm *queries.Cr
 	err := pool.QueryRow(ctx, `
 		SELECT id
 		FROM realms
-		WHERE name=$1, api=$2
+		WHERE name=$1 AND api=$2
 		LIMIT 1	
 	`, realm.Name, realm.Api,
 	).Scan(

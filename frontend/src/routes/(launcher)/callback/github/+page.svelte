@@ -12,7 +12,7 @@
         const code = urlParams.get('code');
         
         if (!code) {
-            errorMessage = "Missing code parameter.";
+            window.location.href = "/";
             return;
         }
 
@@ -42,11 +42,11 @@
     });
 </script>
 
-<main>
+<div>
   {#if errorMessage}
     <p style="color: red;">{errorMessage}</p>
   {/if}
   {#if authResponse && !errorMessage}
     <CreateAccount {authResponse} />
   {/if}
-</main>
+</div>
