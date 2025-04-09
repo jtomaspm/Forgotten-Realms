@@ -25,7 +25,7 @@
             </div>
         {:else if !realm.registered && realm.status === 'open'}
             <div class="btn-container">
-                <RegisterButton />
+                <RegisterButton {realm} />
             </div>
         {:else if realm.status === 'ended'}
             <div class="realm-status">

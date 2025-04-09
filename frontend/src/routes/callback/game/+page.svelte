@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreatePlayer from "../../../../components/game/registration/CreatePlayer.svelte";
+	import CreatePlayer from "../../../components/game/registration/CreatePlayer.svelte";
 	import type { AuthLoginCallbackResponse, AuthRegistrationCallbackResponse } from '$lib/ts/types/AuthCallbackResponse.svelte';
     import { onMount } from 'svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;
