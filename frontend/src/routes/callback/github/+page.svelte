@@ -2,6 +2,7 @@
 	import type { AuthLoginCallbackResponse, AuthRegistrationCallbackResponse } from '$lib/ts/types/AuthCallbackResponse.svelte';
     import { onMount } from 'svelte';
 	import CreateAccount from '../../../components/hub/registration/CreateAccount.svelte';
+	import { SetSessionToken } from '$lib/ts/store/Browser.svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;
 
     let errorMessage = $state.raw("");
@@ -23,7 +24,7 @@
             
             if (response.status === 200) {
                 const data: AuthLoginCallbackResponse = await response.json();
-                localStorage.setItem("popfrsid", data.token);
+                SetSessionToken(data.token);
                 window.location.href = "/";
                 return;
             }

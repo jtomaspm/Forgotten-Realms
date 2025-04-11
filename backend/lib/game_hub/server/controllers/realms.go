@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"backend/lib/game_hub/configuration"
+	"backend/lib/game_hub/dal/models"
 	"backend/lib/game_hub/dal/models/queries"
 	"backend/lib/game_hub/dal/models/views"
 	"backend/lib/game_hub/dal/services/realms"
@@ -12,6 +13,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type RealmsController struct {
@@ -21,6 +23,7 @@ type RealmsController struct {
 
 func (controller *RealmsController) Mount(basePath string, engine *gin.Engine) {
 	engine.GET(basePath+"/realm", controller.getRealms)
+	engine.GET(basePath+"/realm/:id", controller.getRealm)
 	engine.POST(basePath+"/realm", controller.registerRealm)
 	engine.POST(basePath+"/realm/account", controller.registerAccount)
 }
@@ -39,6 +42,31 @@ func (Controller *RealmsController) getRealms(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"realms": result})
+}
+
+func (Controller *RealmsController) getRealm(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := uuid.Parse(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid realm id"})
+		log.Println("Failed to get realm:", err)
+		return
+	}
+	var result models.Realm
+	result, err = realms.GetById(ctx, Controller.Database.Pool, id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get realm"})
+		log.Println("Failed to get realms:", err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"id":         result.Id,
+		"name":       result.Name,
+		"api":        result.Api,
+		"status":     result.Status.String(),
+		"created_at": result.CreatedAt,
+		"updated_at": result.UpdatedAt,
+	})
 }
 
 func (controller *RealmsController) registerRealm(ctx *gin.Context) {

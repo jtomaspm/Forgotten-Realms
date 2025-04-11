@@ -14,7 +14,7 @@ func Create(ctx context.Context, pool database.Querier, command *queries.CreateP
 	err := pool.QueryRow(
 		ctx,
 		`
-		INSERT INTO players (account_id, faction) 
+		INSERT INTO players (id, faction) 
 		VALUES ($1, $2) 
 		RETURNING id;
 		`,
@@ -27,40 +27,13 @@ func GetById(ctx context.Context, pool database.Querier, id uuid.UUID) (models.P
 	var player models.Player
 	var faction string
 	err := pool.QueryRow(ctx, `
-		SELECT id, account_id, faction, created_at, updated_at 
+		SELECT id, faction, created_at, updated_at 
 		FROM players
 		WHERE id=$1
 		LIMIT 1	
 	`, id,
 	).Scan(
 		&player.Id,
-		&player.AccountId,
-		&faction,
-		&player.CreatedAt,
-		&player.UpdatedAt,
-	)
-	if err != nil {
-		return player, err
-	}
-	player.Faction, err = models.FromString(faction)
-	if err != nil {
-		return player, err
-	}
-	return player, nil
-}
-
-func GetByAccountId(ctx context.Context, pool database.Querier, id uuid.UUID) (models.Player, error) {
-	var player models.Player
-	var faction string
-	err := pool.QueryRow(ctx, `
-		SELECT id, account_id, faction, created_at, updated_at 
-		FROM players
-		WHERE account_id=$1
-		LIMIT 1	
-	`, id,
-	).Scan(
-		&player.Id,
-		&player.AccountId,
 		&faction,
 		&player.CreatedAt,
 		&player.UpdatedAt,

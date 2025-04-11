@@ -27,7 +27,6 @@ func (controller *AccountController) Mount(basePath string, engine *gin.Engine) 
 	path := basePath + "/account"
 	engine.POST(path+"", controller.create)
 	engine.GET(path+"", controller.get)
-	engine.GET(path+"/id", controller.getId)
 	engine.GET(path+"/verify", controller.verifyEmail)
 }
 
@@ -53,28 +52,6 @@ func (controller *AccountController) get(ctx *gin.Context) {
 		"name":  account.Name,
 		"email": account.Email,
 		"role":  account.Role.String(),
-	})
-}
-
-func (controller *AccountController) getId(ctx *gin.Context) {
-	errorStatus := http.StatusBadRequest
-	tokenStr := ctx.Query("token")
-	if tokenStr == "" {
-		ctx.JSON(errorStatus, gin.H{"error": "Missing token parameter"})
-		return
-	}
-	token, err := uuid.Parse(tokenStr)
-	if err != nil {
-		ctx.JSON(errorStatus, gin.H{"error": "Invalid token"})
-		return
-	}
-	id, err := session.GetAccountId(ctx, controller.Database.Pool, token)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"id": id,
 	})
 }
 

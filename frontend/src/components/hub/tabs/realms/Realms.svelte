@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { RealmListing } from "$lib/ts/types/Realm.svelte";
-	import type { User } from "$lib/ts/types/User.svelte";
 	import { onMount } from "svelte";
 	import RealmDisplay from "./RealmDisplay.svelte";
 	import WorldSelector from "./WorldSelector.svelte";
 	import { GetRealms } from "$lib/ts/sdk/hub/Realms.svelte";
+	import type { UserState } from "$lib/ts/state/UserState.svelte";
     const hubUrl = import.meta.env.VITE_HUB_URL;
 
-    let { user, loggedIn, realm, setRealm }
-        : { user: User | undefined, loggedIn: boolean, realm: RealmListing | undefined, setRealm: (realm: RealmListing) => void } 
+    let { user, realm, setRealm }
+        : { user: UserState, realm: RealmListing | undefined, setRealm: (realm: RealmListing) => void } 
         = $props();
     let realms: RealmListing[]  = $state.raw([]);
     let playing_realms = $derived(
@@ -28,7 +28,7 @@
     );
 
     onMount(async () => {
-        let response = await GetRealms({url: hubUrl}, (loggedIn && user) ? user.Token : undefined)
+        let response = await GetRealms({url: hubUrl}, (user.LoggedIn) ? user.Get()!.Token : undefined)
         if (response.error) {
             return
         }
@@ -51,7 +51,7 @@
 </div>
 
 {#if realm}
-    <RealmDisplay {user} {loggedIn} {realm} />
+    <RealmDisplay {user} {realm} />
 {/if}
 
 <style lang="postcss">

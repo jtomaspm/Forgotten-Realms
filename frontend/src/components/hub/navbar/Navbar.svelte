@@ -1,18 +1,19 @@
 <script lang="ts">
+	import type { UserState } from "$lib/ts/state/UserState.svelte";
 	import type { TabName } from "$lib/ts/types/NavbarTypes.svelte";
 	import Bottom from "./sections/Bottom.svelte";
 	import Mid from "./sections/Mid.svelte";
 	import Top from "./sections/Top.svelte";
 
-    let { activeTab, loggedIn, changeTab }
-        : { activeTab: TabName, loggedIn: boolean, changeTab: (tab: TabName) => void } 
+    let { activeTab, user, changeTab }
+        : { activeTab: TabName, user: UserState, changeTab: (tab: TabName) => void } 
         = $props();
 </script>
 
 <div id="navbar">
     <div id="navbar-container">
         <Top />
-        <Mid {activeTab} {loggedIn} {changeTab} />
+        <Mid {activeTab} loggedIn={user.LoggedIn} {changeTab} />
         <Bottom />
     </div>
 </div>

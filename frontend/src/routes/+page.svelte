@@ -11,6 +11,9 @@
 	import Social from '../components/hub/tabs/social/Social.svelte';
 	import Info from '../components/hub/tabs/info/Info.svelte';
 	import type { RealmListing } from '$lib/ts/types/Realm.svelte';
+	import { DeleteSessionToken, GetSessionToken } from '$lib/ts/store/Browser.svelte';
+	import { GetAccount } from '$lib/ts/sdk/auth/Account.svelte';
+	import { UserState } from '$lib/ts/state/UserState.svelte';
     const authUrl = import.meta.env.VITE_AUTH_URL;
 
     let activeTab: TabName = $state.raw("Home");
@@ -23,35 +26,26 @@
     };
 
 
-	let user : User | undefined = $state.raw()
-    let loggedIn = $derived(user != undefined && !(user.Token === ""))
+	let user : UserState = new UserState();
     onMount(async () => {
-        let token = localStorage.getItem("popfrsid")
+        let token = GetSessionToken();
         if (!token) {
             return;
         }
-        const response = await fetch(`${authUrl}/api/account?token=${token}`, {
-            method: 'GET',
-        });
-        if (response.status === 200) {
-            let data = await response.json();
-            user = {
-                Id: data.id,
-                Email: data.email,
-                Name: data.name,
-                Role: data.role,
-                Token: token
-            };
+        const response = await GetAccount({url:authUrl}, token)
+        console.log(response);
+        if (response.error === undefined && response.account !== null) {
+            user.Set(response.account);
             return;
         }
-        localStorage.removeItem("popfrsid")
+        DeleteSessionToken();
     });
 </script>
 
 {#if activeTab === "Home"}
     <Home />
 {:else if activeTab === "Realms"}
-    <Realms {user} {loggedIn} {realm} {setRealm} />
+    <Realms {user} {realm} {setRealm} />
 {:else if activeTab === "Market" && user}
     <Market />
 {:else if activeTab === "Inventory" && user}
@@ -62,5 +56,5 @@
     <Info />
 {/if}
 
-<Navbar {activeTab} {loggedIn} {changeTab} />
-<AccountButton {user} {loggedIn} />
+<Navbar {activeTab} {user} {changeTab} />
+<AccountButton {user} />

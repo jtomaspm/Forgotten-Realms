@@ -1,12 +1,12 @@
 <script lang="ts">
+	import type { UserState } from "$lib/ts/state/UserState.svelte";
 	import type { RealmListing } from "$lib/ts/types/Realm.svelte";
-	import type { User } from "$lib/ts/types/User.svelte";
 	import PlayButton from "./play-btn/PlayButton.svelte";
 	import RegisterButton from "./play-btn/RegisterButton.svelte";
     import { DateTime } from "ts-luxon";
 
-    let { user, loggedIn, realm }
-        : { user: User | undefined, loggedIn: boolean, realm: RealmListing } 
+    let { user, realm }
+        : { user: UserState, realm: RealmListing } 
         = $props();
     let openDays = $derived(Math.abs(Math.trunc(DateTime.fromISO(realm.created_at, { zone: 'utc' }).diffNow(['days']).days)));
 </script>
@@ -17,7 +17,7 @@
             <h1>{realm.name}</h1>
             <p>Started {openDays === 0 ? "today" : openDays === 1 ? "yesterday" : `${openDays} days ago`}</p>
         </div>
-        {#if  !loggedIn}
+        {#if  !user.LoggedIn}
             <p>Must be signed in to play in the forgotten realms.</p>
         {:else if realm.registered && realm.status !== 'ended'}
             <div class="btn-container">

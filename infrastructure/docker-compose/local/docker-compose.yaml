@@ -75,7 +75,7 @@ services:
       - "4001:${REALM_PORT}"
     environment:
       - REALM_NAME=Realm1
-      - PUBLIC_ENDPOINT=localhost:4001
+      - PUBLIC_ENDPOINT=http://localhost:4001
       - DOCKER_AUTH=${DOCKER_AUTH}
       - DOCKER_HUB=${DOCKER_HUB}
       - DOCKER_TOKEN=${DOCKER_TOKEN}
@@ -100,7 +100,7 @@ services:
       - "4002:${REALM_PORT}"
     environment:
       - REALM_NAME=Realm2
-      - PUBLIC_ENDPOINT=localhost:4002
+      - PUBLIC_ENDPOINT=http://localhost:4002
       - DOCKER_AUTH=${DOCKER_AUTH}
       - DOCKER_HUB=${DOCKER_HUB}
       - DOCKER_TOKEN=${DOCKER_TOKEN}

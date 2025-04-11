@@ -3,9 +3,6 @@
 	import type { User } from '$lib/ts/types/User.svelte';
     import { Button } from 'flowbite-svelte';
 
-    let { user, loggedIn }
-        : { user: User | undefined, loggedIn: boolean } 
-        = $props();
 </script>
 
 <Button color="dark">

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -94,4 +96,43 @@ func RegisterAccount(command *RegisterAccountRequest) error {
 		return fmt.Errorf("failed to register account: %s", resp.Status)
 	}
 	return nil
+}
+
+type GetRealmRequest struct {
+	Hub     string
+	RealmId uuid.UUID
+}
+
+func IsRealmOpen(command *GetRealmRequest) (bool, error) {
+	reqPath := "http://" + command.Hub + "/api/realm/" + command.RealmId.String()
+
+	req, err := http.NewRequest("GET", reqPath, nil)
+	if err != nil {
+		return false, err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	if !(resp.StatusCode == http.StatusOK) {
+		return false, fmt.Errorf("failed to register account: %s", resp.Status)
+	}
+	body, err := io.ReadAll(resp.Body)
+	log.Println(string(body))
+	if err != nil {
+		return false, err
+	}
+	var realm struct {
+		Status string `json:"status"`
+	}
+	err = json.Unmarshal(body, &realm)
+	if err != nil {
+		return false, err
+	}
+	log.Println(realm, realm.Status)
+	return realm.Status == "open", nil
 }

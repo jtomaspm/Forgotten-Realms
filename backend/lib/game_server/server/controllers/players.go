@@ -2,15 +2,18 @@ package controllers
 
 import (
 	"backend/lib/game_server/configuration"
+	dalModels "backend/lib/game_server/dal/models"
 	"backend/lib/game_server/dal/models/queries"
 	"backend/lib/game_server/dal/services/players"
 	"backend/pkg/api/middleware"
 	"backend/pkg/core/models"
 	"backend/pkg/database"
 	"backend/pkg/sdk/hub/realms"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type PlayersController struct {
@@ -25,7 +28,24 @@ func (controller *PlayersController) Mount(basePath string, engine *gin.Engine) 
 }
 
 func (controller *PlayersController) getById(ctx *gin.Context) {
-
+	idParam := ctx.Param("id")
+	id, err := uuid.Parse(idParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid player id"})
+		return
+	}
+	var result dalModels.Player
+	result, err = players.GetById(ctx, controller.Database.Pool, id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get player"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"id":         result.Id,
+		"faction":    result.Faction.String(),
+		"created_at": result.CreatedAt,
+		"updated_at": result.UpdatedAt,
+	})
 }
 
 func (controller *PlayersController) query(ctx *gin.Context) {
@@ -38,10 +58,30 @@ func (controller *PlayersController) create(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 	}
 
-	var command queries.CreatePlayer
-	if err := ctx.ShouldBindJSON(&command); err != nil {
+	open, err := realms.IsRealmOpen(&realms.GetRealmRequest{
+		Hub:     controller.Configuration.Docker.Hub,
+		RealmId: controller.Configuration.Realm.Id,
+	})
+	if err != nil || !open {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Server closed."})
+		log.Println(err)
+		return
+	}
+	var cm_faction struct {
+		Faction string `json:"faction"`
+	}
+	if err := ctx.ShouldBindJSON(&cm_faction); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
+	}
+	faction, err := dalModels.FromString(cm_faction.Faction)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid faction"})
+		return
+	}
+	command := queries.CreatePlayer{
+		AccountId: account.Id,
+		Faction:   faction,
 	}
 	transaction, err := controller.Database.Pool.Begin(ctx)
 	defer transaction.Rollback(ctx)

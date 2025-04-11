@@ -6,14 +6,11 @@ BEGIN
 END $$;
 
 CREATE TABLE players (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    account_id UUID UNIQUE NOT NULL,
+    id UUID PRIMARY KEY NOT NULL,
     faction faction NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE INDEX idx_players_account_id ON players(account_id);
 
 CREATE TRIGGER trigger_set_updated_at_players
 BEFORE UPDATE ON players

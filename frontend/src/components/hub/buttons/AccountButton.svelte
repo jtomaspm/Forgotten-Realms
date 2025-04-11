@@ -3,15 +3,16 @@
 	import type { User } from '$lib/ts/types/User.svelte';
 	import ProfileButton from './ProfileButton.svelte';
 	import LoginButton from './LoginButton.svelte';
+	import type { UserState } from '$lib/ts/state/UserState.svelte';
 
-    let { user, loggedIn }
-        : { user: User | undefined, loggedIn: boolean } 
+    let { user }
+        : { user: UserState } 
         = $props();
 </script>
 
 <div class="btn-container">
-    {#if loggedIn}
-        <ProfileButton {user} {loggedIn} />
+    {#if user.LoggedIn}
+        <ProfileButton />
     {:else}
         <LoginButton />
     {/if}
