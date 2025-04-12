@@ -1,0 +1,173 @@
+{
+    "special": "stone_hour",
+    "levels": {
+        "0": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 10,
+            "time_seconds": 10
+        },
+        "1": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 20,
+            "time_seconds": 10
+        },
+        "2": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 30,
+            "time_seconds": 10
+        },
+        "3": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 40,
+            "time_seconds": 10
+        },
+        "4": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 50,
+            "time_seconds": 10
+        },
+        "5": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 60,
+            "time_seconds": 10
+        },
+        "6": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 70,
+            "time_seconds": 10
+        },
+        "7": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 80,
+            "time_seconds": 10
+        },
+        "8": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 90,
+            "time_seconds": 10
+        },
+        "9": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 100,
+            "time_seconds": 10
+        },
+        "10": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 110,
+            "time_seconds": 10
+        },
+        "11": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 120,
+            "time_seconds": 10
+        },
+        "12": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 130,
+            "time_seconds": 10
+        },
+        "13": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 140,
+            "time_seconds": 10
+        },
+        "14": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 150,
+            "time_seconds": 10
+        },
+        "15": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 160,
+            "time_seconds": 10
+        },
+        "16": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 170,
+            "time_seconds": 10
+        },
+        "17": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 180,
+            "time_seconds": 10
+        },
+        "18": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 190,
+            "time_seconds": 10
+        },
+        "19": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 200,
+            "time_seconds": 10
+        },
+        "20": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 210,
+            "time_seconds": 10
+        }
+    }
+}

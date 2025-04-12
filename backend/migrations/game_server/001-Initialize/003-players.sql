@@ -1,10 +1,3 @@
-DO $$ 
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'faction') THEN
-        CREATE TYPE faction AS ENUM ('caldari', 'varnak', 'dawnhold');
-    END IF;
-END $$;
-
 CREATE TABLE players (
     id UUID PRIMARY KEY NOT NULL,
     faction faction NOT NULL,

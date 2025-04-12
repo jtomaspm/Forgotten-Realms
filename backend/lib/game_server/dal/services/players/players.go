@@ -41,7 +41,7 @@ func GetById(ctx context.Context, pool database.Querier, id uuid.UUID) (models.P
 	if err != nil {
 		return player, err
 	}
-	player.Faction, err = models.FromString(faction)
+	player.Faction, err = models.FactionFromString(faction)
 	if err != nil {
 		return player, err
 	}

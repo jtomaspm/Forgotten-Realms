@@ -1,0 +1,165 @@
+{
+    "special": "build_speed_multi_x1000",
+    "levels": {
+        "1": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1000,
+            "time_seconds": 10
+        },
+        "2": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1100,
+            "time_seconds": 10
+        },
+        "3": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1200,
+            "time_seconds": 10
+        },
+        "4": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1300,
+            "time_seconds": 10
+        },
+        "5": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1400,
+            "time_seconds": 10
+        },
+        "6": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1500,
+            "time_seconds": 10
+        },
+        "7": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1600,
+            "time_seconds": 10
+        },
+        "8": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1700,
+            "time_seconds": 10
+        },
+        "9": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1800,
+            "time_seconds": 10
+        },
+        "10": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 1900,
+            "time_seconds": 10
+        },
+        "11": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2000,
+            "time_seconds": 10
+        },
+        "12": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2100,
+            "time_seconds": 10
+        },
+        "13": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2200,
+            "time_seconds": 10
+        },
+        "14": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2300,
+            "time_seconds": 10
+        },
+        "15": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2400,
+            "time_seconds": 10
+        },
+        "16": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2500,
+            "time_seconds": 10
+        },
+        "17": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2600,
+            "time_seconds": 10
+        },
+        "18": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2700,
+            "time_seconds": 10
+        },
+        "19": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 2800,
+            "time_seconds": 10
+        },
+        "20": {
+            "wood": 100,
+            "stone": 100,
+            "metal": 100,
+            "population": 10,
+            "special": 3000,
+            "time_seconds": 10
+        }
+    }
+}

@@ -8,5 +8,5 @@ import (
 
 type CreatePlayer struct {
 	AccountId uuid.UUID
-	Faction   models.FactionEnum
+	Faction   models.Faction
 }

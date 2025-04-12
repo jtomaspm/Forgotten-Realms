@@ -15,6 +15,6 @@
 <style lang="postcss">
     @reference "tailwindcss";
     .footer_container {
-        @apply w-screen h-[25px] bg-gray-500 fixed bottom-0 left-0 z-50 flex justify-center;
+        @apply w-screen h-[25px] p-[1px] bg-gray-500 fixed bottom-0 left-0 z-50 flex justify-center;
     }
 </style>

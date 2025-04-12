@@ -5,26 +5,26 @@ import (
 	"strings"
 )
 
-type FactionEnum int
+type Faction int
 
 const (
-	CALDARI FactionEnum = iota
-	VARNAK
-	DAWNHOLD
+	Caldari Faction = iota
+	Varnak
+	Dawnhold
 )
 
-func (d FactionEnum) String() string {
+func (d Faction) String() string {
 	return [...]string{"caldari", "varnak", "dawnhold"}[d]
 }
 
-func FromString(factionStr string) (FactionEnum, error) {
+func FactionFromString(factionStr string) (Faction, error) {
 	switch strings.ToLower(factionStr) {
 	case "caldari":
-		return CALDARI, nil
+		return Caldari, nil
 	case "varnak":
-		return VARNAK, nil
+		return Varnak, nil
 	case "dawnhold":
-		return DAWNHOLD, nil
+		return Dawnhold, nil
 	default:
 		return 0, errors.New("invalid faction: " + factionStr)
 	}

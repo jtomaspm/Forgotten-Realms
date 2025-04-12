@@ -8,7 +8,7 @@ import (
 
 type Player struct {
 	Id        uuid.UUID
-	Faction   FactionEnum
+	Faction   Faction
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

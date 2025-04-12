@@ -74,7 +74,7 @@ func (controller *PlayersController) create(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
-	faction, err := dalModels.FromString(cm_faction.Faction)
+	faction, err := dalModels.FactionFromString(cm_faction.Faction)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid faction"})
 		return
