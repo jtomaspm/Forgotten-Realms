@@ -4,6 +4,7 @@ import (
 	"backend/lib/game_server/dal/models"
 	"backend/lib/game_server/dal/models/queries"
 	"backend/pkg/database"
+	"backend/pkg/sdk/game/enum"
 	"context"
 
 	"github.com/google/uuid"
@@ -41,7 +42,7 @@ func GetById(ctx context.Context, pool database.Querier, id uuid.UUID) (models.P
 	if err != nil {
 		return player, err
 	}
-	player.Faction, err = models.FactionFromString(faction)
+	player.Faction, err = enum.FactionFromString(faction)
 	if err != nil {
 		return player, err
 	}

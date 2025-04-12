@@ -1,12 +1,12 @@
 package queries
 
 import (
-	"backend/lib/game_server/dal/models"
+	"backend/pkg/sdk/game/enum"
 
 	"github.com/google/uuid"
 )
 
 type CreatePlayer struct {
 	AccountId uuid.UUID
-	Faction   models.Faction
+	Faction   enum.Faction
 }

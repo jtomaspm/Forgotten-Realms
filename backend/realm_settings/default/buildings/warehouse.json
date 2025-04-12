@@ -1,252 +1,251 @@
 {
-    "special": "capacity",
     "levels": {
         "0": {
             "wood": 0,
             "stone": 0,
-            "iron": 0,
+            "metal": 0,
             "population": 0,
-            "special": 800,
+            "capacity": 800,
             "time_seconds": 10
         },
         "1": {
             "wood": 60,
             "stone": 50,
-            "iron": 40,
+            "metal": 40,
             "population": 0,
-            "special": 1000,
+            "capacity": 1000,
             "time_seconds": 10
         },
         "2": {
             "wood": 76,
             "stone": 64,
-            "iron": 50,
+            "metal": 50,
             "population": 0,
-            "special": 1229,
+            "capacity": 1229,
             "time_seconds": 10
         },
         "3": {
             "wood": 96,
             "stone": 81,
-            "iron": 62,
+            "metal": 62,
             "population": 0,
-            "special": 1512,
+            "capacity": 1512,
             "time_seconds": 10
         },
         "4": {
             "wood": 121,
             "stone": 102,
-            "iron": 77,
+            "metal": 77,
             "population": 0,
-            "special": 1859,
+            "capacity": 1859,
             "time_seconds": 10
         },
         "5": {
             "wood": 154,
             "stone": 130,
-            "iron": 96,
+            "metal": 96,
             "population": 0,
-            "special": 2285,
+            "capacity": 2285,
             "time_seconds": 10
         },
         "6": {
             "wood": 194,
             "stone": 165,
-            "iron": 120,
+            "metal": 120,
             "population": 0,
-            "special": 2810,
+            "capacity": 2810,
             "time_seconds": 10
         },
         "7": {
             "wood": 246,
             "stone": 210,
-            "iron": 149,
+            "metal": 149,
             "population": 0,
-            "special": 3454,
+            "capacity": 3454,
             "time_seconds": 10
         },
         "8": {
             "wood": 311,
             "stone": 266,
-            "iron": 185,
+            "metal": 185,
             "population": 0,
-            "special": 4247,
+            "capacity": 4247,
             "time_seconds": 10
         },
         "9": {
             "wood": 393,
             "stone": 338,
-            "iron": 231,
+            "metal": 231,
             "population": 0,
-            "special": 5222,
+            "capacity": 5222,
             "time_seconds": 10
         },
         "10": {
             "wood": 498,
             "stone": 430,
-            "iron": 287,
+            "metal": 287,
             "population": 0,
-            "special": 6420,
+            "capacity": 6420,
             "time_seconds": 10
         },
         "11": {
             "wood": 630,
             "stone": 546,
-            "iron": 358,
+            "metal": 358,
             "population": 0,
-            "special": 7893,
+            "capacity": 7893,
             "time_seconds": 10
         },
         "12": {
             "wood": 796,
             "stone": 693,
-            "iron": 446,
+            "metal": 446,
             "population": 0,
-            "special": 9705,
+            "capacity": 9705,
             "time_seconds": 10
         },
         "13": {
             "wood": 1007,
             "stone": 880,
-            "iron": 555,
+            "metal": 555,
             "population": 0,
-            "special": 11932,
+            "capacity": 11932,
             "time_seconds": 10
         },
         "14": {
             "wood": 1274,
             "stone": 1118,
-            "iron": 691,
+            "metal": 691,
             "population": 0,
-            "special": 14670,
+            "capacity": 14670,
             "time_seconds": 10
         },
         "15": {
             "wood": 1612,
             "stone": 1420,
-            "iron": 860,
+            "metal": 860,
             "population": 0,
-            "special": 18037,
+            "capacity": 18037,
             "time_seconds": 10
         },
         "16": {
             "wood": 2039,
             "stone": 1803,
-            "iron": 1071,
+            "metal": 1071,
             "population": 0,
-            "special": 22177,
+            "capacity": 22177,
             "time_seconds": 10
         },
         "17": {
             "wood": 2580,
             "stone": 2290,
-            "iron": 1333,
+            "metal": 1333,
             "population": 0,
-            "special": 27266,
+            "capacity": 27266,
             "time_seconds": 10
         },
         "18": {
             "wood": 3264,
             "stone": 2908,
-            "iron": 1659,
+            "metal": 1659,
             "population": 0,
-            "special": 33523,
+            "capacity": 33523,
             "time_seconds": 10
         },
         "19": {
             "wood": 4128,
             "stone": 3693,
-            "iron": 2066,
+            "metal": 2066,
             "population": 0,
-            "special": 41217,
+            "capacity": 41217,
             "time_seconds": 10
         },
         "20": {
             "wood": 5222,
             "stone": 4691,
-            "iron": 2572,
+            "metal": 2572,
             "population": 0,
-            "special": 50675,
+            "capacity": 50675,
             "time_seconds": 10
         },
         "21": {
             "wood": 6606,
             "stone": 5957,
-            "iron": 3202,
+            "metal": 3202,
             "population": 0,
-            "special": 62305,
+            "capacity": 62305,
             "time_seconds": 10
         },
         "22": {
             "wood": 8357,
             "stone": 7566,
-            "iron": 3987,
+            "metal": 3987,
             "population": 0,
-            "special": 76604,
+            "capacity": 76604,
             "time_seconds": 10
         },
         "23": {
             "wood": 10572,
             "stone": 9608,
-            "iron": 4963,
+            "metal": 4963,
             "population": 0,
-            "special": 94184,
+            "capacity": 94184,
             "time_seconds": 10
         },
         "24": {
             "wood": 13373,
             "stone": 12203,
-            "iron": 6180,
+            "metal": 6180,
             "population": 0,
-            "special": 115798,
+            "capacity": 115798,
             "time_seconds": 10
         },
         "25": {
             "wood": 16917,
             "stone": 15497,
-            "iron": 7694,
+            "metal": 7694,
             "population": 0,
-            "special": 142373,
+            "capacity": 142373,
             "time_seconds": 10
         },
         "26": {
             "wood": 21400,
             "stone": 19682,
-            "iron": 9578,
+            "metal": 9578,
             "population": 0,
-            "special": 175047,
+            "capacity": 175047,
             "time_seconds": 10
         },
         "27": {
             "wood": 27071,
             "stone": 24996,
-            "iron": 11925,
+            "metal": 11925,
             "population": 0,
-            "special": 215219,
+            "capacity": 215219,
             "time_seconds": 10
         },
         "28": {
             "wood": 34245,
             "stone": 31745,
-            "iron": 14847,
+            "metal": 14847,
             "population": 0,
-            "special": 264611,
+            "capacity": 264611,
             "time_seconds": 10
         },
         "29": {
             "wood": 43320,
             "stone": 40316,
-            "iron": 18484,
+            "metal": 18484,
             "population": 0,
-            "special": 325337,
+            "capacity": 325337,
             "time_seconds": 10
         },
         "30": {
             "wood": 54799,
             "stone": 51201,
-            "iron": 23013,
+            "metal": 23013,
             "population": 0,
-            "special": 400000,
+            "capacity": 400000,
             "time_seconds": 10
         }
     }

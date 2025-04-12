@@ -8,6 +8,7 @@ import (
 	"backend/pkg/api/middleware"
 	"backend/pkg/core/models"
 	"backend/pkg/database"
+	"backend/pkg/sdk/game/enum"
 	"backend/pkg/sdk/hub/realms"
 	"log"
 	"net/http"
@@ -74,7 +75,7 @@ func (controller *PlayersController) create(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
-	faction, err := dalModels.FactionFromString(cm_faction.Faction)
+	faction, err := enum.FactionFromString(cm_faction.Faction)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid faction"})
 		return

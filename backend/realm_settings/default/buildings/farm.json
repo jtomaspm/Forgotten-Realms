@@ -1,20 +1,19 @@
 {
-    "special": "maximum_population",
     "levels": {
         "0": {
             "wood": 0,
             "stone": 0,
             "metal": 0,
             "population": 0,
-            "special": 200,
-            "time_seconds": 10
+            "maximum_population": 200,
+            "time_seconds": 0
         },
         "1": {
             "wood": 45,
             "stone": 40,
             "metal": 30,
             "population": 0,
-            "special": 240,
+            "maximum_population": 240,
             "time_seconds": 10
         },
         "2": {
@@ -22,7 +21,7 @@
             "stone": 53,
             "metal": 39,
             "population": 0,
-            "special": 281,
+            "maximum_population": 281,
             "time_seconds": 10
         },
         "3": {
@@ -30,7 +29,7 @@
             "stone": 70,
             "metal": 50,
             "population": 0,
-            "special": 329,
+            "maximum_population": 329,
             "time_seconds": 10
         },
         "4": {
@@ -38,7 +37,7 @@
             "stone": 92,
             "metal": 64,
             "population": 0,
-            "special": 386,
+            "maximum_population": 386,
             "time_seconds": 10
         },
         "5": {
@@ -46,7 +45,7 @@
             "stone": 121,
             "metal": 83,
             "population": 0,
-            "special": 452,
+            "maximum_population": 452,
             "time_seconds": 10
         },
         "6": {
@@ -54,7 +53,7 @@
             "stone": 160,
             "metal": 107,
             "population": 0,
-            "special": 530,
+            "maximum_population": 530,
             "time_seconds": 10
         },
         "7": {
@@ -62,7 +61,7 @@
             "stone": 212,
             "metal": 138,
             "population": 0,
-            "special": 622,
+            "maximum_population": 622,
             "time_seconds": 10
         },
         "8": {
@@ -70,7 +69,7 @@
             "stone": 279,
             "metal": 178,
             "population": 0,
-            "special": 729,
+            "maximum_population": 729,
             "time_seconds": 10
         },
         "9": {
@@ -78,7 +77,7 @@
             "stone": 369,
             "metal": 230,
             "population": 0,
-            "special": 854,
+            "maximum_population": 854,
             "time_seconds": 10
         },
         "10": {
@@ -86,7 +85,7 @@
             "stone": 487,
             "metal": 297,
             "population": 0,
-            "special": 1002,
+            "maximum_population": 1002,
             "time_seconds": 10
         },
         "11": {
@@ -94,7 +93,7 @@
             "stone": 642,
             "metal": 383,
             "population": 0,
-            "special": 1174,
+            "maximum_population": 1174,
             "time_seconds": 10
         },
         "12": {
@@ -102,7 +101,7 @@
             "stone": 848,
             "metal": 494,
             "population": 0,
-            "special": 1376,
+            "maximum_population": 1376,
             "time_seconds": 10
         },
         "13": {
@@ -110,7 +109,7 @@
             "stone": 1119,
             "metal": 637,
             "population": 0,
-            "special": 1613,
+            "maximum_population": 1613,
             "time_seconds": 10
         },
         "14": {
@@ -118,7 +117,7 @@
             "stone": 1477,
             "metal": 822,
             "population": 0,
-            "special": 1891,
+            "maximum_population": 1891,
             "time_seconds": 10
         },
         "15": {
@@ -126,7 +125,7 @@
             "stone": 1950,
             "metal": 1060,
             "population": 0,
-            "special": 2216,
+            "maximum_population": 2216,
             "time_seconds": 10
         },
         "16": {
@@ -134,7 +133,7 @@
             "stone": 2574,
             "metal": 1368,
             "population": 0,
-            "special": 2598,
+            "maximum_population": 2598,
             "time_seconds": 10
         },
         "17": {
@@ -142,7 +141,7 @@
             "stone": 3398,
             "metal": 1764,
             "population": 0,
-            "special": 3045,
+            "maximum_population": 3045,
             "time_seconds": 10
         },
         "18": {
@@ -150,7 +149,7 @@
             "stone": 4486,
             "metal": 2276,
             "population": 0,
-            "special": 3569,
+            "maximum_population": 3569,
             "time_seconds": 10
         },
         "19": {
@@ -158,7 +157,7 @@
             "stone": 5921,
             "metal": 2936,
             "population": 0,
-            "special": 4183,
+            "maximum_population": 4183,
             "time_seconds": 10
         },
         "20": {
@@ -166,7 +165,7 @@
             "stone": 7816,
             "metal": 3787,
             "population": 0,
-            "special": 4904,
+            "maximum_population": 4904,
             "time_seconds": 10
         },
         "21": {
@@ -174,7 +173,7 @@
             "stone": 10317,
             "metal": 4886,
             "population": 0,
-            "special": 5748,
+            "maximum_population": 5748,
             "time_seconds": 10
         },
         "22": {
@@ -182,7 +181,7 @@
             "stone": 13618,
             "metal": 6302,
             "population": 0,
-            "special": 6737,
+            "maximum_population": 6737,
             "time_seconds": 10
         },
         "23": {
@@ -190,7 +189,7 @@
             "stone": 17976,
             "metal": 8130,
             "population": 0,
-            "special": 7896,
+            "maximum_population": 7896,
             "time_seconds": 10
         },
         "24": {
@@ -198,7 +197,7 @@
             "stone": 23728,
             "metal": 10488,
             "population": 0,
-            "special": 9255,
+            "maximum_population": 9255,
             "time_seconds": 10
         },
         "25": {
@@ -206,7 +205,7 @@
             "stone": 31321,
             "metal": 13529,
             "population": 0,
-            "special": 10848,
+            "maximum_population": 10848,
             "time_seconds": 10
         },
         "26": {
@@ -214,7 +213,7 @@
             "stone": 41344,
             "metal": 17453,
             "population": 0,
-            "special": 12715,
+            "maximum_population": 12715,
             "time_seconds": 10
         },
         "27": {
@@ -222,7 +221,7 @@
             "stone": 54574,
             "metal": 22514,
             "population": 0,
-            "special": 14904,
+            "maximum_population": 14904,
             "time_seconds": 10
         },
         "28": {
@@ -230,7 +229,7 @@
             "stone": 72037,
             "metal": 29043,
             "population": 0,
-            "special": 17469,
+            "maximum_population": 17469,
             "time_seconds": 10
         },
         "29": {
@@ -238,7 +237,7 @@
             "stone": 95089,
             "metal": 37466,
             "population": 0,
-            "special": 20476,
+            "maximum_population": 20476,
             "time_seconds": 10
         },
         "30": {
@@ -246,7 +245,7 @@
             "stone": 125517,
             "metal": 48331,
             "population": 0,
-            "special": 24000,
+            "maximum_population": 24000,
             "time_seconds": 10
         }
     }
