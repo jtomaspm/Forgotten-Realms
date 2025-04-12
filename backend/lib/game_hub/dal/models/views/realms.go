@@ -13,3 +13,9 @@ type RegisteredRealm struct {
 	Registered bool      `json:"registered"`
 	CreatedAt  time.Time `json:"created_at"`
 }
+
+type PlayableRealm struct {
+	Id   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
+	Api  string    `json:"api"`
+}

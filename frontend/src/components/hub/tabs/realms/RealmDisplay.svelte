@@ -21,7 +21,7 @@
             <p>Must be signed in to play in the forgotten realms.</p>
         {:else if realm.registered && realm.status !== 'ended'}
             <div class="btn-container">
-                <PlayButton />
+                <PlayButton {realm} />
             </div>
         {:else if !realm.registered && realm.status === 'open'}
             <div class="btn-container">

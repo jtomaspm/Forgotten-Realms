@@ -26,6 +26,23 @@ func (controller *RealmsController) Mount(basePath string, engine *gin.Engine) {
 	engine.GET(basePath+"/realm/:id", controller.getRealm)
 	engine.POST(basePath+"/realm", controller.registerRealm)
 	engine.POST(basePath+"/realm/account", controller.registerAccount)
+	engine.GET(basePath+"/realm/account", controller.getPlayableRealms)
+}
+
+func (Controller *RealmsController) getPlayableRealms(ctx *gin.Context) {
+	var result []views.PlayableRealm
+	acc, err := middleware.GetAccountFromContext(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	result, err = realms.GetPlayableRealms(ctx, Controller.Database.Pool, acc.Id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get realms"})
+		log.Println("Failed to get realms:", err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"realms": result})
 }
 
 func (Controller *RealmsController) getRealms(ctx *gin.Context) {
@@ -34,7 +51,7 @@ func (Controller *RealmsController) getRealms(ctx *gin.Context) {
 	if err != nil {
 		result, err = realms.GetAll(ctx, Controller.Database.Pool)
 	} else {
-		result, err = realms.GetByAccountId(ctx, Controller.Database.Pool, acc.Id)
+		result, err = realms.GetAllByAccountId(ctx, Controller.Database.Pool, acc.Id)
 	}
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get realms"})

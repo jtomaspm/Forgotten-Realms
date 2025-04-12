@@ -14,3 +14,9 @@ export type Realm = {
     created_at: string 
     updated_at: string 
 }
+
+export type PlayableRealm = {
+    id: string 
+    name: string 
+    api: string 
+}

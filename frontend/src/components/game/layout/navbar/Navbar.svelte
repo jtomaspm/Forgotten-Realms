@@ -12,25 +12,27 @@
         CogSolid,
         UserSolid
     } from 'flowbite-svelte-icons';
+	import type { PlayableRealm } from '$lib/ts/types/Realm.svelte';
     const color = 'dark';
+    const { realm }: { realm: PlayableRealm } = $props();
 </script>
 
 <div>
     <ButtonGroup>
-        <NavBarButton {color} href="/game/player" txt="" Icon={GridSolid} />
-        <NavBarButton {color} href="/game/village" txt="" Icon={HomeSolid} />
+        <NavBarButton {color} href={`/game/${realm.name}/player`} txt="" Icon={GridSolid} />
+        <NavBarButton {color} href={`/game/${realm.name}/village`} txt="" Icon={HomeSolid} />
     </ButtonGroup>
-    <NavBarButton {color} href="/game/map" txt="Map" Icon={GlobeSolid} />
-    <NavBarButton {color} href="/game/ranking" txt="Ranking" Icon={AwardSolid} />
+    <NavBarButton {color} href={`/game/${realm.name}/map`} txt="Map" Icon={GlobeSolid} />
+    <NavBarButton {color} href={`/game/${realm.name}/ranking`} txt="Ranking" Icon={AwardSolid} />
     <ButtonGroup>
-        <NavBarButton {color} href="/game/ally" txt="" Icon={UsersGroupSolid} />
-        <NavBarButton {color} href="/game/info/player" txt="" Icon={UserSolid} />
+        <NavBarButton {color} href={`/game/${realm.name}/ally`} txt="" Icon={UsersGroupSolid} />
+        <NavBarButton {color} href={`/game/${realm.name}/info/player`} txt="" Icon={UserSolid} />
     </ButtonGroup>
     <ButtonGroup>
-        <NavBarButton {color} href="/game/report" txt="3" Icon={ClipboardListSolid} />
-        <NavBarButton {color} href="/game/mail" txt="7" Icon={MailBoxSolid} />
+        <NavBarButton {color} href={`/game/${realm.name}/report`} txt="3" Icon={ClipboardListSolid} />
+        <NavBarButton {color} href={`/game/${realm.name}/mail`} txt="7" Icon={MailBoxSolid} />
     </ButtonGroup>
-    <NavBarButton {color} href="/settings" txt="Settings" Icon={CogSolid} />
+    <NavBarButton {color} href={`/game/${realm.name}/settings`} txt="Settings" Icon={CogSolid} />
 </div>
 
 
