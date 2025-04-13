@@ -14,6 +14,7 @@ type WarehouseLevel struct {
 	Metal       int
 	Population  int
 	Capacity    int
+	Points      int
 	TimeSeconds int
 }
 
@@ -25,6 +26,7 @@ type WarehouseLevelDto struct {
 	Metal       int    `json:"metal"`
 	Population  int    `json:"population"`
 	Capacity    int    `json:"capacity"`
+	Points      int    `json:"points"`
 	TimeSeconds int    `json:"time_seconds"`
 }
 
@@ -36,6 +38,7 @@ func (origin WarehouseLevel) ToDto() (destination WarehouseLevelDto) {
 	destination.Metal = origin.Metal
 	destination.Population = origin.Population
 	destination.Capacity = origin.Capacity
+	destination.Points = origin.Points
 	destination.TimeSeconds = origin.TimeSeconds
 	return destination
 }
@@ -52,6 +55,7 @@ func (origin WarehouseLevelDto) ToObj() (destination WarehouseLevel, err error) 
 	destination.Metal = origin.Metal
 	destination.Population = origin.Population
 	destination.Capacity = origin.Capacity
+	destination.Points = origin.Points
 	destination.TimeSeconds = origin.TimeSeconds
 	return destination, err
 }
@@ -60,17 +64,18 @@ func (l *WarehouseLevel) Sync(ctx context.Context, pool database.Querier) error 
 	_, err := pool.Exec(
 		ctx,
 		`
-		INSERT INTO settings_warehouse_levels (faction, level, wood, stone, metal, population, capacity, time_seconds) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO settings_warehouse_levels (faction, level, wood, stone, metal, population, capacity, points, time_seconds) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		ON CONFLICT (faction, level) DO UPDATE SET
 			wood = EXCLUDED.wood,
 			stone = EXCLUDED.stone,
 			metal = EXCLUDED.metal,
 			population = EXCLUDED.population,
 			capacity = EXCLUDED.capacity,
+			points = EXCLUDED.points,
 			time_seconds = EXCLUDED.time_seconds;
 		`,
-		l.Faction.String(), l.Level, l.Wood, l.Stone, l.Metal, l.Population, l.Capacity, l.TimeSeconds,
+		l.Faction.String(), l.Level, l.Wood, l.Stone, l.Metal, l.Population, l.Capacity, l.Points, l.TimeSeconds,
 	)
 	return err
 }

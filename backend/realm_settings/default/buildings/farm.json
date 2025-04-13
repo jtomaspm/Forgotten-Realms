@@ -6,6 +6,7 @@
             "metal": 0,
             "population": 0,
             "maximum_population": 200,
+            "points": 10,
             "time_seconds": 0
         },
         "1": {
@@ -14,6 +15,7 @@
             "metal": 30,
             "population": 0,
             "maximum_population": 240,
+            "points": 10,
             "time_seconds": 10
         },
         "2": {
@@ -22,6 +24,7 @@
             "metal": 39,
             "population": 0,
             "maximum_population": 281,
+            "points": 10,
             "time_seconds": 10
         },
         "3": {
@@ -30,6 +33,7 @@
             "metal": 50,
             "population": 0,
             "maximum_population": 329,
+            "points": 10,
             "time_seconds": 10
         },
         "4": {
@@ -38,6 +42,7 @@
             "metal": 64,
             "population": 0,
             "maximum_population": 386,
+            "points": 10,
             "time_seconds": 10
         },
         "5": {
@@ -46,6 +51,7 @@
             "metal": 83,
             "population": 0,
             "maximum_population": 452,
+            "points": 10,
             "time_seconds": 10
         },
         "6": {
@@ -54,6 +60,7 @@
             "metal": 107,
             "population": 0,
             "maximum_population": 530,
+            "points": 10,
             "time_seconds": 10
         },
         "7": {
@@ -62,6 +69,7 @@
             "metal": 138,
             "population": 0,
             "maximum_population": 622,
+            "points": 10,
             "time_seconds": 10
         },
         "8": {
@@ -70,6 +78,7 @@
             "metal": 178,
             "population": 0,
             "maximum_population": 729,
+            "points": 10,
             "time_seconds": 10
         },
         "9": {
@@ -78,6 +87,7 @@
             "metal": 230,
             "population": 0,
             "maximum_population": 854,
+            "points": 10,
             "time_seconds": 10
         },
         "10": {
@@ -86,6 +96,7 @@
             "metal": 297,
             "population": 0,
             "maximum_population": 1002,
+            "points": 10,
             "time_seconds": 10
         },
         "11": {
@@ -94,6 +105,7 @@
             "metal": 383,
             "population": 0,
             "maximum_population": 1174,
+            "points": 10,
             "time_seconds": 10
         },
         "12": {
@@ -102,6 +114,7 @@
             "metal": 494,
             "population": 0,
             "maximum_population": 1376,
+            "points": 10,
             "time_seconds": 10
         },
         "13": {
@@ -110,6 +123,7 @@
             "metal": 637,
             "population": 0,
             "maximum_population": 1613,
+            "points": 10,
             "time_seconds": 10
         },
         "14": {
@@ -118,6 +132,7 @@
             "metal": 822,
             "population": 0,
             "maximum_population": 1891,
+            "points": 10,
             "time_seconds": 10
         },
         "15": {
@@ -126,6 +141,7 @@
             "metal": 1060,
             "population": 0,
             "maximum_population": 2216,
+            "points": 10,
             "time_seconds": 10
         },
         "16": {
@@ -134,6 +150,7 @@
             "metal": 1368,
             "population": 0,
             "maximum_population": 2598,
+            "points": 10,
             "time_seconds": 10
         },
         "17": {
@@ -142,6 +159,7 @@
             "metal": 1764,
             "population": 0,
             "maximum_population": 3045,
+            "points": 10,
             "time_seconds": 10
         },
         "18": {
@@ -150,6 +168,7 @@
             "metal": 2276,
             "population": 0,
             "maximum_population": 3569,
+            "points": 10,
             "time_seconds": 10
         },
         "19": {
@@ -158,6 +177,7 @@
             "metal": 2936,
             "population": 0,
             "maximum_population": 4183,
+            "points": 10,
             "time_seconds": 10
         },
         "20": {
@@ -166,6 +186,7 @@
             "metal": 3787,
             "population": 0,
             "maximum_population": 4904,
+            "points": 10,
             "time_seconds": 10
         },
         "21": {
@@ -174,6 +195,7 @@
             "metal": 4886,
             "population": 0,
             "maximum_population": 5748,
+            "points": 10,
             "time_seconds": 10
         },
         "22": {
@@ -182,6 +204,7 @@
             "metal": 6302,
             "population": 0,
             "maximum_population": 6737,
+            "points": 10,
             "time_seconds": 10
         },
         "23": {
@@ -190,6 +213,7 @@
             "metal": 8130,
             "population": 0,
             "maximum_population": 7896,
+            "points": 10,
             "time_seconds": 10
         },
         "24": {
@@ -198,6 +222,7 @@
             "metal": 10488,
             "population": 0,
             "maximum_population": 9255,
+            "points": 10,
             "time_seconds": 10
         },
         "25": {
@@ -206,6 +231,7 @@
             "metal": 13529,
             "population": 0,
             "maximum_population": 10848,
+            "points": 10,
             "time_seconds": 10
         },
         "26": {
@@ -214,6 +240,7 @@
             "metal": 17453,
             "population": 0,
             "maximum_population": 12715,
+            "points": 10,
             "time_seconds": 10
         },
         "27": {
@@ -222,6 +249,7 @@
             "metal": 22514,
             "population": 0,
             "maximum_population": 14904,
+            "points": 10,
             "time_seconds": 10
         },
         "28": {
@@ -230,6 +258,7 @@
             "metal": 29043,
             "population": 0,
             "maximum_population": 17469,
+            "points": 10,
             "time_seconds": 10
         },
         "29": {
@@ -238,6 +267,7 @@
             "metal": 37466,
             "population": 0,
             "maximum_population": 20476,
+            "points": 10,
             "time_seconds": 10
         },
         "30": {
@@ -246,6 +276,7 @@
             "metal": 48331,
             "population": 0,
             "maximum_population": 24000,
+            "points": 10,
             "time_seconds": 10
         }
     }

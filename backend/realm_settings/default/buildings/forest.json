@@ -6,6 +6,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 10,
+            "points": 10,
             "time_seconds": 10
         },
         "1": {
@@ -14,6 +15,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 20,
+            "points": 10,
             "time_seconds": 10
         },
         "2": {
@@ -22,6 +24,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 30,
+            "points": 10,
             "time_seconds": 10
         },
         "3": {
@@ -30,6 +33,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 40,
+            "points": 10,
             "time_seconds": 10
         },
         "4": {
@@ -38,6 +42,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 50,
+            "points": 10,
             "time_seconds": 10
         },
         "5": {
@@ -46,6 +51,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 60,
+            "points": 10,
             "time_seconds": 10
         },
         "6": {
@@ -54,6 +60,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 70,
+            "points": 10,
             "time_seconds": 10
         },
         "7": {
@@ -62,6 +69,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 80,
+            "points": 10,
             "time_seconds": 10
         },
         "8": {
@@ -70,6 +78,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 90,
+            "points": 10,
             "time_seconds": 10
         },
         "9": {
@@ -78,6 +87,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 100,
+            "points": 10,
             "time_seconds": 10
         },
         "10": {
@@ -86,6 +96,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 110,
+            "points": 10,
             "time_seconds": 10
         },
         "11": {
@@ -94,6 +105,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 120,
+            "points": 10,
             "time_seconds": 10
         },
         "12": {
@@ -102,6 +114,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 130,
+            "points": 10,
             "time_seconds": 10
         },
         "13": {
@@ -110,6 +123,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 140,
+            "points": 10,
             "time_seconds": 10
         },
         "14": {
@@ -118,6 +132,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 150,
+            "points": 10,
             "time_seconds": 10
         },
         "15": {
@@ -126,6 +141,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 160,
+            "points": 10,
             "time_seconds": 10
         },
         "16": {
@@ -134,6 +150,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 170,
+            "points": 10,
             "time_seconds": 10
         },
         "17": {
@@ -142,6 +159,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 180,
+            "points": 10,
             "time_seconds": 10
         },
         "18": {
@@ -150,6 +168,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 190,
+            "points": 10,
             "time_seconds": 10
         },
         "19": {
@@ -158,6 +177,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 200,
+            "points": 10,
             "time_seconds": 10
         },
         "20": {
@@ -166,6 +186,7 @@
             "metal": 100,
             "population": 10,
             "wood_hour": 210,
+            "points": 10,
             "time_seconds": 10
         }
     }

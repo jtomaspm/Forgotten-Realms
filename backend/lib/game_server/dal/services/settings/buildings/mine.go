@@ -14,6 +14,7 @@ type MineLevel struct {
 	Metal       int
 	Population  int
 	MetalHour   int
+	Points      int
 	TimeSeconds int
 }
 
@@ -25,6 +26,7 @@ type MineLevelDto struct {
 	Metal       int    `json:"metal"`
 	Population  int    `json:"population"`
 	MetalHour   int    `json:"metal_hour"`
+	Points      int    `json:"points"`
 	TimeSeconds int    `json:"time_seconds"`
 }
 
@@ -36,6 +38,7 @@ func (origin MineLevel) ToDto() (destination MineLevelDto) {
 	destination.Metal = origin.Metal
 	destination.Population = origin.Population
 	destination.MetalHour = origin.MetalHour
+	destination.Points = origin.Points
 	destination.TimeSeconds = origin.TimeSeconds
 	return destination
 }
@@ -52,6 +55,7 @@ func (origin MineLevelDto) ToObj() (destination MineLevel, err error) {
 	destination.Metal = origin.Metal
 	destination.Population = origin.Population
 	destination.MetalHour = origin.MetalHour
+	destination.Points = origin.Points
 	destination.TimeSeconds = origin.TimeSeconds
 	return destination, err
 }
@@ -60,17 +64,18 @@ func (l *MineLevel) Sync(ctx context.Context, pool database.Querier) error {
 	_, err := pool.Exec(
 		ctx,
 		`
-		INSERT INTO settings_mine_levels (faction, level, wood, stone, metal, population, metal_hour, time_seconds) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO settings_mine_levels (faction, level, wood, stone, metal, population, metal_hour, points, time_seconds) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		ON CONFLICT (faction, level) DO UPDATE SET
 			wood = EXCLUDED.wood,
 			stone = EXCLUDED.stone,
 			metal = EXCLUDED.metal,
 			population = EXCLUDED.population,
 			metal_hour = EXCLUDED.metal_hour,
+			points = EXCLUDED.points,
 			time_seconds = EXCLUDED.time_seconds;
 		`,
-		l.Faction.String(), l.Level, l.Wood, l.Stone, l.Metal, l.Population, l.MetalHour, l.TimeSeconds,
+		l.Faction.String(), l.Level, l.Wood, l.Stone, l.Metal, l.Population, l.MetalHour, l.Points, l.TimeSeconds,
 	)
 	return err
 }

@@ -14,6 +14,7 @@ type HeadquartersLevel struct {
 	Metal           int
 	Population      int
 	BuildSpeedMulti int
+	Points          int
 	TimeSeconds     int
 }
 
@@ -25,6 +26,7 @@ type HeadquartersLevelDto struct {
 	Metal           int    `json:"metal"`
 	Population      int    `json:"population"`
 	BuildSpeedMulti int    `json:"build_speed_multi_x1000"`
+	Points          int    `json:"points"`
 	TimeSeconds     int    `json:"time_seconds"`
 }
 
@@ -36,6 +38,7 @@ func (origin HeadquartersLevel) ToDto() (destination HeadquartersLevelDto) {
 	destination.Metal = origin.Metal
 	destination.Population = origin.Population
 	destination.BuildSpeedMulti = origin.BuildSpeedMulti
+	destination.Points = origin.Points
 	destination.TimeSeconds = origin.TimeSeconds
 	return destination
 }
@@ -52,6 +55,7 @@ func (origin HeadquartersLevelDto) ToObj() (destination HeadquartersLevel, err e
 	destination.Metal = origin.Metal
 	destination.Population = origin.Population
 	destination.BuildSpeedMulti = origin.BuildSpeedMulti
+	destination.Points = origin.Points
 	destination.TimeSeconds = origin.TimeSeconds
 	return destination, err
 }
@@ -60,17 +64,18 @@ func (l *HeadquartersLevel) Sync(ctx context.Context, pool database.Querier) err
 	_, err := pool.Exec(
 		ctx,
 		`
-		INSERT INTO settings_headquarters_levels (faction, level, wood, stone, metal, population, build_speed_multi_x1000, time_seconds) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO settings_headquarters_levels (faction, level, wood, stone, metal, population, build_speed_multi_x1000, points, time_seconds) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		ON CONFLICT (faction, level) DO UPDATE SET
 			wood = EXCLUDED.wood,
 			stone = EXCLUDED.stone,
 			metal = EXCLUDED.metal,
 			population = EXCLUDED.population,
 			build_speed_multi_x1000 = EXCLUDED.build_speed_multi_x1000,
+			points = EXCLUDED.points,
 			time_seconds = EXCLUDED.time_seconds;
 		`,
-		l.Faction.String(), l.Level, l.Wood, l.Stone, l.Metal, l.Population, l.BuildSpeedMulti, l.TimeSeconds,
+		l.Faction.String(), l.Level, l.Wood, l.Stone, l.Metal, l.Population, l.BuildSpeedMulti, l.Points, l.TimeSeconds,
 	)
 	return err
 }

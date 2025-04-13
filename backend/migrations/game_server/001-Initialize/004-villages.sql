@@ -2,7 +2,8 @@ CREATE TABLE villages (
     coord_x SMALLINT NOT NULL,
     coord_y SMALLINT NOT NULL,
     player_id UUID NOT NULL,
-    faction faction NOT NULL, -- Still stored for quick access / indexing
+    faction faction NOT NULL,
+    points SMALLINT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(coord_x, coord_y),
@@ -39,7 +40,7 @@ EXECUTE FUNCTION set_updated_at();
 CREATE TABLE village_buildings (
     coord_x SMALLINT NOT NULL,
     coord_y SMALLINT NOT NULL,
-    headquarters SMALLINT NOT NULL DEFAULT 1,
+    headquarters SMALLINT NOT NULL DEFAULT 0,
     warehouse SMALLINT NOT NULL DEFAULT 0,
     farm SMALLINT NOT NULL DEFAULT 0,
     forest SMALLINT NOT NULL DEFAULT 0,
