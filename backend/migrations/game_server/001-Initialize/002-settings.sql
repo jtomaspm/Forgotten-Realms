@@ -26,7 +26,7 @@ CREATE TABLE settings_farm_levels (
     population SMALLINT NOT NULL,
     maximum_population SMALLINT NOT NULL,
     time_seconds INTEGER NOT NULL,
-    created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(faction, level)
 );
@@ -45,7 +45,7 @@ CREATE TABLE settings_forest_levels (
     population SMALLINT NOT NULL,
     wood_hour SMALLINT NOT NULL,
     time_seconds INTEGER NOT NULL,
-    created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(faction, level)
 );
@@ -64,7 +64,7 @@ CREATE TABLE settings_headquarters_levels (
     population SMALLINT NOT NULL,
     build_speed_multi_x1000 SMALLINT NOT NULL,
     time_seconds INTEGER NOT NULL,
-    created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(faction, level)
 );
@@ -83,7 +83,7 @@ CREATE TABLE settings_mine_levels (
     population SMALLINT NOT NULL,
     metal_hour SMALLINT NOT NULL,
     time_seconds INTEGER NOT NULL,
-    created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(faction, level)
 );
@@ -102,7 +102,7 @@ CREATE TABLE settings_quarry_levels (
     population SMALLINT NOT NULL,
     stone_hour SMALLINT NOT NULL,
     time_seconds INTEGER NOT NULL,
-    created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(faction, level)
 );
@@ -121,7 +121,7 @@ CREATE TABLE settings_warehouse_levels (
     population SMALLINT NOT NULL,
     capacity INTEGER NOT NULL,
     time_seconds INTEGER NOT NULL,
-    created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(faction, level)
 );

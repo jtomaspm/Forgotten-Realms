@@ -10,6 +10,6 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrations/game_server ./migrations/game_server
 ARG REALM_SETTINGS
-COPY --from=builder /app/realm_settings/$REALM_SETTINGS ./realm_settings
+COPY --from=builder /app/realm_settings/$REALM_SETTINGS/* ./realm_settings/
 
 CMD ["./main"]

@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/lib/game_server/configuration"
+	"backend/lib/game_server/configuration/realm_settings"
 	"backend/lib/game_server/server"
 	"backend/pkg/core"
 	"backend/pkg/core/models"
@@ -54,6 +55,11 @@ func main() {
 		log.Fatalln(err)
 	}
 	defer db.Close()
+
+	err = realm_settings.SyncRealmSettings("./realm_settings/", db)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	s := server.New(&configuration, db)
 	_, err = s.RegisterInHub()

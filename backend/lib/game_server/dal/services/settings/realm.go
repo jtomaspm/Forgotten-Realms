@@ -6,8 +6,8 @@ import (
 )
 
 type Realm struct {
-	Speed     int `json:"speed"`
-	UnitSpeed int `json:"unit_speed"`
+	Speed     float32 `json:"speed"`
+	UnitSpeed float32 `json:"unit_speed"`
 }
 
 func (l *Realm) Sync(ctx context.Context, pool database.Querier) error {

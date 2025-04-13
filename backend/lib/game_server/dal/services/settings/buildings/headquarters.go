@@ -61,7 +61,7 @@ func (l *HeadquartersLevel) Sync(ctx context.Context, pool database.Querier) err
 		ctx,
 		`
 		INSERT INTO settings_headquarters_levels (faction, level, wood, stone, metal, population, build_speed_multi_x1000, time_seconds) 
-		VALUES ($1, $2, $3, $4, $5, $,6, $7, $8)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		ON CONFLICT (faction, level) DO UPDATE SET
 			wood = EXCLUDED.wood,
 			stone = EXCLUDED.stone,

@@ -61,7 +61,7 @@ func (l *WarehouseLevel) Sync(ctx context.Context, pool database.Querier) error 
 		ctx,
 		`
 		INSERT INTO settings_warehouse_levels (faction, level, wood, stone, metal, population, capacity, time_seconds) 
-		VALUES ($1, $2, $3, $4, $5, $,6, $7, $8)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		ON CONFLICT (faction, level) DO UPDATE SET
 			wood = EXCLUDED.wood,
 			stone = EXCLUDED.stone,

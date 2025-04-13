@@ -1,14 +1,35 @@
 package realm_settings
 
 import (
+	"backend/lib/game_server/dal/services/settings"
 	"backend/lib/game_server/dal/services/settings/buildings"
 	"backend/pkg/sdk/game/enum"
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
-func ParseFarmLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings.FarmLevel, error) {
+func GetJsonHandler(building string) (func(faction enum.Faction, jsonData []byte) ([]settings.Setting, error), error) {
+	switch strings.ToLower(building) {
+	case "headquarters":
+		return ParseHeadquartersLevelsFromJSON, nil
+	case "warehouse":
+		return ParseWarehouseLevelsFromJSON, nil
+	case "farm":
+		return ParseFarmLevelsFromJSON, nil
+	case "forest":
+		return ParseForestLevelsFromJSON, nil
+	case "quarry":
+		return ParseQuarryLevelsFromJSON, nil
+	case "mine":
+		return ParseMineLevelsFromJSON, nil
+	default:
+		return nil, fmt.Errorf("invalid building: %s", building)
+	}
+}
+
+func ParseFarmLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]settings.Setting, error) {
 	var rawData struct {
 		Levels map[string]buildings.FarmLevelDto `json:"levels"`
 	}
@@ -18,7 +39,7 @@ func ParseFarmLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings
 		return nil, err
 	}
 
-	var result []buildings.FarmLevel
+	var result []settings.Setting
 	for levelStr, dto := range rawData.Levels {
 		level, err := strconv.Atoi(levelStr)
 		if err != nil {
@@ -31,13 +52,13 @@ func ParseFarmLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings
 		if err != nil {
 			return nil, fmt.Errorf("invalid dto: %v", dto)
 		}
-		result = append(result, obj)
+		result = append(result, &obj)
 	}
 
 	return result, nil
 }
 
-func ParseForestLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings.ForestLevel, error) {
+func ParseForestLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]settings.Setting, error) {
 	var rawData struct {
 		Levels map[string]buildings.ForestLevelDto `json:"levels"`
 	}
@@ -47,26 +68,26 @@ func ParseForestLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildin
 		return nil, err
 	}
 
-	var result []buildings.ForestLevel
+	var result []settings.Setting
 	for levelStr, dto := range rawData.Levels {
 		level, err := strconv.Atoi(levelStr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid level key: %s", levelStr)
 		}
-
 		dto.Level = level
 		dto.Faction = faction.String()
+
 		obj, err := dto.ToObj()
 		if err != nil {
 			return nil, fmt.Errorf("invalid dto: %v", dto)
 		}
-		result = append(result, obj)
+		result = append(result, &obj)
 	}
 
 	return result, nil
 }
 
-func ParseHeadquartersLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings.HeadquartersLevel, error) {
+func ParseHeadquartersLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]settings.Setting, error) {
 	var rawData struct {
 		Levels map[string]buildings.HeadquartersLevelDto `json:"levels"`
 	}
@@ -76,26 +97,26 @@ func ParseHeadquartersLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]b
 		return nil, err
 	}
 
-	var result []buildings.HeadquartersLevel
+	var result []settings.Setting
 	for levelStr, dto := range rawData.Levels {
 		level, err := strconv.Atoi(levelStr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid level key: %s", levelStr)
 		}
-
 		dto.Level = level
 		dto.Faction = faction.String()
+
 		obj, err := dto.ToObj()
 		if err != nil {
 			return nil, fmt.Errorf("invalid dto: %v", dto)
 		}
-		result = append(result, obj)
+		result = append(result, &obj)
 	}
 
 	return result, nil
 }
 
-func ParseMineLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings.MineLevel, error) {
+func ParseMineLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]settings.Setting, error) {
 	var rawData struct {
 		Levels map[string]buildings.MineLevelDto `json:"levels"`
 	}
@@ -105,26 +126,26 @@ func ParseMineLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings
 		return nil, err
 	}
 
-	var result []buildings.MineLevel
+	var result []settings.Setting
 	for levelStr, dto := range rawData.Levels {
 		level, err := strconv.Atoi(levelStr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid level key: %s", levelStr)
 		}
-
 		dto.Level = level
 		dto.Faction = faction.String()
+
 		obj, err := dto.ToObj()
 		if err != nil {
 			return nil, fmt.Errorf("invalid dto: %v", dto)
 		}
-		result = append(result, obj)
+		result = append(result, &obj)
 	}
 
 	return result, nil
 }
 
-func ParseQuarryLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings.QuarryLevel, error) {
+func ParseQuarryLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]settings.Setting, error) {
 	var rawData struct {
 		Levels map[string]buildings.QuarryLevelDto `json:"levels"`
 	}
@@ -134,26 +155,26 @@ func ParseQuarryLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildin
 		return nil, err
 	}
 
-	var result []buildings.QuarryLevel
+	var result []settings.Setting
 	for levelStr, dto := range rawData.Levels {
 		level, err := strconv.Atoi(levelStr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid level key: %s", levelStr)
 		}
-
 		dto.Level = level
 		dto.Faction = faction.String()
+
 		obj, err := dto.ToObj()
 		if err != nil {
 			return nil, fmt.Errorf("invalid dto: %v", dto)
 		}
-		result = append(result, obj)
+		result = append(result, &obj)
 	}
 
 	return result, nil
 }
 
-func ParseWarehouseLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buildings.WarehouseLevel, error) {
+func ParseWarehouseLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]settings.Setting, error) {
 	var rawData struct {
 		Levels map[string]buildings.WarehouseLevelDto `json:"levels"`
 	}
@@ -163,20 +184,20 @@ func ParseWarehouseLevelsFromJSON(faction enum.Faction, jsonData []byte) ([]buil
 		return nil, err
 	}
 
-	var result []buildings.WarehouseLevel
+	var result []settings.Setting
 	for levelStr, dto := range rawData.Levels {
 		level, err := strconv.Atoi(levelStr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid level key: %s", levelStr)
 		}
-
 		dto.Level = level
 		dto.Faction = faction.String()
+
 		obj, err := dto.ToObj()
 		if err != nil {
 			return nil, fmt.Errorf("invalid dto: %v", dto)
 		}
-		result = append(result, obj)
+		result = append(result, &obj)
 	}
 
 	return result, nil
