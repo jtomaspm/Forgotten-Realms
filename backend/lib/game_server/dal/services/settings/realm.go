@@ -3,6 +3,7 @@ package settings
 import (
 	"backend/pkg/database"
 	"context"
+	"fmt"
 )
 
 type Realm struct {
@@ -11,17 +12,31 @@ type Realm struct {
 }
 
 func (l *Realm) Sync(ctx context.Context, pool database.Querier) error {
-	_, err := pool.Exec(
-		ctx,
-		`
-		INSERT INTO settings_realm (speed, unit_speed)
-		VALUES ($1, $2)
-		ON CONFLICT (created_at) DO UPDATE SET
-			speed = EXCLUDED.speed,
-			unit_speed = EXCLUDED.unit_speed,
-			updated_at = CURRENT_TIMESTAMP;
-		`,
-		l.Speed, l.UnitSpeed,
-	)
-	return err
+	var count int
+	err := pool.QueryRow(ctx, `SELECT COUNT(*) FROM settings_realm`).Scan(&count)
+	if err != nil {
+		return fmt.Errorf("counting settings_realm: %w", err)
+	}
+
+	if count == 0 {
+		_, err = pool.Exec(ctx, `
+			INSERT INTO settings_realm (speed, unit_speed)
+			VALUES ($1, $2)
+		`, l.Speed, l.UnitSpeed)
+		if err != nil {
+			return fmt.Errorf("inserting settings_realm: %w", err)
+		}
+	} else {
+		_, err = pool.Exec(ctx, `
+			UPDATE settings_realm
+			SET speed = $1,
+				unit_speed = $2,
+				updated_at = CURRENT_TIMESTAMP
+		`, l.Speed, l.UnitSpeed)
+		if err != nil {
+			return fmt.Errorf("updating settings_realm: %w", err)
+		}
+	}
+
+	return nil
 }
