@@ -1,7 +1,8 @@
-import type { Faction, Player } from "$lib/ts/types/Player.svelte";
+import type { PlayerFaction, Player } from "$lib/ts/types/Player.svelte";
 import type { SdkConfiguration, SdkError } from "$lib/ts/types/Sdk.svelte";
+import type { SpawnLocation } from "$lib/ts/types/SpawnLocation";
 
-export async function RegisterPlayer(configuration: SdkConfiguration, token: string, faction: Faction) : Promise<{error: SdkError}> {
+export async function RegisterPlayer(configuration: SdkConfiguration, token: string, faction: PlayerFaction, location: SpawnLocation) : Promise<{error: SdkError}> {
     try {
         let headers : any = {
             'Content-Type': 'application/json',
@@ -11,7 +12,8 @@ export async function RegisterPlayer(configuration: SdkConfiguration, token: str
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
-                faction: faction
+                faction: faction,
+                location: location
             })
         })
         if (!(response.status === 201)) {

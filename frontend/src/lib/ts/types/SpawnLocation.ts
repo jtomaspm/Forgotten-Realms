@@ -1,0 +1,1 @@
+export type SpawnLocation = "random" | "north_east" | "north_west" | "south_east" | "south_west";

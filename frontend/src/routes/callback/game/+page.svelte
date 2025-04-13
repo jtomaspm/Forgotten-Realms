@@ -22,7 +22,7 @@
             return;
         }
         console.log(realm);
-        const result = await RegisterPlayer({url: realm.api}, token, faction.faction);
+        const result = await RegisterPlayer({url: realm.api}, token, faction.faction, "random");
         if (result.error) {
             error.SetMessage(result.error.Errors[0]);
             error.Error();

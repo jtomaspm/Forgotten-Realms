@@ -1,9 +1,9 @@
-import type { Faction } from "../types/Player.svelte";
+import type { PlayerFaction } from "../types/Player.svelte";
 
 export class FactionState {
-    faction: Faction = $state("caldari")
+    faction: PlayerFaction = $state("caldari")
 
-    SetFaction(f: Faction){
+    SetFaction(f: PlayerFaction){
         this.faction = f;
     }
 }

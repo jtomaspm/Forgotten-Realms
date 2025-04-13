@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FactionState } from "$lib/ts/state/FactionState.svelte";
-	import type { Faction } from "$lib/ts/types/Player.svelte";
+	import type { PlayerFaction } from "$lib/ts/types/Player.svelte";
 	import { TabItem } from "flowbite-svelte";
 	import type { Component } from "svelte";
 
@@ -10,7 +10,7 @@
         Content, 
         faction
     }: {
-        name: Faction
+        name: PlayerFaction
         Icon: Component
         Content: Component
         faction: FactionState
