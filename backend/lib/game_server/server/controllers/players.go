@@ -5,6 +5,8 @@ import (
 	dalModels "backend/lib/game_server/dal/models"
 	"backend/lib/game_server/dal/models/queries"
 	"backend/lib/game_server/dal/services/players"
+	"backend/lib/game_server/dal/services/settings"
+	"backend/lib/game_server/services/village_s"
 	"backend/pkg/api/middleware"
 	"backend/pkg/core/models"
 	"backend/pkg/database"
@@ -68,14 +70,15 @@ func (controller *PlayersController) create(ctx *gin.Context) {
 		log.Println(err)
 		return
 	}
-	var cm_faction struct {
-		Faction string `json:"faction"`
+	var playerProps struct {
+		Faction  string `json:"faction"`
+		Location string `json:"location"`
 	}
-	if err := ctx.ShouldBindJSON(&cm_faction); err != nil {
+	if err := ctx.ShouldBindJSON(&playerProps); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
-	faction, err := enum.FactionFromString(cm_faction.Faction)
+	faction, err := enum.FactionFromString(playerProps.Faction)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid faction"})
 		return
@@ -85,16 +88,34 @@ func (controller *PlayersController) create(ctx *gin.Context) {
 		Faction:   faction,
 	}
 	transaction, err := controller.Database.Pool.Begin(ctx)
-	defer transaction.Rollback(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating player"})
 		return
 	}
+	defer transaction.Rollback(ctx)
 	id, err := players.Create(ctx, transaction, &command)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating player"})
 		return
 	}
+
+	realmSettings, err := settings.GetRealmSettings(ctx, transaction)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating village"})
+		return
+	}
+	location, err := enum.SpawnLocationFromString(playerProps.Location)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid location"})
+		return
+	}
+	playerVillage, err := village_s.SpawnVillage(ctx, transaction, account.Id, location, realmSettings)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating village"})
+		return
+	}
+
+	//Do after all operations in game database
 	err = realms.RegisterAccount(&realms.RegisterAccountRequest{
 		Hub:           controller.Configuration.Docker.Hub,
 		InternalToken: controller.Configuration.Docker.Token,
@@ -112,5 +133,11 @@ func (controller *PlayersController) create(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating player"})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{"id": id})
+	ctx.JSON(http.StatusCreated, gin.H{
+		"id": id,
+		"first_village": gin.H{
+			"coord_x": playerVillage.CoordX,
+			"coord_y": playerVillage.CoordX,
+		},
+	})
 }

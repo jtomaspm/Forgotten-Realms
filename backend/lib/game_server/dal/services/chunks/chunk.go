@@ -1,17 +1,12 @@
 package chunks
 
 import (
-	"backend/lib/game_server/configuration"
+	"backend/lib/game_server/dal/services/settings"
 	"backend/lib/game_server/dal/services/villages"
 	"backend/pkg/database"
 	"context"
 	"fmt"
 )
-
-type Coord struct {
-	CoordX int `json:"coord_x"`
-	CoordY int `json:"coord_y"`
-}
 
 type Chunk struct {
 	CoordX   int                `json:"coord_x"`
@@ -20,18 +15,25 @@ type Chunk struct {
 	Villages []villages.Village `json:"villages"`
 }
 
-func NewChunk(ctx context.Context, db database.Querier, coord Coord) (Chunk, error) {
-	if !(coord.CoordX < configuration.MAP_SIZE || coord.CoordX >= 0) {
+func NewChunk(ctx context.Context, db database.Querier, coord villages.Coord, realmSettings settings.Realm) (Chunk, error) {
+	if !(coord.CoordX < realmSettings.MapSize || coord.CoordX >= 0) {
 		return Chunk{}, fmt.Errorf("invalid CoordX")
 	}
-	if !(coord.CoordY < configuration.MAP_SIZE || coord.CoordY >= 0) {
+	if !(coord.CoordY < realmSettings.MapSize || coord.CoordY >= 0) {
 		return Chunk{}, fmt.Errorf("invalid CoordY")
 	}
 	var chunk Chunk
-	chunk.CoordX = chunk.CoordX - (chunk.CoordX % configuration.CHUNK_SIZE)
-	chunk.CoordY = chunk.CoordY - (chunk.CoordY % configuration.CHUNK_SIZE)
-	chunk.Size = configuration.CHUNK_SIZE
-	v, err := villages.GetVillagesInRange(ctx, db, chunk.CoordX, chunk.CoordY, chunk.CoordX+configuration.CHUNK_SIZE, chunk.CoordY+configuration.CHUNK_SIZE)
+	chunk.CoordX = chunk.CoordX - (chunk.CoordX % realmSettings.ChunkSize)
+	chunk.CoordY = chunk.CoordY - (chunk.CoordY % realmSettings.ChunkSize)
+	chunk.Size = realmSettings.ChunkSize
+	v, err := villages.GetVillagesInRange(
+		ctx,
+		db,
+		chunk.CoordX,
+		chunk.CoordY,
+		chunk.CoordX+realmSettings.ChunkSize,
+		chunk.CoordY+realmSettings.ChunkSize,
+		realmSettings)
 	if err != nil {
 		return Chunk{}, err
 	}
@@ -39,30 +41,46 @@ func NewChunk(ctx context.Context, db database.Querier, coord Coord) (Chunk, err
 	return chunk, nil
 }
 
-func (c *Chunk) GetTop(ctx context.Context, db database.Querier) (Chunk, error) {
-	return NewChunk(ctx, db, Coord{
+func (c *Chunk) Population() float32 {
+	return float32(len(c.Villages) / c.Size)
+}
+
+func (c *Chunk) GetValidNewVillageCoords() (villages.Coord, error) {
+	if c.Population() >= 1 {
+		return villages.Coord{}, fmt.Errorf("maximum population reached")
+	}
+	x := 1
+	y := 1
+	return villages.Coord{
+		CoordX: x,
+		CoordY: y,
+	}, nil
+}
+
+func (c *Chunk) GetTop(ctx context.Context, db database.Querier, rs settings.Realm) (Chunk, error) {
+	return NewChunk(ctx, db, villages.Coord{
 		CoordX: c.CoordX,
-		CoordY: c.CoordY - configuration.CHUNK_SIZE,
-	})
+		CoordY: c.CoordY - rs.ChunkSize,
+	}, rs)
 }
 
-func (c *Chunk) GetBottom(ctx context.Context, db database.Querier) (Chunk, error) {
-	return NewChunk(ctx, db, Coord{
+func (c *Chunk) GetBottom(ctx context.Context, db database.Querier, rs settings.Realm) (Chunk, error) {
+	return NewChunk(ctx, db, villages.Coord{
 		CoordX: c.CoordX,
-		CoordY: c.CoordY + configuration.CHUNK_SIZE,
-	})
+		CoordY: c.CoordY + rs.ChunkSize,
+	}, rs)
 }
 
-func (c *Chunk) GetLeft(ctx context.Context, db database.Querier) (Chunk, error) {
-	return NewChunk(ctx, db, Coord{
-		CoordX: c.CoordX - configuration.CHUNK_SIZE,
+func (c *Chunk) GetLeft(ctx context.Context, db database.Querier, rs settings.Realm) (Chunk, error) {
+	return NewChunk(ctx, db, villages.Coord{
+		CoordX: c.CoordX - rs.ChunkSize,
 		CoordY: c.CoordY,
-	})
+	}, rs)
 }
 
-func (c *Chunk) GetRight(ctx context.Context, db database.Querier) (Chunk, error) {
-	return NewChunk(ctx, db, Coord{
-		CoordX: c.CoordX + configuration.CHUNK_SIZE,
+func (c *Chunk) GetRight(ctx context.Context, db database.Querier, rs settings.Realm) (Chunk, error) {
+	return NewChunk(ctx, db, villages.Coord{
+		CoordX: c.CoordX + rs.ChunkSize,
 		CoordY: c.CoordY,
-	})
+	}, rs)
 }

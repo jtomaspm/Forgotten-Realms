@@ -1,7 +1,7 @@
 package villages
 
 import (
-	"backend/lib/game_server/configuration"
+	"backend/lib/game_server/dal/services/settings"
 	"backend/pkg/database"
 	"backend/pkg/sdk/game/enum"
 	"context"
@@ -10,6 +10,17 @@ import (
 
 	"github.com/google/uuid"
 )
+
+type Coord struct {
+	CoordX int `json:"coord_x"`
+	CoordY int `json:"coord_y"`
+}
+
+type NewVillage struct {
+	CoordX   int
+	CoordY   int
+	PlayerId uuid.UUID
+}
 
 type Village struct {
 	CoordX    int
@@ -20,17 +31,32 @@ type Village struct {
 	UpdatedAt time.Time
 }
 
-func GetVillagesInRange(ctx context.Context, db database.Querier, minX, minY, maxX, maxY int) ([]Village, error) {
-	if !(minX < configuration.MAP_SIZE || minX >= 0) {
+func CreateVillage(ctx context.Context, db database.Querier, village NewVillage) error {
+	if village.CoordX < 0 || village.CoordY < 0 {
+		return fmt.Errorf("invalid coordinates: (%d, %d)", village.CoordX, village.CoordY)
+	}
+	if village.PlayerId == uuid.Nil {
+		return fmt.Errorf("player ID cannot be nil")
+	}
+
+	_, err := db.Exec(ctx, `
+		INSERT INTO villages (coord_x, coord_y, player_id)
+		VALUES ($1, $2, $3);
+	`, village.CoordX, village.CoordY, village.PlayerId)
+	return err
+}
+
+func GetVillagesInRange(ctx context.Context, db database.Querier, minX, minY, maxX, maxY int, rs settings.Realm) ([]Village, error) {
+	if !(minX < rs.MapSize || minX >= 0) {
 		return []Village{}, fmt.Errorf("invalid minX")
 	}
-	if !(minY < configuration.MAP_SIZE || minY >= 0) {
+	if !(minY < rs.MapSize || minY >= 0) {
 		return []Village{}, fmt.Errorf("invalid minY")
 	}
-	if !(maxX < configuration.MAP_SIZE || maxX >= 0) {
+	if !(maxX < rs.MapSize || maxX >= 0) {
 		return []Village{}, fmt.Errorf("invalid maxX")
 	}
-	if !(maxY < configuration.MAP_SIZE || maxY >= 0) {
+	if !(maxY < rs.MapSize || maxY >= 0) {
 		return []Village{}, fmt.Errorf("invalid maxY")
 	}
 	rows, err := db.Query(ctx, `

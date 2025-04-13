@@ -8,9 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const CHUNK_SIZE = 10
-const MAP_SIZE = 1000
-
 type GameServerConfiguration struct {
 	Name           string
 	PublicEndpoint string
