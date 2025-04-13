@@ -8,8 +8,8 @@ END $$;
 CREATE TABLE settings_realm (
     speed REAL NOT NULL,
     unit_speed REAL NOT NULL,
-    chunck_size SMALLINT NOT NULL,
-    chunck_fill_percent SMALLINT NOT NULL,
+    chunk_size SMALLINT NOT NULL,
+    chunk_fill_percent SMALLINT NOT NULL,
     map_size REAL NOT NULL,
     created_at TIMESTAMPTZ PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
