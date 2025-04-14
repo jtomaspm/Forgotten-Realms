@@ -6,12 +6,13 @@ import (
 	"backend/pkg/sdk/game/enum"
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-type Coord struct {
+type Coords struct {
 	CoordX int `json:"coord_x"`
 	CoordY int `json:"coord_y"`
 }
@@ -38,7 +39,7 @@ func CreateVillage(ctx context.Context, db database.Querier, village NewVillage)
 	if village.PlayerId == uuid.Nil {
 		return fmt.Errorf("player ID cannot be nil")
 	}
-
+	log.Println("Creating village: ", village)
 	_, err := db.Exec(ctx, `
 		INSERT INTO villages (coord_x, coord_y, player_id)
 		VALUES ($1, $2, $3);

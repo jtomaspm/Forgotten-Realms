@@ -28,6 +28,7 @@
             error.Error();
             return;
         }
+        console.log(result);
         window.location.href = `/game/${realm.name}/`
     }
 

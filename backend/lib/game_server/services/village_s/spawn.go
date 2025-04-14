@@ -8,6 +8,7 @@ import (
 	"backend/pkg/sdk/game/enum"
 	"context"
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"sort"
@@ -28,7 +29,7 @@ type Vector struct {
 	DirectionY int
 }
 
-func GetVector(location enum.SpawnLocation, realmSettings settings.Realm) (Vector, error) {
+func getVector(location enum.SpawnLocation, realmSettings settings.Realm) (Vector, error) {
 	quadrant_size := realmSettings.MapSize / 2
 	switch location {
 	case enum.NorthEast:
@@ -60,18 +61,20 @@ func GetVector(location enum.SpawnLocation, realmSettings settings.Realm) (Vecto
 			DirectionY: 1,
 		}, nil
 	case enum.Random:
-		return GetVector(enum.SpawnLocation(rand.Intn(4)+1), realmSettings)
+		return getVector(enum.SpawnLocation(rand.Intn(4)+1), realmSettings)
 	default:
 		return Vector{}, fmt.Errorf("invalid location: %s", location)
 	}
 }
 
 func SpawnVillage(ctx context.Context, db database.Querier, playerId uuid.UUID, location enum.SpawnLocation, realmSettings settings.Realm) (villages.NewVillage, error) {
-	areaSizeChunks := (realmSettings.MapSize / 2) / realmSettings.ChunkSize
+	quadrantSizeChunks := (realmSettings.MapSize / 2) / realmSettings.ChunkSize
+
+	log.Println("areaSizeChunks: ", quadrantSizeChunks)
 
 	var chunkPositions []ChunkRelativePosition
-	for x := range areaSizeChunks {
-		for y := range areaSizeChunks {
+	for x := range quadrantSizeChunks {
+		for y := range quadrantSizeChunks {
 			chunkPositions = append(chunkPositions, ChunkRelativePosition{
 				CoordX:         x,
 				CoordY:         y,
@@ -83,17 +86,21 @@ func SpawnVillage(ctx context.Context, db database.Querier, playerId uuid.UUID, 
 		return chunkPositions[i].DistanceCenter < chunkPositions[j].DistanceCenter
 	})
 
-	targetPopulation := float32(realmSettings.ChunkFillPercent / 100)
+	targetPopulation := float32(realmSettings.ChunkFillPercent) / 100
 	if targetPopulation > 1 {
 		return villages.NewVillage{}, fmt.Errorf("maximum population is 100%%, current is %d%%", realmSettings.ChunkFillPercent)
 	}
+	log.Println("targetPopulation: ", targetPopulation)
+	log.Println("settings: ", realmSettings)
 	for _, position := range chunkPositions {
-		vector, err := GetVector(location, realmSettings)
+		log.Println("position: ", position)
+		vector, err := getVector(location, realmSettings)
 		if err != nil {
 			return villages.NewVillage{}, err
 		}
+		log.Println("vector: ", vector)
 		current, err := chunks.NewChunk(ctx, db,
-			villages.Coord{
+			villages.Coords{
 				CoordX: vector.BaseX + (vector.DirectionX * position.CoordX * realmSettings.ChunkSize),
 				CoordY: vector.BaseY + (vector.DirectionY * position.CoordY * realmSettings.ChunkSize),
 			},
@@ -101,11 +108,13 @@ func SpawnVillage(ctx context.Context, db database.Querier, playerId uuid.UUID, 
 		if err != nil {
 			return villages.NewVillage{}, err
 		}
+		log.Println("current: ", current)
 		if current.Population() < targetPopulation {
 			coords, err := current.GetValidNewVillageCoords()
 			if err != nil {
 				return villages.NewVillage{}, nil
 			}
+			log.Println("coords: ", coords)
 			newVillage := villages.NewVillage{
 				CoordX:   coords.CoordX,
 				CoordY:   coords.CoordY,
@@ -118,5 +127,5 @@ func SpawnVillage(ctx context.Context, db database.Querier, playerId uuid.UUID, 
 			return newVillage, nil
 		}
 	}
-	return villages.NewVillage{}, nil
+	return villages.NewVillage{}, fmt.Errorf("no valid position found, realm may be full")
 }

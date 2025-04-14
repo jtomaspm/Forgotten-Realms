@@ -16,6 +16,7 @@ export async function RegisterPlayer(configuration: SdkConfiguration, token: str
                 location: location
             })
         })
+        console.log(response.json());
         if (!(response.status === 201)) {
             return {
                 error: {
