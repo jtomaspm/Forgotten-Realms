@@ -1,156 +1,153 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
-    // --- Base Settings ---
-    let mapSettings = $state.raw({
-        mapSize: 1000,    // Total tiles per axis (1000x1000)
-        chunkSize: 5      // Tiles per chunk edge
-    });
+	type Village = {
+		CoordX: number;
+		CoordY: number;
+		Player: string;
+		Points: number;
+	};
 
-    let currentVillage = $state.raw({
-        coordX: 493,
-        coordY: 520
-    });
+	type Chunk = {
+		CoordX: number;
+		CoordY: number;
+		Villages: Village[];
+	};
 
-    type TileType = "grass" | "water" | "dirt" | "lava";
+	let settings = $state.raw({
+		MapSize: 1000,
+		ChunkSize: 5,
+		TileSizePx: 100,
+		StartPosition: {
+			CoordX: 453,
+			CoordY: 569,
+		},
+	});
 
-    interface Tile {
-        tile: TileType;
-        village?: { player: string; points: number };
-    }
+	let chunks: { [dict_key: string]: Chunk } = $state({});
 
-    interface Chunk {
-        coordX: number;
-        coordY: number;
-        slots: Tile[];
-    }
+	let msg: string = $state.raw("");
 
-    let chunks: Chunk[] = $state.raw([]);
-    let tilePixelSize = $state.raw(100);
-    let chunkPixelSize = $derived(mapSettings.chunkSize * tilePixelSize);
-    let chunksPerAxis = $derived(mapSettings.mapSize / mapSettings.chunkSize);
+	function GetChunk(x: number, y: number) {
+		const c_x = x - (x % settings.ChunkSize);
+		const c_y = y - (y % settings.ChunkSize);
+		const coords = `${c_x}|${c_y}`;
 
-    // --- Tile & Chunk Generation ---
-    function generateRandomTile(): Tile {
-        const types: TileType[] = ["grass", "water", "dirt", "lava"];
-        const tile = types[Math.floor(Math.random() * types.length)];
-        let village = undefined;
-        if (tile === "grass" && Math.random() < 0.1) {
-            village = {
-                player: "Player " + Math.floor(Math.random() * 100),
-                points: Math.floor(Math.random() * 1000)
-            };
-        }
-        return { tile, village };
-    }
+		if (chunks[coords]) {
+			msg = `Chunk at ${coords} found.`;
+			return;
+		}
 
-    function loadChunk(chunkX: number, chunkY: number) {
-        if (chunks.find(c => c.coordX === chunkX && c.coordY === chunkY)) return;
-        setTimeout(() => {
-            const slots: Tile[] = [];
-            const totalSlots = mapSettings.chunkSize * mapSettings.chunkSize;
-            for (let i = 0; i < totalSlots; i++) {
-                slots.push(generateRandomTile());
-            }
-            const newChunk: Chunk = { coordX: chunkX, coordY: chunkY, slots };
-            chunks = [...chunks, newChunk];
-            console.log('Chunk added:', chunkX, chunkY, slots.length);
-        }, Math.random() * 300);
-    }
+		msg = `Chunk at ${coords} not found – generating it.`;
+		const c: Chunk = {
+			CoordX: c_x,
+			CoordY: c_y,
+			Villages: [],
+		};
 
-    function loadChunks(viewportLeft: number, viewportTop: number, viewportWidth: number, viewportHeight: number) {
-        const tileLeft = Math.floor(viewportLeft / tilePixelSize);
-        const tileTop = Math.floor(viewportTop / tilePixelSize);
-        const tileRight = Math.ceil((viewportLeft + viewportWidth) / tilePixelSize);
-        const tileBottom = Math.ceil((viewportTop + viewportHeight) / tilePixelSize);
+		const vCount = Math.floor(Math.random() * (settings.ChunkSize + 1));
+		for (let i = 0; i < vCount; i++) {
+			c.Villages.push({
+				CoordX: c_x + i,
+				CoordY: c_y + i,
+				Player: `Player ${coords}-${i}`,
+				Points: Math.floor(Math.random() * 10_000),
+			});
+		}
+		chunks[coords] = c;
+	}
 
-        const chunkLeft = Math.floor(tileLeft / mapSettings.chunkSize);
-        const chunkTop = Math.floor(tileTop / mapSettings.chunkSize);
-        const chunkRight = Math.floor(tileRight / mapSettings.chunkSize);
-        const chunkBottom = Math.floor(tileBottom / mapSettings.chunkSize);
+	let mapWindowEl: HTMLDivElement;
 
-        for (let cy = chunkTop; cy <= chunkBottom; cy++) {
-            for (let cx = chunkLeft; cx <= chunkRight; cx++) {
-                if (cx >= 0 && cy >= 0 && cx < chunksPerAxis && cy < chunksPerAxis) {
-                    loadChunk(cx, cy);
-                }
-            }
-        }
-    }
+	function generateVisibleChunks() {
+		if (!mapWindowEl) return;
 
-    let container: HTMLDivElement;
-    let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+		const scrollLeft = mapWindowEl.scrollLeft;
+		const scrollTop = mapWindowEl.scrollTop;
+		const viewportWidth = mapWindowEl.clientWidth;
+		const viewportHeight = mapWindowEl.clientHeight;
 
-    function handleScroll() {
-        if (scrollTimeout) return;
-        scrollTimeout = setTimeout(() => {
-            loadChunks(container.scrollLeft, container.scrollTop, container.clientWidth, container.clientHeight);
-            scrollTimeout = null;
-        }, 100); // throttle
-    }
+		const visibleMinTileX = Math.floor(scrollLeft / settings.TileSizePx);
+		const visibleMaxTileX = Math.ceil((scrollLeft + viewportWidth) / settings.TileSizePx);
+		const visibleMinTileY = Math.floor(scrollTop / settings.TileSizePx);
+		const visibleMaxTileY = Math.ceil((scrollTop + viewportHeight) / settings.TileSizePx);
 
-    onMount(() => {
-        const centerX = (currentVillage.coordX * tilePixelSize) - container.clientWidth / 2;
-        const centerY = (currentVillage.coordY * tilePixelSize) - container.clientHeight / 2;
-        container.scrollLeft = centerX;
-        container.scrollTop = centerY;
-        loadChunks(centerX, centerY, container.clientWidth, container.clientHeight);
-    });
+		for (let tileX = visibleMinTileX; tileX < visibleMaxTileX + settings.ChunkSize; tileX += settings.ChunkSize) {
+			for (let tileY = visibleMinTileY; tileY < visibleMaxTileY + settings.ChunkSize; tileY += settings.ChunkSize) {
+				GetChunk(tileX, tileY);
+			}
+		}
+	}
+
+	onMount(() => {
+		// Calculate the center position in pixels.
+		const centerX = settings.StartPosition.CoordX * settings.TileSizePx;
+		const centerY = settings.StartPosition.CoordY * settings.TileSizePx;
+
+		if (mapWindowEl) {
+			// Scroll so the starting tile is centered.
+			mapWindowEl.scrollLeft = centerX - mapWindowEl.clientWidth / 2;
+			mapWindowEl.scrollTop = centerY - mapWindowEl.clientHeight / 2;
+		}
+
+		generateVisibleChunks();
+	});
 </script>
 
-<p class="fixed top-[100px] left-2 z-50 text-white text-sm bg-black bg-opacity-50 p-2 rounded">
-    Loaded Chunks: {chunks.length}
-</p>
-
-<!-- === Scrollable Map === -->
-<div bind:this={container} class="map_window" onscroll={handleScroll}>
-    <div
-        style="position: relative; width: {mapSettings.mapSize * tilePixelSize}px; height: {mapSettings.mapSize * tilePixelSize}px;"
-    >
-        {#each chunks as chunk (chunk.coordX + '-' + chunk.coordY)}
-            {#if chunk.slots && chunk.slots.length > 0}
-                <div
-                    class="chunk absolute border border-gray-400 shadow-sm"
-                    style="
-                        left: {chunk.coordX * chunkPixelSize}px;
-                        top: {chunk.coordY * chunkPixelSize}px;
-                        width: {chunkPixelSize}px;
-                        height: {chunkPixelSize}px;"
-                >
-                    {#each Array(mapSettings.chunkSize) as _, rowIndex}
-                        <div class="row flex">
-                            {#each chunk.slots.slice(rowIndex * mapSettings.chunkSize, (rowIndex + 1) * mapSettings.chunkSize) as tile}
-                                <div
-                                    class="tile border border-gray-300 text-center relative text-[10px] font-semibold flex items-center justify-center hover:ring-2 hover:ring-yellow-300"
-                                    style="
-                                        width: {tilePixelSize}px;
-                                        height: {tilePixelSize}px;
-                                        background-color: {
-                                            tile.tile === 'grass' ? '#88cc88' :
-                                            tile.tile === 'water' ? '#66b2ff' :
-                                            tile.tile === 'dirt' ? '#deb887' :
-                                            '#ff4500'
-                                        };"
-                                >
-                                    {#if tile.village}
-                                        <div class="absolute inset-0 bg-black bg-opacity-40 text-white flex items-center justify-center">
-                                            {tile.village.player}
-                                        </div>
-                                    {/if}
-                                </div>
-                            {/each}
-                        </div>
-                    {/each}
-                </div>
-            {/if}
-        {/each}
-    </div>
+<div
+	bind:this={mapWindowEl}
+	class="map_window"
+	onscroll={generateVisibleChunks}
+>
+	<div
+		class="map_grid"
+		style="width: {settings.MapSize * settings.TileSizePx}px; height: {settings.MapSize * settings.TileSizePx}px;"
+	>
+		{#each Object.values(chunks) as chunk (chunk.CoordX + '|' + chunk.CoordY)}
+			<div
+				class="chunk"
+				style="left: {chunk.CoordX * settings.TileSizePx}px; top: {chunk.CoordY * settings.TileSizePx}px;
+				       width: {settings.ChunkSize * settings.TileSizePx}px; height: {settings.ChunkSize * settings.TileSizePx}px;"
+			>
+				{#each chunk.Villages as village (village.CoordX + '|' + village.CoordY)}
+					<div
+						class="village w-[{settings.TileSizePx}px] h-[{settings.TileSizePx}px]"
+						style="left: {(village.CoordX - chunk.CoordX) * settings.TileSizePx}px;
+						       top: {(village.CoordY - chunk.CoordY) * settings.TileSizePx}px;"
+					>
+						<span class="text-xs text-white">{village.Player}</span>
+					</div>
+				{/each}
+			</div>
+		{/each}
+	</div>
 </div>
+
+<p class="mt-4 text-center">{msg}</p>
 
 <style lang="postcss">
     @reference "tailwindcss";
 
-    .map_window {
-        @apply overflow-auto h-[800px] w-full bg-gray-500;
+	.map_window {
+		@apply relative overflow-auto h-[800px] w-full bg-gray-500;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+	}
+    .map_window::-webkit-scrollbar {
+        display: none;
     }
+
+	.map_grid {
+		@apply relative;
+	}
+
+	.chunk {
+		@apply absolute border border-gray-700;
+	}
+
+	.village {
+		@apply absolute flex items-center justify-center bg-blue-500 rounded-full;
+	}
+
+
 </style>
