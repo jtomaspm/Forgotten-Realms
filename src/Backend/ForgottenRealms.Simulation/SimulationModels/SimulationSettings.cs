@@ -1,4 +1,4 @@
-namespace ForgottenRealms.Simulation.Models;
+namespace ForgottenRealms.Simulation.SimulationModels;
 
 public class SimulationSettings
 {

@@ -1,5 +1,5 @@
 ﻿using ForgottenRealms.Simulation;
-using ForgottenRealms.Simulation.Models;
+using ForgottenRealms.Simulation.SimulationModels;
 
 namespace ForgottenRealms.Cli;
 
@@ -9,7 +9,7 @@ class Program
     {
         var simulationSettings = new SimulationSettings
         {
-            TicksPerSecond = 120
+            TicksPerSecond = 60
         };
         var simulation = new Runtime(simulationSettings);
         using var cts = new CancellationTokenSource();
