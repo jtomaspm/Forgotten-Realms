@@ -1,30 +1,28 @@
-use rand::Rng;
-use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
-
-use crate::{game::models::village::Village, simulation::models::{server_tick::ServerTick, simulation_entity::SimulationEntity}};
+use crate::{game::models::direction::Direction, simulation::models::{server_tick::ServerTick, simulation_memory::SimulationMemory}};
 
 pub mod models;
 pub struct Simulation {
-    entities: Vec<Box<dyn SimulationEntity>>,
+    memory: SimulationMemory,
     tick: ServerTick,
 }
 
 impl Simulation {
     pub fn new() -> Self {
+        let tick = ServerTick::new(100);
         return Simulation {
-            entities: Vec::new(),
-            tick: ServerTick::new(60),
+            memory: SimulationMemory::new(tick),       
+            tick,
         };
     }
 
     pub fn run(&mut self) {
-        for i in 1..1000*1000 {
-            let mut rng = rand::rng();
-            self.entities.push(Box::new(Village::new(rng.random_range(-500..501), rng.random_range(-500..501))));
-        }
-
+        self.memory.map.fill_map_with_villages(&mut self.memory.entity_pool.villages);
+        //for i in 1..=1 {
+            //self.memory.map.spawn_village(Direction::Random, &mut self.memory.entity_pool.villages);
+        //}
+        
         loop {
-            self.entities.par_iter_mut().for_each(|entity| entity.update());
+            self.memory.entity_pool.update(&self.tick);           
 
             self.tick.wait_next_tick();
         }    
