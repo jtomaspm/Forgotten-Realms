@@ -5,7 +5,7 @@ pub struct SimulationMemory {
     pub entity_pool: EntityPool,
 }
 
-impl<'a> SimulationMemory {
+impl SimulationMemory {
     pub fn new(tick: ServerTick) -> Self {
         return SimulationMemory {
             map: MapManager::new(tick),
