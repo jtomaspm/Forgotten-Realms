@@ -19,7 +19,7 @@ func NewWorldMap() *WorldMap {
 
 func (wm *WorldMap) AddVillage(village *Village) error {
 	if _, exists := wm.Map[village.Coordinates]; exists {
-		return fmt.Errorf("Village at %s already exists", village.Coordinates)
+		return fmt.Errorf("Village at (%d|%d) already exists", village.Coordinates.X, village.Coordinates.Y)
 	}
 	wm.Map[village.Coordinates] = village
 	wm.Villages = append(wm.Villages, village)

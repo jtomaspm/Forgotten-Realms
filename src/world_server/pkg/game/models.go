@@ -9,6 +9,15 @@ const (
 	TheForgotten Faction = "theforgotten" //Ancient native defenders of the realm with powerful NPC-controlled villages and elite troops
 )
 
+type Direction string
+
+const (
+	NorthEast Direction = "NorthEast"
+	NorthWest Direction = "NorthWest"
+	SouthEast Direction = "SouthEast"
+	SouthWest Direction = "SouthWest"
+)
+
 type Coordinates struct {
 	X int `json:"x"`
 	Y int `json:"y"`
