@@ -1,43 +1,22 @@
-CREATE TABLE villages (
+CREATE TABLE game.villages (
     coord_x SMALLINT NOT NULL,
     coord_y SMALLINT NOT NULL,
-    player_id UUID NOT NULL,
-    faction faction NOT NULL,
+    player_id INT NOT NULL,
     points SMALLINT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(coord_x, coord_y),
-    FOREIGN KEY (player_id) REFERENCES players (id)
+    FOREIGN KEY (player_id) REFERENCES game.players (id)
 );
 
-CREATE OR REPLACE FUNCTION set_village_faction()
-RETURNS TRIGGER AS $$
-BEGIN
-    SELECT p.faction INTO NEW.faction
-    FROM players p
-    WHERE p.id = NEW.player_id;
-
-    IF NEW.faction IS NULL THEN
-        RAISE EXCEPTION 'Player ID % not found or faction is NULL', NEW.player_id;
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_set_village_faction
-BEFORE INSERT ON villages
-FOR EACH ROW
-EXECUTE FUNCTION set_village_faction();
-
-CREATE INDEX idx_villages_player_id ON villages(player_id);
+CREATE INDEX idx_villages_player_id ON game.villages(player_id);
 
 CREATE TRIGGER trigger_set_updated_at_villages
-BEFORE UPDATE ON villages
+BEFORE UPDATE ON game.villages
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
-CREATE TABLE village_buildings (
+CREATE TABLE game.village_buildings (
     coord_x SMALLINT NOT NULL,
     coord_y SMALLINT NOT NULL,
     headquarters SMALLINT NOT NULL DEFAULT 0,
@@ -48,16 +27,16 @@ CREATE TABLE village_buildings (
     mine SMALLINT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (coord_x, coord_y) REFERENCES villages (coord_x, coord_y),
+    FOREIGN KEY (coord_x, coord_y) REFERENCES game.villages (coord_x, coord_y),
     PRIMARY KEY(coord_x, coord_y)
 );
 
 CREATE TRIGGER trigger_set_updated_at_village_buildings
-BEFORE UPDATE ON village_buildings
+BEFORE UPDATE ON game.village_buildings
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
-CREATE TABLE village_resources (
+CREATE TABLE game.village_resources (
     coord_x SMALLINT NOT NULL,
     coord_y SMALLINT NOT NULL,
     wood INTEGER NOT NULL DEFAULT 0,
@@ -76,6 +55,6 @@ CREATE TABLE village_resources (
 );
 
 CREATE TRIGGER trigger_set_updated_at_village_resources
-BEFORE UPDATE ON village_resources
+BEFORE UPDATE ON game.village_resources
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
