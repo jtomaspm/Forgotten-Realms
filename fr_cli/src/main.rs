@@ -11,7 +11,7 @@ async fn main() {
     match cli.command {
         Commands::GenerateConfig { path, server_type } => {
             match server_type {
-                args::ServerType::World => todo!(),
+                args::ServerType::Realm => todo!(),
                 args::ServerType::Auth => todo!(),
             }
         }

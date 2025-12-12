@@ -3,11 +3,11 @@ use std::env;
 use api_sdk::configuration::realm_server::RealmServerConfig;
 use tokio::fs;
 
-pub async fn get_configuration(world: Option<String>) -> RealmServerConfig {
+pub async fn get_configuration(realm: Option<String>) -> RealmServerConfig {
     let config_path = format!(
         "{}/.config/forgotten_realms/{}", 
         env::home_dir().expect("Could not determine home directory").to_str().unwrap(), 
-        world.unwrap_or("world_dev".to_string()));
+        realm.unwrap_or("realm_dev".to_string()));
 
     if fs::create_dir_all(&config_path).await.is_err() {
         panic!("Could not create configuration directory at {}", config_path);

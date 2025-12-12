@@ -14,15 +14,15 @@ impl RealmServerConfig {
     pub fn default() -> Self {
         RealmServerConfig { 
             server: ServerConfig {
-                name: "world_dev".to_string(),
+                name: "realm_dev".to_string(),
                 host: "0.0.0.0".to_string(),
                 port: 8090,
             },
             auth_server: "http://localhost:8080".to_string(),
             database: DatabaseConfig {
-                user: "ws_world_dev".to_string(),
+                user: "rs_realm_dev".to_string(),
                 password: "test1234".to_string(),
-                database: "world_dev".to_string(),
+                database: "realm_dev".to_string(),
                 host: "localhost".to_string(),
                 port: 5432,
                 max_connections: 10,

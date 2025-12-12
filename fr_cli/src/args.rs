@@ -35,7 +35,7 @@ pub enum Commands {
 
 #[derive(ValueEnum, Clone, Debug)]
 pub enum ServerType {
-    World,
+    Realm,
     Auth,
 }
 
