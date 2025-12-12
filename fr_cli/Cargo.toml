@@ -1,0 +1,10 @@
+[package]
+name = "fr_cli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4.5", features = ["derive"] }
+db_migration_lib = { path = "../db_migration_lib" }
+api_sdk = { path = "../api_sdk" }

@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "db_migration_lib",
+    "world_server",
+    "api_sdk", 
+    "fr_cli", 
+    "auth_server",
+]
