@@ -3,16 +3,16 @@ use serde::{Deserialize, Serialize};
 use crate::configuration::{database::{DatabaseConfig, MigrationConfig}, server::ServerConfig};
 
 #[derive(Serialize, Deserialize)]
-pub struct WorldServerConfig {
+pub struct RealmServerConfig {
     pub server: ServerConfig,
     pub auth_server: String,
     pub database: DatabaseConfig,
     pub migration: MigrationConfig,
 }
 
-impl WorldServerConfig {
+impl RealmServerConfig {
     pub fn default() -> Self {
-        WorldServerConfig { 
+        RealmServerConfig { 
             server: ServerConfig {
                 name: "world_dev".to_string(),
                 host: "0.0.0.0".to_string(),

@@ -36,9 +36,9 @@ CREATE TABLE auth.account_verification (
 CREATE TRIGGER auth.trigger_set_updated_at_account_properties
 BEFORE UPDATE ON auth.account_properties
 FOR EACH ROW
-EXECUTE FUNCTION auth.set_updated_at();
+EXECUTE FUNCTION set_updated_at();
 
 CREATE TRIGGER auth.trigger_set_updated_at_accounts
 BEFORE UPDATE ON auth.accounts
 FOR EACH ROW
-EXECUTE FUNCTION auth.set_updated_at();
+EXECUTE FUNCTION set_updated_at();

@@ -1140,6 +1140,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "realm_server"
+version = "0.1.0"
+dependencies = [
+ "api_sdk",
+ "axum",
+ "db_migration_lib",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "redox_syscall"
 version = "0.5.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2042,20 +2056,6 @@ name = "wit-bindgen"
 version = "0.46.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f17a85883d4e6d00e8a97c586de764dabcc06133f7f1d55dce5cdc070ad7fe59"
-
-[[package]]
-name = "world_server"
-version = "0.1.0"
-dependencies = [
- "api_sdk",
- "axum",
- "db_migration_lib",
- "serde",
- "serde_json",
- "sqlx",
- "tokio",
- "uuid",
-]
 
 [[package]]
 name = "writeable"

@@ -1,1 +1,1 @@
-pub mod world_server;
+pub mod realm_server;

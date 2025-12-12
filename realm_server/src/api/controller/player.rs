@@ -10,7 +10,7 @@ pub fn mount(router: Router) -> Router {
     return router.route("/player", post(create_player));
 }
 
-async fn create_player(hub_channel: Extension<Sender<Event>>, Json(request): Json<requests::world_server::CreatePlayer>) -> Result<Json<responses::world_server::CreatePlayer>, ErrorResponse> {
+async fn create_player(hub_channel: Extension<Sender<Event>>, Json(request): Json<requests::realm_server::CreatePlayer>) -> Result<Json<responses::realm_server::CreatePlayer>, ErrorResponse> {
     match get_faction_id(request.faction.clone()) {
         Some(faction_id) => {
             hub_channel.send(Event {
@@ -22,7 +22,7 @@ async fn create_player(hub_channel: Extension<Sender<Event>>, Json(request): Jso
                 })
             }).await.unwrap();
 
-            return Ok(Json(responses::world_server::CreatePlayer {
+            return Ok(Json(responses::realm_server::CreatePlayer {
                 player_id: 1,
             }));
         },

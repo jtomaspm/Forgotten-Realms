@@ -1,7 +1,7 @@
 mod configuration;
 mod database;
 
-use api_sdk::configuration::world_server::WorldServerConfig;
+use api_sdk::configuration::realm_server::RealmServerConfig;
 use sqlx::{Pool, Postgres};
 use tokio::{net::TcpListener, sync::mpsc};
 
@@ -9,7 +9,7 @@ use crate::{api::{api_router}, event_hub::{EventHub, event::Event, simulation::S
 
 
 pub struct Server {
-    config: WorldServerConfig,
+    config: RealmServerConfig,
     pool: Pool<Postgres>,
 }
 

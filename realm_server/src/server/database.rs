@@ -1,7 +1,7 @@
-use api_sdk::configuration::world_server::WorldServerConfig;
+use api_sdk::configuration::realm_server::RealmServerConfig;
 use sqlx::{Pool, Postgres, postgres::PgPoolOptions};
 
-pub async fn setup_database_pool(config: &WorldServerConfig) -> Pool<Postgres> {
+pub async fn setup_database_pool(config: &RealmServerConfig) -> Pool<Postgres> {
     match PgPoolOptions::new()
         .max_connections(config.database.max_connections)
         .connect(

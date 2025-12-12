@@ -1,6 +1,6 @@
 use std::env;
 
-use api_sdk::configuration::{auth_server::AuthServerConfig, world_server::WorldServerConfig};
+use api_sdk::configuration::{auth_server::AuthServerConfig, realm_server::RealmServerConfig};
 use tokio::fs;
 
 pub async fn get_configuration() -> AuthServerConfig {
