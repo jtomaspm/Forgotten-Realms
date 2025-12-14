@@ -9,7 +9,7 @@ async fn main() {
     let cli = Args::parse();
 
     match cli.command {
-        Commands::GenerateConfig { path, server_type } => {
+        Commands::GenerateConfig { path: _, server_type } => {
             match server_type {
                 args::ServerType::Realm => todo!(),
                 args::ServerType::Auth => todo!(),
