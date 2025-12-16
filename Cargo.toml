@@ -4,5 +4,6 @@ members = [
     "realm_server",
     "api_sdk", 
     "fr_cli", 
-    "auth_server",
+    "auth_server", 
+    "web_client",
 ]

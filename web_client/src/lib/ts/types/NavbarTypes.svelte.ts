@@ -1,1 +1,0 @@
-export type TabName =  "Home" | "Realms" | "Market" | "Inventory" | "Social" | "Info";
