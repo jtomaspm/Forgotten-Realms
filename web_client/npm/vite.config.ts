@@ -8,12 +8,12 @@ export default defineConfig({
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                home: "src/pages/index.ts",
-                dashboard: "src/pages/test.ts"
+                index: "src/pages/index.ts",
+                test: "src/pages/test.ts"
             },
             output: {
-                entryFileNames: "[name].js",
-                assetFileNames: "[name].css"
+                entryFileNames: "js/[name].js",
+                assetFileNames: "css/[name].css"
             }
         }
     },
