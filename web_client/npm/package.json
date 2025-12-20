@@ -1,20 +1,25 @@
 {
   "name": "npm",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc && vite build"
+    "clean": "rm -rf target",
+    "build_css": "npx @tailwindcss/cli -i ./src/css/styles.css -o ./target/css/styles.css",
+    "build_ts_debug": "npx tsc",
+    "build_ts": "npx tsc --declaration false --declarationMap false --sourceMap false",
+    "build": "npm run clean && npm run build_ts && npm run build_css", 
+    "build_debug": "npm run clean && npm run build_ts_debug && npm run build_css"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
   "devDependencies": {
-    "@types/node": "^25.0.2",
-    "autoprefixer": "^10.4.23",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.18",
-    "typescript": "~5.9.3",
-    "vite": "^7.2.4"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.18"
+    "@tailwindcss/cli": "^4.1.18",
+    "tailwindcss": "^4.1.18"
   }
 }
