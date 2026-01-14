@@ -7,3 +7,4 @@ members = [
     "auth_server", 
     "web_client",
 ]
+resolver="3"
