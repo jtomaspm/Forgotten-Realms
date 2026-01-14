@@ -1,5 +1,3 @@
-pub struct Resources {
-    pub wood: u32,
-    pub stone: u32,
-    pub iron: u32,
-}
+pub mod coords;
+pub mod resources;
+pub mod map_slot;

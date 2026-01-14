@@ -15,6 +15,7 @@ target
 *.user
 *.userosscache
 *.sln.docstates
+dist
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

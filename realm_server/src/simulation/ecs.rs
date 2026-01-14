@@ -1,4 +1,4 @@
-use crate::simulation::ecs::entities::{Entity, Player, Village};
+use crate::simulation::{ecs::entities::{Entity, player::Player, realm_map::RealmMap, village::Village}, tick::Tick};
 
 pub mod entities;
 pub mod models;
@@ -6,6 +6,7 @@ pub mod models;
 pub struct ECS {
     pub players: Vec<Entity<Player>>,
     pub villages: Vec<Entity<Village>>,
+    pub map: RealmMap,
 }
 
 impl ECS {
@@ -13,11 +14,12 @@ impl ECS {
         ECS {
             players: Vec::new(),
             villages: Vec::new(),
+            map: RealmMap::default(),
         }
     }
 
-    pub fn update(&mut self) {
-        
+    pub fn update(&mut self, tick: &Tick) {
+
     }
 
     

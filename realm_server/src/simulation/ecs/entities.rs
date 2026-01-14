@@ -1,4 +1,8 @@
-use crate::simulation::{ecs::models::Resources, tick::Tick};
+use crate::simulation::{tick::Tick};
+
+pub mod village;
+pub mod player;
+pub mod realm_map;
 
 pub struct Entity<T>{
     pub id: u32,
@@ -7,12 +11,5 @@ pub struct Entity<T>{
     pub data: T,
 }
 
-pub struct Player {
-     pub faction_id: u8,
-     pub villages: Vec<u32>,
-}
 
-pub struct Village {
-    pub owner_id: u32,
-    pub resources: Resources,
-}
+

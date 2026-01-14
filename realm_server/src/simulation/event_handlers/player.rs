@@ -1,4 +1,4 @@
-use crate::{event_hub::event::player::CreatePlayerEvent, simulation::{ecs::{ECS, entities::{Entity, Player}}, tick::Tick}};
+use crate::{event_hub::event::player::CreatePlayerEvent, simulation::{ecs::{ECS, entities::{Entity, player::Player}}, tick::Tick}};
 
 pub fn create_player (ecs: &mut ECS, event: CreatePlayerEvent, tick: Tick) {
     ecs.players.push(Entity::<Player> {

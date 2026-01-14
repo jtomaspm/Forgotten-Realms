@@ -25,7 +25,7 @@ impl Simulation {
         let mut tick = Tick::new();
         loop {
             //ecs update
-            self.ecs.update();
+            self.ecs.update(&tick);
 
             //process incoming events
             let result = self.process_events(100, tick);
